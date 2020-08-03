@@ -5,16 +5,17 @@ import Landing from "./views/Landing.vue";
 import Login from "./views/Login.vue";
 import Profile from "./views/Profile.vue";
 import Detail from "./views/Detail.vue";
-import Join from "./views/Join.vue"
-import News from "./views/News.vue"
-import Create from "./views/Create.vue"
+import Join from "./views/Join.vue";
+import News from "./views/News.vue";
+import Create from "./views/Create.vue";
+import Test from "./views/Test.vue";
 import MainNavbar from "./layout/MainNavbar.vue";
 import MainFooter from "./layout/MainFooter.vue";
 
 Vue.use(Router);
 
 export default new Router({
-  mode:'history',
+  mode: "history",
   routes: [
     {
       path: "/",
@@ -22,8 +23,8 @@ export default new Router({
       components: { default: Index, header: MainNavbar, footer: MainFooter },
       props: {
         header: { colorOnScroll: 400 },
-        footer: { backgroundColor: "black" }
-      }
+        footer: { backgroundColor: "black" },
+      },
     },
     {
       path: "/landing",
@@ -31,41 +32,41 @@ export default new Router({
       components: { default: Landing, header: MainNavbar, footer: MainFooter },
       props: {
         header: { colorOnScroll: 400 },
-        footer: { backgroundColor: "black" }
-      }
+        footer: { backgroundColor: "black" },
+      },
     },
     {
       path: "/login",
       name: "login",
       components: { default: Login, header: MainNavbar, footer: MainFooter },
       props: {
-        header: { colorOnScroll: 400 }
-      }
+        header: { colorOnScroll: 400 },
+      },
     },
     {
       path: "/join",
       name: "join",
       components: { default: Join, header: MainNavbar, footer: MainFooter },
       props: {
-        header: { colorOnScroll: 400 }
-      }
+        header: { colorOnScroll: 400 },
+      },
     },
-        
+
     {
       path: "/profile",
       name: "profile",
       components: { default: Profile, header: MainNavbar, footer: MainFooter },
       props: {
         header: { colorOnScroll: 400 },
-        footer: { backgroundColor: "black" }
+        footer: { backgroundColor: "black" },
       },
       beforeEnter(to, from, next) {
-        if (Vue.$cookies.isKey('auth-token')) {
-          console.log('로그인되어있다고했다')
-          next()
+        if (Vue.$cookies.isKey("auth-token")) {
+          console.log("로그인되어있다고했다");
+          next();
         } else {
-          console.log('로그인안되어있다고 했다')
-          next('/')
+          console.log("로그인안되어있다고 했다");
+          next("/");
         }
       },
     },
@@ -78,12 +79,12 @@ export default new Router({
         footer: { backgroundColor: "black" },
       },
       beforeEnter(to, from, next) {
-        if (Vue.$cookies.isKey('auth-token')) {
-          console.log('로그인되어있다고했다')
-          next()
+        if (Vue.$cookies.isKey("auth-token")) {
+          console.log("로그인되어있다고했다");
+          next();
         } else {
-          console.log('로그인안되어있다고 했다')
-          next('/')
+          console.log("로그인안되어있다고 했다");
+          next("/");
         }
       },
     },
@@ -92,8 +93,16 @@ export default new Router({
       name: "create",
       components: { default: Create, header: MainNavbar, footer: MainFooter },
       props: {
-        header: { colorOnScroll: 400 }
-      }
+        header: { colorOnScroll: 400 },
+      },
+    },
+    {
+      path: "/test",
+      name: "test",
+      components: { default: Test, header: MainNavbar, footer: MainFooter },
+      props: {
+        header: { colorOnScroll: 400 },
+      },
     },
     {
       path: "/news",
@@ -101,24 +110,24 @@ export default new Router({
       components: { default: News, header: MainNavbar, footer: MainFooter },
       props: {
         header: { colorOnScroll: 400 },
-        footer: { backgroundColor: "black" }
+        footer: { backgroundColor: "black" },
       },
       beforeEnter(to, from, next) {
-        if (Vue.$cookies.isKey('auth-token')) {
-          console.log('로그인되어있다고했다')
-          next()
+        if (Vue.$cookies.isKey("auth-token")) {
+          console.log("로그인되어있다고했다");
+          next();
         } else {
-          console.log('로그인안되어있다고 했다')
-          next('/')
+          console.log("로그인안되어있다고 했다");
+          next("/");
         }
       },
-    }
+    },
   ],
-  scrollBehavior: to => {
+  scrollBehavior: (to) => {
     if (to.hash) {
       return { selector: to.hash };
     } else {
       return { x: 0, y: 0 };
     }
-  }
+  },
 });
