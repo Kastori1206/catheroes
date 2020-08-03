@@ -1,5 +1,6 @@
 package com.web.blog.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import com.web.blog.model.request.CommentSaveRequest;
 import com.web.blog.model.response.ArticleResponse;
 import com.web.blog.model.response.BasicResponse;
 import com.web.blog.model.response.CommentResponse;
+import com.web.blog.utill.amazon.AmazonClient;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -45,6 +48,44 @@ public class ArticleController {
 
 	@Autowired
 	private CommentDao commentDao;
+
+	private AmazonClient amazonClient;
+
+	@Autowired
+	ArticleController(AmazonClient amazonClient) {
+	   this.amazonClient = amazonClient;
+	}
+
+	@PostMapping("/saveArticle")
+	@ApiOperation(value = "포스트 등록하기")
+	public Object signup(@RequestParam("image") MultipartFile image,
+				   @RequestParam("userid") long userid,
+				   @RequestParam("catid") long catid,
+				   @RequestParam("title") String title,
+				   @RequestParam("content") String content,         
+				   @RequestParam("imgpath") String imgpath
+		  ) throws IOException  {
+	   final BasicResponse result = new BasicResponse();
+
+	   Article article = null;      
+	
+
+	   // 생성 코드
+	   article = Article.builder()
+			  .userid(userid)
+			  .catid(catid)
+			  .image(imgpath)
+			  .title(title)
+			  .content(content)
+			  .build();
+	   
+	   articleDao.save(article);
+	   this.amazonClient.uploadFile(image, article.getArticleid());
+	   result.status = true;
+	   result.data = "success";
+
+	   return new ResponseEntity<>(result, HttpStatus.OK);
+ 	}
 
 	@PostMapping("/deleteComment")
 	@ApiOperation(value = "댓글 삭제하기")
