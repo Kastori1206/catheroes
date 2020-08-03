@@ -1,0 +1,93 @@
+<template>
+  <div id="material-kit">
+    <div :class="{ 'nav-open': NavbarStore.showNavbar }">
+      <router-view name="header" @submit-logout="logout" :isLoggedIn="isLoggedIn" />
+      <div>
+        <router-view @submit-login-data="login" @kakao-login="kakaoLogin" @submit-cat-data="createCat"/>
+      </div>
+      <router-view name="footer" />
+    </div>
+  </div>
+</template>
+
+<script>
+import axios from "axios";
+const SERVER_URL = "http://localhost:8080";
+
+export default {
+  created() {},
+  watch: {},
+  methods: {
+    login(loginData) {
+      console.log("로그인요청받았다요청받았다요청받았다요청받았다");
+      const formData = new FormData();
+      formData.append("email", loginData.email);
+      formData.append("password", loginData.password);
+      axios
+        .post(SERVER_URL + "/account/login/", formData)
+        .then(res => {
+          this.$cookies.set("auth-token", res.data.token); //토큰 날라오는거 설정해줘야함!!
+          this.isLoggedIn = true;
+          this.$router.push("/");
+        })
+        .catch(err => console.log(err));
+    },
+    logout() {
+      Kakao.Auth.logout(function(data) {
+        alert(data);
+        console.log(Kakao.Auth.getAccessToken());
+      });
+      console.log("로그아웃요청받았다");
+      this.$cookies.remove("auth-token");
+      this.isLoggedIn = false;
+    },
+    kakaoLogin(res) {
+      console.log("앱에서 보내는거");
+      console.log(res);
+      axios
+        .post("http://localhost:8080/auth/kakao/Login", {
+          access_token: res.access_token,
+          expires_in: res.expires_in,
+          refresh_token: res.refresh_token,
+          refresh_token_expires_in: res.refresh_token_expires_in,
+          scope: res.scope,
+          token_type: res.token_type
+        })
+        .then(res1 => {
+          console.log(res1);
+          // alert(res1.data);
+          this.$cookies.set("auth-token", res1.data.token); //토큰 날라오는거 설정해줘야함!!
+          this.isLoggedIn = true;
+          this.$router.push("/");
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    createCat(catData) {
+      axios.post(SERVER_URL + '/어디로보내야하오', catData)
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+  },
+  data: function() {
+    return {
+      isLoggedIn: false
+    };
+  },
+  mounted() {
+    //카카오 로그인 init
+    // 웹 플랫폼 도메인 등 초기화한 앱의 설정이 그대로 적용됩니다.
+    // 초기화한 앱에 현재 도메인이 등록되지 않은 경우 에러가 발생합니다.
+    Kakao.init("06a0b8cad70afe30f83080c09516c797");
+    this.isLoggedIn = this.$cookies.isKey("auth-token"); 
+  },
+  updated() {
+    this.isLoggedIn = this.$cookies.isKey("auth-token");
+  }
+};
+</script>

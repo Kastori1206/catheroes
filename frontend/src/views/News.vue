@@ -1,0 +1,113 @@
+<template>
+  <div class="wrapper">
+    <parallax class="section page-header header-filter" :style="headerStyle">
+      <div class="container">
+        <div class="md-layout">
+          <div class="md-layout-item md-size-50 md-small-size-70 md-xsmall-size-100">
+            <h1 class="title">길냥이 뉴스</h1>
+            <h4>길고양이 관련 뉴스 정보들을 열람할 수 있어요.</h4>
+          </div>
+        </div>
+      </div>
+    </parallax>
+    <div class="main main-raised">
+      <div class="section">
+        <div class="container">
+          <div class="features text-center">
+            <div class="md-layout">
+              <!-- test -->
+              <div v-for="(news, index) in items" :key="index + '_items'">
+                <div class="md-card-new">
+                  <md-card-header>
+                    <md-card-header-text>
+                      <div class="md-title" @click="PopNews(index)">{{news.title}}</div>
+                      <div class="md-subhead" @click="PopNews(index)">{{news.content}}</div>
+                    </md-card-header-text>
+                    <md-card-media>
+                      <img :src="news.img" alt="NewsImage" @click="PopNews(index)" />
+                    </md-card-media>
+                  </md-card-header>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import axios from "axios";
+const SERVER_URL = "http://localhost:8080";
+export default {
+  name: "Media",
+  bodyClass: "landing-page",
+  props: {
+    header: {
+      type: String,
+      default: require("@/assets/img/bg7.jpg")
+    },
+    teamImg1: {
+      type: String,
+      default: require("@/assets/img/faces/avatar.jpg")
+    },
+    teamImg2: {
+      type: String,
+      default: require("@/assets/img/faces/christian.jpg")
+    },
+    teamImg3: {
+      type: String,
+      default: require("@/assets/img/faces/kendall.jpg")
+    }
+  },
+  data() {
+    return {
+      items: []
+    };
+  },
+  computed: {
+    headerStyle() {
+      return {
+        backgroundImage: `url(${this.header})`
+      };
+    }
+  },
+  methods: {
+    PopNews(index) {
+      var winWidth = 700;
+      var winHeight = 600;
+      var popupOption = "width=" + winWidth + ", height=" + winHeight;
+      var win = window.open(this.items[index].url, "PopupWin", popupOption);
+    },
+    retrieveNewsInfo() {
+      axios
+        .get(SERVER_URL + "/news")
+        .then(res => {
+          console.log(res.data);
+          this.items = res.data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  },
+  created() {
+    this.retrieveNewsInfo();
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.md-card-actions.text-center {
+  display: flex;
+  justify-content: center !important;
+}
+.contact-form {
+  margin-top: 30px;
+}
+
+.md-has-textarea + .md-layout {
+  margin-top: 15px;
+}
+</style>
