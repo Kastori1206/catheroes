@@ -125,7 +125,8 @@ public class CatController {
    public Object signup(@RequestParam("image") MultipartFile image,
                   @RequestParam("nickname") String nickname,
                   @RequestParam("lat") String lat,
-                  @RequestParam("lng") String lng,
+				  @RequestParam("lng") String lng,
+				  @RequestParam("location") String location,
                   @RequestParam("imgpath") String imgpath,
                   @RequestParam("breed") String breed         
          ) throws IOException  {
@@ -151,7 +152,7 @@ public class CatController {
              .age(0)
              .attr("")
              .conditions("")
-             .location("")
+             .location(location)
              .food("")
              .family("")
              .neutered("")   

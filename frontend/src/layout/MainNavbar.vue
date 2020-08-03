@@ -42,7 +42,9 @@
               </md-list-item>
 
               <md-list-item v-if="isLoggedIn" @click="logout">
-                <p>LOGOUT</p>
+                <router-link to="/">
+                  <p>LOGOUT</p>
+                </router-link>
               </md-list-item>
 
               <md-list-item v-if="isLoggedIn">
