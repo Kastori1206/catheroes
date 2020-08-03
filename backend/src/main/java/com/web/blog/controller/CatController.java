@@ -5,15 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.validation.Valid;
-
-import com.web.blog.dao.CatDao;
-import com.web.blog.model.Cat;
-import com.web.blog.model.request.CatRegistRequest;
-import com.web.blog.model.response.BasicResponse;
-import com.web.blog.model.response.CatInfoResponse;
-import com.web.blog.utill.amazon.AmazonClient;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +12,16 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.web.blog.dao.CatDao;
+import com.web.blog.model.Cat;
+import com.web.blog.model.response.BasicResponse;
+import com.web.blog.model.response.CatInfoResponse;
+import com.web.blog.utill.amazon.AmazonClient;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -48,7 +44,7 @@ public class CatController {
 
 	@Autowired
 	CatController(AmazonClient amazonClient) {
-	   this.amazonClient = amazonClient;
+		this.amazonClient = amazonClient;
 	}
 	// @Autowired
 	// private JwtService jwtService;
@@ -88,12 +84,10 @@ public class CatController {
 	@PostMapping("/catList")
 	@ApiOperation(value = "고양이 전체 조회")
 	public Object detail() {
-		// System.out.println(jwtService.getUserUid());
-
 		ResponseEntity response = null;
 		List<Cat> catOpt = catDao.findAll();
-		
-		if(!catOpt.isEmpty()){
+
+		if (!catOpt.isEmpty()) {
 			final List<CatInfoResponse> results = new ArrayList<CatInfoResponse>();
 
 			for (Cat cat : catOpt) {
@@ -109,100 +103,44 @@ public class CatController {
 				result.lat = cat.getLat();
 				result.lng = cat.getLng();
 				result.catid = cat.getCatid();
-				results.add(result);				
-			} 
-				
+				results.add(result);
+			}
+
 			response = new ResponseEntity<>(results, HttpStatus.OK);
+		} else {
+			response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 		}
-		else {
-        	response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        
-    	return response;
+
+		return response;
 	}
+
 	@PostMapping("/regist")
-   @ApiOperation(value = "가입하기")
-   public Object signup(@RequestParam("image") MultipartFile image,
-                  @RequestParam("nickname") String nickname,
-                  @RequestParam("lat") String lat,
-                  @RequestParam("lng") String lng,
-                  @RequestParam("imgpath") String imgpath,
-                  @RequestParam("breed") String breed         
-         ) throws IOException  {
-      final BasicResponse result = new BasicResponse();
-      // 중복처리 필수
-      Cat cat = null;      
-      // 등록된 고양이 처리 (나중에 함)
-      // cat = catDao.getCatByNickname(request.getNickname());
-      // if (user != null) {
-      //    result.status = false;
-      //    result.data = "nickname";
-      //    return new ResponseEntity<>(result, HttpStatus.OK);
-      // }
-   
+	@ApiOperation(value = "가입하기")
+	public Object signup(@RequestParam("image") MultipartFile image, @RequestParam("nickname") String nickname,
+			@RequestParam("lat") String lat, @RequestParam("lng") String lng, @RequestParam("imgpath") String imgpath,
+			@RequestParam("breed") String breed) throws IOException {
+		final BasicResponse result = new BasicResponse();
+		// 중복처리 필수
+		Cat cat = null;
+		// 등록된 고양이 처리 (나중에 함)
+		// cat = catDao.getCatByNickname(request.getNickname());
+		// if (user != null) {
+		// result.status = false;
+		// result.data = "nickname";
+		// return new ResponseEntity<>(result, HttpStatus.OK);
+		// }
 
-      // 회원가입단을 생성해 보세요.
-      cat = Cat.builder()
-             .nickname(nickname)
-             .breed(breed)
-             .image(imgpath)
-             .lat(lat)
-             .lng(lng)
-             .age(0)
-             .attr("")
-             .conditions("")
-             .location("")
-             .food("")
-             .family("")
-             .neutered("")   
-             .hospital("")          
-             .build();
-      
-      catDao.save(cat);
-      this.amazonClient.uploadFile(image, cat.getCatid());
-      result.status = true;
-      result.data = "success";
+		// 회원가입단을 생성해 보세요.
+		cat = Cat.builder().nickname(nickname).breed(breed).image(imgpath).lat(lat).lng(lng).age(0).attr("")
+				.conditions("").location("").food("").family("").neutered("").hospital("").build();
 
-      return new ResponseEntity<>(result, HttpStatus.OK);
-   }
-	// @PostMapping("/regist")
-	// @ApiOperation(value = "고양이 등록하기")
-	// public Object signup(@Valid @RequestBody RegistRequest request) {
-	// 	final BasicResponse result = new BasicResponse();
-	// 	// 중복처리 필수
-	// 	Cat cat = null;		
-	// 	System.out.println(request);
-	// 	// 등록된 고양이 처리 (나중에 함)
-	// 	// cat = catDao.getCatByNickname(request.getNickname());
-	// 	// if (user != null) {
-	// 	// 	result.status = false;
-	// 	// 	result.data = "nickname";
-	// 	// 	return new ResponseEntity<>(result, HttpStatus.OK);
-	// 	// }
-	
-	// 	// 회원가입단을 생성해 보세요.
-	// 	cat = Cat.builder()
-	// 			 .nickname(request.getNickname())
-	// 			 .breed(request.getBreed())
-	// 			 .image(request.getImage())
-	// 			 .lat(request.getLat())
-	// 			 .lng(request.getLng())
-	// 			 .age(0)
-	// 			 .attr("")
-	// 			 .conditions("")
-	// 			 .location("")
-	// 			 .food("")
-	// 			 .family("")
-	// 			 .neutered("")	
-	// 			 .hospital("")			 
-	// 			 .build();
-	// 	System.out.println(cat.toString());		 
-	// 	catDao.save(cat);
-	// 	result.status = true;
-	// 	result.data = "success";
+		catDao.save(cat);
+		this.amazonClient.uploadFile(image, cat.getCatid(), "profile/cat/");
+		result.status = true;
+		result.data = "success";
 
-	// 	return new ResponseEntity<>(result, HttpStatus.OK);
-	// }
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
 
 	@PostMapping("/follow/{catid}")
 	@ApiOperation(value = "고양이 상세정보")
@@ -236,4 +174,3 @@ public class CatController {
 		return response;
 	}
 }
-
