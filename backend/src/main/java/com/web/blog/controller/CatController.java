@@ -118,7 +118,8 @@ public class CatController {
 	@PostMapping("/regist")
 	@ApiOperation(value = "가입하기")
 	public Object signup(@RequestParam("image") MultipartFile image, @RequestParam("nickname") String nickname,
-			@RequestParam("lat") String lat, @RequestParam("lng") String lng, @RequestParam("imgpath") String imgpath,
+			@RequestParam("lat") String lat, @RequestParam("lng") String lng, @RequestParam("location") String location,
+			@RequestParam("imgpath") String imgpath,
 			@RequestParam("breed") String breed) throws IOException {
 		final BasicResponse result = new BasicResponse();
 		// 중복처리 필수
@@ -133,7 +134,7 @@ public class CatController {
 
 		// 회원가입단을 생성해 보세요.
 		cat = Cat.builder().nickname(nickname).breed(breed).image(imgpath).lat(lat).lng(lng).age(0).attr("")
-				.conditions("").location("").food("").family("").neutered("").hospital("").build();
+				.conditions("").location(location).food("").family("").neutered("").hospital("").build();
 
 		catDao.save(cat);
 		this.amazonClient.uploadFile(image, cat.getCatid(), "profile/cat/");

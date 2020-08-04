@@ -88,7 +88,7 @@ export default {
   data() {
     return {
       // 데이터
-	  dong: null,
+      dong: null,
       nickname: null,
       breed: null,
       lat: null,
@@ -116,12 +116,12 @@ export default {
     getdata(mymarker) {
       this.lng = mymarker.Ga;
       this.lat = mymarker.Ha;
-    //   console.log(this.lat);
-    //   console.log(this.lng);
+      //   console.log(this.lat);
+      //   console.log(this.lng);
     },
     getdong(dong) {
       this.dong = dong;
-    //   console.log(dong);
+      //   console.log(dong);
     },
     onChangeImages(e) {
       console.log(e.target.files);
@@ -146,8 +146,8 @@ export default {
       request.append("image", this.image);
       request.append("nickname", this.nickname);
       request.append("lat", this.lat);
-	  request.append("lng", this.lng);
-	  request.append("location", this.dong);
+      request.append("lng", this.lng);
+      request.append("location", this.dong);
       request.append("imgpath", "/");
       request.append("breed", "breed");
 

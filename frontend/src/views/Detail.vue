@@ -55,59 +55,47 @@
               <template slot="tab-pane-2">
                 <!-- -->
                 <div class="md-layout">
-                <div class="md-layout-item md-size-35">
-                  <md-button
-                    class="md-success md-block"
-                    @click="postCreateModal = true"
-                    >글쓰기</md-button
-                  >
-                  <modal v-if="postCreateModal" @close="postCreateModalHide">
-                    <template slot="header">
-                      <h4 class="modal-title">포스트 작성</h4>
-                      <md-button
-                        class="md-simple md-just-icon md-round modal-default-button"
-                        @click="postCreateModalHide"
-                      >
-                        <md-icon>clear</md-icon>
-                      </md-button>
-                    </template>
+                  <div class="md-layout-item md-size-35">
+                    <md-button class="md-success md-block" @click="postCreateModal = true">글쓰기</md-button>
+                    <modal v-if="postCreateModal" @close="postCreateModalHide">
+                      <template slot="header">
+                        <h4 class="modal-title">포스트 작성</h4>
+                        <md-button
+                          class="md-simple md-just-icon md-round modal-default-button"
+                          @click="postCreateModalHide"
+                        >
+                          <md-icon>clear</md-icon>
+                        </md-button>
+                      </template>
 
-                    <template slot="body">
-                      <!-- -->
-                      <md-field>
-                        <label>제 목</label>
-                        <md-input v-model="title"></md-input>
-                      </md-field>
+                      <template slot="body">
+                        <!-- -->
+                        <md-field>
+                          <label>제 목</label>
+                          <md-input v-model="title"></md-input>
+                        </md-field>
 
-                      <md-field>
-                        <label>내 용</label>
-                        <md-textarea v-model="content"></md-textarea>
-                      </md-field>
+                        <md-field>
+                          <label>내 용</label>
+                          <md-textarea v-model="content"></md-textarea>
+                        </md-field>
 
-                      <md-field slot="inputs">
-                        <md-input ref="imageInput" type="file" hidden @change="onChangeImages"></md-input>
-                      </md-field>
+                        <md-field slot="inputs">
+                          <md-input ref="imageInput" type="file" hidden @change="onChangeImages"></md-input>
+                        </md-field>
 
-                      <md-field slot="inputs" v-if="imgpreview">
-                        <img :src="imgpreview">
-                      </md-field>
-                      <!-- -->
-                    </template>
+                        <md-field slot="inputs" v-if="imgpreview">
+                          <img :src="imgpreview" />
+                        </md-field>
+                        <!-- -->
+                      </template>
 
-                    <template slot="footer">
-                      <md-button 
-                        class="md-simple"
-                        @click="checkHandler"
-                        >등록</md-button
-                      >
-                      <md-button
-                        class="md-danger md-simple"
-                        @click="postCreateModalHide"
-                        >닫기</md-button
-                      >
-                    </template>
-                  </modal>
-                </div>
+                      <template slot="footer">
+                        <md-button class="md-simple" @click="checkHandler">등록</md-button>
+                        <md-button class="md-danger md-simple" @click="postCreateModalHide">닫기</md-button>
+                      </template>
+                    </modal>
+                  </div>
                 </div>
                 <!-- -->
                 <div v-for="(post, index) in posts" :key="index + '_posts'">
@@ -219,10 +207,10 @@ export default {
   bodyClass: "profile-page",
   data() {
     return {
-      title: '',
-      content: '',
-      image: null,			
-			imgpreview: null,
+      title: "",
+      content: "",
+      image: null,
+      imgpreview: null,
       postCreateModal: false,
       isFollow: false,
       isclick: false,
@@ -250,12 +238,8 @@ export default {
       ],
       userinfo: {
         email: null,
-<<<<<<< HEAD
-        nickname: null
-=======
         nickname: null,
-        userid: null,
->>>>>>> origin/develop
+        userid: null
       },
       catinfo: {
         nickname: null,
@@ -288,7 +272,7 @@ export default {
   },
   methods: {
     onChangeImages(e) {
-      console.log(e.target.files)
+      console.log(e.target.files);
       const file = e.target.files[0];
       this.image = file;
       this.imgpreview = URL.createObjectURL(file);
@@ -299,12 +283,12 @@ export default {
     },
     checkHandler() {
       let err = true;
-      let msg = '';
-      err && !this.title && ((msg = '제목을 입력해주세요.'), (err = false));
-      err && !this.content && ((msg = '내용을 입력해주세요.'), (err = false));
-      err && !this.image && ((msg = '사진을 올려주세요.'), (err = false));
+      let msg = "";
+      err && !this.title && ((msg = "제목을 입력해주세요."), (err = false));
+      err && !this.content && ((msg = "내용을 입력해주세요."), (err = false));
+      err && !this.image && ((msg = "사진을 올려주세요."), (err = false));
 
-      if(!err) alert(msg);
+      if (!err) alert(msg);
       else this.createHandler();
     },
     createHandler() {
@@ -316,33 +300,33 @@ export default {
       request.append("content", this.content);
       request.append("imgpath", "/");
       axios
-            .post(SERVER_URL + "/article/saveArticle", request, {
-              headers: {
-                "Content-Type": "multipart/form-data"
-              }
-            })
-            .then((res) => {
-                console.log(res);
-                alert('등록이 완료되었습니다.');
-                this.posts.unshift({
-                  title: this.title,
-                  content: this.content,
-                  image: this.image,
-                  isclick: false
-                });
-                this.writers.unshift(this.userinfo.nickname);
-                this.comments.unshift([]);
-                this.title = '';
-                this.content = '';
-                this.image = null;
-                this.imgpreview = null;
-                this.postCreateModalHide();
-            })
-            .catch((error) => {
-                this.error = error;
-                console.log(error);
-            })
-            .finally(() => {});
+        .post(SERVER_URL + "/article/saveArticle", request, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+        .then(res => {
+          console.log(res);
+          alert("등록이 완료되었습니다.");
+          this.posts.unshift({
+            title: this.title,
+            content: this.content,
+            image: this.image,
+            isclick: false
+          });
+          this.writers.unshift(this.userinfo.nickname);
+          this.comments.unshift([]);
+          this.title = "";
+          this.content = "";
+          this.image = null;
+          this.imgpreview = null;
+          this.postCreateModalHide();
+        })
+        .catch(error => {
+          this.error = error;
+          console.log(error);
+        })
+        .finally(() => {});
     },
     saveComment(articleid, comment, writer, index) {
       axios
