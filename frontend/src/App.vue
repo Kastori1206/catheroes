@@ -25,9 +25,14 @@ export default {
       axios
         .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "account/login/", formData)
         .then(res => {
-          this.$cookies.set("auth-token", res.data.token); //토큰 날라오는거 설정해줘야함!!
-          this.isLoggedIn = true;
-          this.$router.push("/");
+          console.log(res);
+          if(res.data.data ==  "fail") {
+            alert("존재하지 않는 계정입니다. 아이디와 비밀번호를 다시 확인해주세요")
+          } else{
+            this.$cookies.set("auth-token", res.data.token); //토큰 날라오는거 설정해줘야함!!
+            this.isLoggedIn = true;
+            this.$router.push("/");
+          }
         })
         .catch(err => console.log(err));
     },

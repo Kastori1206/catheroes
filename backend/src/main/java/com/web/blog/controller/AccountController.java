@@ -73,7 +73,10 @@ public class AccountController {
 			result.token = token;
 			response = new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
-			response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+			final LoginResponse result = new LoginResponse();
+			result.status = true;
+			result.data = "fail";
+			response = new ResponseEntity<>(result, HttpStatus.OK);
 		}
 
 		return response;
