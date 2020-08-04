@@ -80,7 +80,7 @@ export default {
     mapObject: null,
     myoverlay: [],
     mymap: null,
-    mymarker: null,
+    mymarker: [],
     geocoder: null,
     centerDong: null,
     Catinfo: {
@@ -98,8 +98,7 @@ export default {
   }),
   props: {
     iscreate: Boolean
-  },
-
+  },  
   methods: {
     senddata() {
       this.$emit("send-data", this.center);
@@ -120,12 +119,13 @@ export default {
 
       // 주소-좌표 변환 객체를 생성합니다
       this.geocoder = new kakao.maps.services.Geocoder();
-
-      // // 현재 지도 중심좌표로 주소를 검색해서 지도 좌측 상단에 표시합니다
+      
       this.searchAddrFromCoords(map.getCenter(), this.displayCenterInfo);
 
-      kakao.maps.event.addListener(map, "idle", () => {
+      kakao.maps.event.addListener(map, "tilesloaded", () => {
         this.searchAddrFromCoords(map.getCenter(),this. displayCenterInfo);
+        // console.log(this.centerDong);
+        this.loadMarker(this.centerDong);
       });
       //////////////////////////////////
 
@@ -137,25 +137,18 @@ export default {
 
       this.mapObject = map;
 
-      this.loadMarker();
+      
     },
-    loadMarker() {
+    loadMarker(dong) {
       // console.log('고양이정보받아오라고했다')
+      this.closeMarker();
+      const formData = new FormData();
+      formData.append("location", dong);
+
       axios
-        .post(SERVER_URL + "/cat/catList")
+        .post(SERVER_URL + "/cat/catList", formData)        
         .then(res => {
-          res.data.forEach(e => {
-            // console.log(e);
-            // this.catinfo.nickname = e.nickName;
-            // this.catinfo.age = e.age;
-            // this.catinfo.breed = e.breed;
-            // this.catinfo.location = e.location;
-            // this.catinfo.character = e.character;
-            // this.catinfo.conditions = e.conditions;
-            // this.catinfo.image = 'https://raw.githubusercontent.com/khg6152450/AboutMe/master/CatMarker.png';
-            // this.catinfo.lat = e.lat;
-            // this.catinfo.lng = e.lng;
-            // this.catinfo.catid = e.catid;
+          res.data.forEach(e => {          
 
             var imageSrc =
                 "https://raw.githubusercontent.com/khg6152450/AboutMe/master/CatMarker.png", // 마커이미지의 주소입니다
@@ -176,7 +169,7 @@ export default {
               image: markerImage // 마커이미지 설정
             });
 
-            this.mymarker = marker;
+            this.mymarker.push(marker);
 
             // 마커가 지도 위에 표시되도록 설정합니다
             marker.setMap(this.mymap);
@@ -231,6 +224,13 @@ export default {
       });
       // this.myoverlay.setMap(null);
     },
+    closeMarker() {
+      // console.dir(this.myoverlay);
+      this.mymarker.forEach(element => {
+        element.setMap(null);
+      });
+      // this.myoverlay.setMap(null);
+    },
     onMapEvent(event, params) {
       // console.log(`Daum Map Event(${event})`, params);
     },
@@ -250,7 +250,7 @@ export default {
         for (var i = 0; i < result.length; i++) {
           // 행정동의 region_type 값은 'H' 이므로
           if (result[i].region_type === "H") {
-            console.log(result[i].address_name);
+            // console.log(result[i].address_name);
             this.centerDong = result[i].address_name;
             // infoDiv.innerHTML = result[i].address_name;
             break;

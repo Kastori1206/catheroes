@@ -20,7 +20,7 @@
               <md-field class="md-form-group" slot="inputs">
                 <md-icon>email</md-icon>
                 <label>Email...</label>
-                <md-input v-model="loginData.email" type="email"></md-input>
+                <md-input v-model="loginData.email" type="email"></md-input>                
               </md-field>
               <md-field class="md-form-group" slot="inputs">
                 <md-icon>lock_outline</md-icon>
@@ -32,7 +32,7 @@
                 @click="login"
                 slot="footer"
                 class="md-simple md-success md-lg"
-              >Get Started</md-button>
+              >Login</md-button>
               <md-button @click="gotoJoin" slot="footer" class="md-simple md-success md-lg">회원가입</md-button>
               <md-button slot="footer" class="md-simple md-success md-lg">아이디/비밀번호 찾기</md-button>
             </login-card>
@@ -75,8 +75,32 @@ export default {
   },
   methods: {
     login() {
-      console.log("로그인요청보냈다고했다");
-      this.$emit("submit-login-data", this.loginData);
+      let err = true;
+      let msg = "";
+      err &&
+        !this.loginData.email &&
+        ((msg = "이메일을 입력해주세요."), (err = false));
+      err && 
+        !this.verifyEmail() && 
+        ((msg = "이메일 양식을 확인해주세요."), (err = false));
+      err &&        
+        !this.loginData.password &&
+        ((msg = "비밀번호를 입력해주세요."), (err = false));      
+
+      if (!err) alert(msg);
+      else {
+        console.log("로그인요청보냈다고했다");
+        this.$emit("submit-login-data", this.loginData);
+      }
+    },
+    verifyEmail() {
+      var emailVal = this.loginData.email;
+      var regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;      
+      if (emailVal.match(regExp) != null) {
+        return true;
+      } else {
+        return false;
+      }
     },
     loginFormWithKakao() {
       Kakao.Auth.loginForm({

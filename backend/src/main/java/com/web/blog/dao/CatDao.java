@@ -12,6 +12,7 @@ public interface CatDao extends JpaRepository<Cat, String> {
     Optional<Cat> getCatByCatid(long catid);
     
     List<Cat> findAll();    
+    List<Cat> findCatByLocation(String location);
 
     
 }

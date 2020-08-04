@@ -401,6 +401,7 @@ export default {
         });
     },
     CatFollow() {
+      // console.log("123")
       // console.log("고양이팔로워받아오라고했다");
       // const number = 1;
       const catid = this.$route.params.catid;
@@ -452,7 +453,7 @@ export default {
         )
         .then(res => {
           for (var i = 0; i < res.data.length; i++) {
-            console.log("왜안됨?" + res.data[i].userid);
+            // console.log("왜안됨?" + res.data[i].userid);
             const formData = new FormData();
             formData.append("uid", res.data[i].userid);
 
@@ -481,7 +482,7 @@ export default {
                 formData
               )
               .then(res2 => {
-                console.log(res2.data);
+                // console.log(res2.data);
                 this.comments.push(res2.data);
               })
               .catch(error => {
@@ -489,17 +490,18 @@ export default {
               });
             // console.log("이제 res.data[i]에 isclick변수를 넣을거야");
             res.data[i].isclick = false;
-            console.log(res.data[i]);
+            // console.log(res.data[i]);
             this.posts.push(res.data[i]);
           }
         })
         .catch(error => {
           console.log(error);
         });
-      console.log(this.comments);
+      // console.log(this.comments);
     },
     follow() {
       const token = this.$cookies.get("auth-token");
+      this.items = [];
 
       axios
         .post(
@@ -510,7 +512,8 @@ export default {
           }
         )
         .then(res => {
-          console.log(res.data);
+          // console.log(this.items);
+          // console.log(res.data);
           this.userinfo.uid = res.data.uid;
 
           const uid = this.userinfo.uid;
@@ -536,6 +539,9 @@ export default {
         .catch(error => {
           console.log(error);
         });
+
+        window.setTimeout(this.CatFollow, 150);
+        // this.CatFollow();
     },
     follow2() {
       const token = this.$cookies.get("auth-token");
@@ -549,7 +555,7 @@ export default {
           }
         )
         .then(res => {
-          console.log(res.data);
+          // console.log(res.data);
           this.userinfo.uid = res.data.uid;
 
           const uid = this.userinfo.uid;
@@ -566,7 +572,6 @@ export default {
             )
             .then(res => {
               // console.log(res.data);
-              console.log(res.data);
               this.isFollow = res.data;
             })
             .catch(error => {
@@ -693,3 +698,4 @@ export default {
   }
 }
 </style>
+
