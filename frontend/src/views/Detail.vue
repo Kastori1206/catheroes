@@ -609,6 +609,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// @mixin shadow-big() {
+//   box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.14 * 3),
+//     0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
+// }
 .section {
   padding: 0;
 }
@@ -636,6 +640,56 @@ export default {
 
   .md-has-textarea + .md-layout {
     margin-top: 15px;
+  }
+
+  .md-card-header {
+    // @include shadow-big();
+    margin: 0;
+
+    // border-radius: 3px;
+    // padding: 15px + 5 0;
+    // background-color: #999999;
+
+    // .title,
+    // .card-title {
+    //   color: #ffffff;
+    // }
+    // .category {
+    //   margin: 0;
+    //   color: rgba(#ffffff, 0.62);
+    // }
+
+    // a {
+    //   color: #ffffff !important;
+    // }
+
+    // &.card-chart {
+    //   padding: 0;
+    //   min-height: 160px;
+
+    //   + .content {
+    //     h4 {
+    //       margin-top: 0;
+    //     }
+    //   }
+    // }
+
+    // .ct-label {
+    //   color: rgba(#ffffff, 0.7);
+    // }
+    // .ct-grid {
+    //   stroke: rgba(255, 255, 255, 0.2);
+    // }
+    // .ct-series-a .ct-point,
+    // .ct-series-a .ct-line,
+    // .ct-series-a .ct-bar,
+    // .ct-series-a .ct-slice-donut {
+    //   stroke: rgba(255, 255, 255, 0.8);
+    // }
+    // .ct-series-a .ct-slice-pie,
+    // .ct-series-a .ct-area {
+    //   fill: rgba(255, 255, 255, 0.4);
+    // }
   }
 }
 </style>

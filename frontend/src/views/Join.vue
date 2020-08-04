@@ -8,8 +8,6 @@
           >
             <login-card header-color="green">
               <h4 slot="title" class="card-title">Join</h4>
-
-              <p slot="description" class="description">Or Be Classical</p>
               <md-field class="md-form-group" slot="inputs">
                 <md-icon>face</md-icon>
                 <label>Nickname...</label>
@@ -57,7 +55,12 @@
                   <i class="fas fa-eye"></i>
                 </span>
               </md-field>
-              <md-button @click="checkHandler" slot="footer" class="md-simple md-success md-lg">
+              <md-button
+                style="display:block; margin:auto;"
+                @click="checkHandler"
+                slot="footer"
+                class="md-simple md-success md-lg"
+              >
                 <!-- Get Started -->
                 회원가입
               </md-button>

@@ -11,12 +11,18 @@
               <h4 slot="title" class="card-title">길냥이 정보 입력</h4>
               <p slot="description" class="description">무슨말을해야하나</p>
 
-              <md-field slot="inputs">
+              <md-field class="md-form-group" slot="inputs">
+                <md-icon style="z-index:-1;">
+                  <i class="fas fa-cat"></i>
+                </md-icon>
                 <label>고양이 이름</label>
                 <md-input v-model="nickname" id="nickname" ref="nickname"></md-input>
               </md-field>
 
-              <md-field slot="inputs">
+              <md-field class="md-form-group" slot="inputs">
+                <md-icon style="z-index:-1;">
+                  <i class="fas fa-paw"></i>
+                </md-icon>
                 <label>길냥이 종류</label>
                 <md-input v-model="breed" id="breed" ref="breed"></md-input>
                 <span class="md-helper-text">예상 종류를 입력해주세요</span>
@@ -46,7 +52,7 @@
                     </template>
 
                     <template slot="body">
-                      <div class="section section-map">
+                      <div class="section section-map" style="padding:0px">
                         <div class="container" style="margin: auto;">
                           <Map2 :iscreate="iscreate" @send-data="getdata" @send-dong="getdong"></Map2>
                         </div>
@@ -116,6 +122,7 @@ export default {
     getdata(mymarker) {
       this.lng = mymarker.Ga;
       this.lat = mymarker.Ha;
+      this.classicModalHide();
       //   console.log(this.lat);
       //   console.log(this.lng);
     },

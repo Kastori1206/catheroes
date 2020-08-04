@@ -8,7 +8,14 @@
           >
             <login-card header-color="green">
               <h4 slot="title" class="card-title">Login</h4>
-
+              <md-button
+                @click="loginFormWithKakao"
+                slot="buttons"
+                href="javascript:void(0)"
+                class="md-simple"
+              >
+                <img src="@/assets/img/login/kakao_login_medium.png" alt />
+              </md-button>
               <p slot="description" class="description">Or Be Classical</p>
               <md-field class="md-form-group" slot="inputs">
                 <md-icon>email</md-icon>
@@ -20,31 +27,13 @@
                 <label>Password...</label>
                 <md-input @keydown.enter="login" v-model="loginData.password" type="password"></md-input>
               </md-field>
-
-              <button
+              <md-button
+                style="display:block; margin:auto;"
                 @click="login"
-                slot="button"
-                class="md-button md-simple md-lg md-theme-default"
-              >
-                <!-- Get Started -->
-                <img src="@/assets/img/login/EmailLogin2.png" width="222" />
-              </button>
-
-              <button
-                @click="loginFormWithKakao"
-                slot="button"
-                class="md-button md-simple md-lg md-theme-default"
-              >
-                <img src="@/assets/img/login/KakaoLogin.png" width="222" />
-              </button>
-              <button
-                @click="loginFormWithKakao"
-                slot="button"
-                class="md-button md-simple md-lg md-theme-default"
-              >
-                <img src="@/assets/img/login/GoogleLogin.png" width="222" />
-              </button>
-              <md-button slot="footer" class="md-simple md-success md-lg">회원가입</md-button>
+                slot="footer"
+                class="md-simple md-success md-lg"
+              >Get Started</md-button>
+              <md-button @click="gotoJoin" slot="footer" class="md-simple md-success md-lg">회원가입</md-button>
               <md-button slot="footer" class="md-simple md-success md-lg">아이디/비밀번호 찾기</md-button>
             </login-card>
           </div>
@@ -100,6 +89,9 @@ export default {
           alert(JSON.stringify(err));
         }
       });
+    },
+    gotoJoin() {
+      this.$router.push("/join");
     }
   }
 };
