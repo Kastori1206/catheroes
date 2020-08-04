@@ -7,11 +7,12 @@
           <div class="md-layout">
             <div class="md-layout-item md-size-50 mx-auto">
               <div class="profile">
-                <div class="avatar" @click="classicModal = true">
+                <div class="avatar">
                   <img
                     :src="userinfo.image"
                     alt="Circle Image"
                     class="img-raised rounded-circle img-fluid"
+                    @click="classicModal = true"
                   />
                 </div>
                 <!-- 프로필 이미지 수정 모달창 -->
@@ -290,26 +291,31 @@ export default {
   methods: {
     // 프로필 이미지 바꾸는 곳
     changeImage(e) {
-      const request = new FormData();
-      request.append("image", this.file);
-      request.append("userId", this.userinfo.uid);
+      if (!this.file) {
+        alert("파일을 넣어주세영♥");
+      } else {
+        const request = new FormData();
+        request.append("image", this.file);
+        request.append("userId", this.userinfo.uid);
 
-      axios
-        .post(
-          process.env.VUE_APP_SPRING_API_SERVER_URL + "profile/image",
-          request,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data"
+        axios
+          .post(
+            process.env.VUE_APP_SPRING_API_SERVER_URL + "profile/image",
+            request,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data"
+              }
             }
-          }
-        )
-        .then(res => {
-          this.userinfo.image = process.env.VUE_APP_IMAGE_SERVER + res.data;
-        })
-        .catch(err => {
-          console.log(err);
-        });
+          )
+          .then(res => {
+            this.userinfo.image = process.env.VUE_APP_IMAGE_SERVER + res.data;
+            this.classicModalHide();
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
     },
     onChangeImages(e) {
       console.log(e.target.files);
@@ -320,6 +326,7 @@ export default {
     },
     classicModalHide() {
       this.classicModal = false;
+      this.file = null;
     },
     checkHandler2() {
       let err = true;
