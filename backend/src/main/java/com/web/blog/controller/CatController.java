@@ -70,7 +70,7 @@ public class CatController {
 			result.conditions = catOpt.get().getConditions();
 			result.lat = catOpt.get().getLat();
 			result.lng = catOpt.get().getLng();
-
+			result.image = catOpt.get().getImage();
 			System.out.println(result);
 
 			response = new ResponseEntity<>(result, HttpStatus.OK);
@@ -132,12 +132,13 @@ public class CatController {
 		// return new ResponseEntity<>(result, HttpStatus.OK);
 		// }
 
+		
+		String path = this.amazonClient.uploadFile(image, catDao.getMaxCatId()+1, "profile/cat/");
+
 		// 회원가입단을 생성해 보세요.
 		cat = Cat.builder().nickname(nickname).breed(breed).image(imgpath).lat(lat).lng(lng).age(0).attr("")
-				.conditions("").location(location).food("").family("").neutered("").hospital("").build();
-
+				.conditions("").location(location).food("").family("").neutered("").hospital("").image(path).build();
 		catDao.save(cat);
-		this.amazonClient.uploadFile(image, cat.getCatid(), "profile/cat/");
 		result.status = true;
 		result.data = "success";
 
@@ -145,9 +146,10 @@ public class CatController {
 	}
 
 	@PostMapping("/follow/{catid}")
-	@ApiOperation(value = "고양이 상세정보")
+	@ApiOperation(value = "고양이 팔로우 정보")
 	public Object follow(@PathVariable("catid") int catid) {
-
+		System.out.println("catID:");
+		System.out.println(catid);
 		Optional<Cat> catOpt = catDao.getCatByCatid(catid);
 
 		ResponseEntity response = null;
@@ -164,7 +166,8 @@ public class CatController {
 			result.conditions = catOpt.get().getConditions();
 			result.lat = catOpt.get().getLat();
 			result.lng = catOpt.get().getLng();
-
+			result.image = catOpt.get().getImage();
+			
 			System.out.println(result);
 
 			response = new ResponseEntity<>(result, HttpStatus.OK);

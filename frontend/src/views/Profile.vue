@@ -7,9 +7,38 @@
           <div class="md-layout">
             <div class="md-layout-item md-size-50 mx-auto">
               <div class="profile">
-                <div class="avatar">
-                  <img :src="img" alt="Circle Image" class="img-raised rounded-circle img-fluid" />
+                <div class="avatar" @click="classicModal = true">
+                  <img
+                    :src="userinfo.image"
+                    alt="Circle Image"
+                    class="img-raised rounded-circle img-fluid"
+                  />
                 </div>
+                <!-- 프로필 이미지 수정 모달창 -->
+                <modal v-if="classicModal" @close="classicModalHide">
+                  <template slot="header">
+                    <h4 class="modal-title">이미지 수정</h4>
+                    <!-- <md-button class="md-simple md-just-icon md-round modal-default-button" @click="classicModalHide">
+                              <md-icon>clear</md-icon>
+                    </md-button>-->
+                  </template>
+
+                  <template slot="body">
+                    <!-- <md-field v-if="imgpreview">
+                      <img :src="imgpreview" />
+                    </md-field>-->
+                    <md-field>
+                      <label>Only images</label>
+                      <md-file @change="onChangeImages" accept="image/*" />
+                    </md-field>
+                  </template>
+
+                  <template slot="footer">
+                    <md-button @click="changeImage" class="md-simple md-success md-lg">이미지 수정</md-button>
+                    <md-button class="md-danger md-simple" @click="classicModalHide">Close</md-button>
+                  </template>
+                </modal>
+
                 <div class="name">
                   <h3 class="title">닉네임: {{ this.userinfo.nickname }}</h3>
                 </div>
@@ -32,7 +61,7 @@
                     <div class="md-card-new">
                       <md-card-header>
                         <md-card-header-text>
-                          <div class="md-title">{{follow.nickName}}</div>
+                          <div class="md-title">{{ follow.nickName }}</div>
                         </md-card-header-text>
                         <div style="width: 85px; height: 50px; margin: 10px;">
                           <img :src="tabPane2[3].image" alt="CatImage" />
@@ -53,15 +82,15 @@
                           <img src="@/assets/img/faces/avatar.jpg" style="margin-bottom: 0px;" />
                         </md-avatar>
 
-                        <div class="md-title">{{post.title}}</div>
-                        <div class="md-subhead">{{userinfo.nickname}}</div>
+                        <div class="md-title">{{ post.title }}</div>
+                        <div class="md-subhead">{{ userinfo.nickname }}</div>
                       </md-card-header>
 
                       <md-card-media>
                         <img src="@/assets/img/examples/mariya-georgieva.jpg" />
                       </md-card-media>
 
-                      <md-card-content>{{post.content}}</md-card-content>
+                      <md-card-content>{{ post.content }}</md-card-content>
                     </md-card>
                   </div>
                 </div>
@@ -105,7 +134,7 @@
                             type="email"
                             v-on:keyup="verifyEmail"
                           ></md-input>
-                          <span :class="{active : passwordConfirmType==='text'}">
+                          <span :class="{ active: passwordConfirmType === 'text' }">
                             <i id="email_compare" ref="email_compare">일치</i>
                           </span>
                         </md-field>
@@ -120,7 +149,7 @@
                             v-on:keyup="fn_compare_pwd"
                           ></md-input>
                           <span
-                            :class="{active : passwordConfirmType==='text'}"
+                            :class="{ active: passwordConfirmType === 'text' }"
                             style="display:None"
                           >
                             <i id="pwd_compare" ref="pwd_compare" class="fas fa-eye">불일치</i>
@@ -137,7 +166,7 @@
                             v-on:keyup="fn_compare_pwd"
                           ></md-input>
                           <span
-                            :class="{active : passwordConfirmType==='text'}"
+                            :class="{ active: passwordConfirmType === 'text' }"
                             style="display:None"
                           >
                             <i class="fas fa-eye"></i>
@@ -205,6 +234,9 @@ export default {
   bodyClass: "profile-page",
   data() {
     return {
+      file: null,
+      // imgpreview: null,
+      classicModal: false,
       deleteConfirm: null,
       userUpdateModal: false,
       userDeleteModal: false,
@@ -240,7 +272,8 @@ export default {
         email: null,
         nickname: null,
         uid: null,
-        password: null
+        password: null,
+        image: null
       }
     };
   },
@@ -248,13 +281,46 @@ export default {
     header: {
       type: String,
       default: require("@/assets/img/city-profile.jpg")
-    },
-    img: {
-      type: String,
-      default: require("@/assets/img/faces/christian.jpg")
     }
+    // img: {
+    //   type: String,
+    //   default: require("@/assets/img/faces/christian.jpg")
+    // }
   },
   methods: {
+    // 프로필 이미지 바꾸는 곳
+    changeImage(e) {
+      const request = new FormData();
+      request.append("image", this.file);
+      request.append("userId", this.userinfo.uid);
+
+      axios
+        .post(
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "profile/image",
+          request,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          }
+        )
+        .then(res => {
+          this.userinfo.image = process.env.VUE_APP_IMAGE_SERVER + res.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    onChangeImages(e) {
+      console.log(e.target.files);
+      this.file = e.target.files[0];
+
+      // this.imgpreview = URL.createObjectURL(file);
+      // console.log(this.imgpreview);
+    },
+    classicModalHide() {
+      this.classicModal = false;
+    },
     checkHandler2() {
       let err = true;
       let msg = "";
@@ -329,6 +395,7 @@ export default {
           this.userinfo.nickname = res.data.nickName;
           this.userinfo.uid = res.data.uid;
           this.userinfo.password = res.data.password;
+          this.userinfo.image = res.data.image;
           alert("수정이 완료되었습니다.");
           this.userUpdateModalHide();
         })
@@ -344,6 +411,7 @@ export default {
     userUpdateModalHide() {
       this.userUpdateModal = false;
     },
+    //유저 정보 확인
     retrieveUserInfo() {
       console.log("유저정보받아오라고했다");
       const token = this.$cookies.get("auth-token");
@@ -362,6 +430,8 @@ export default {
           this.userinfo.nickname = res.data.nickName;
           this.userinfo.uid = res.data.uid;
           this.userinfo.password = res.data.password;
+          this.userinfo.image =
+            process.env.VUE_APP_IMAGE_SERVER + res.data.image;
         })
         .catch(error => {
           console.log(error);
@@ -470,6 +540,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.md-card-header {
+  margin: 0;
+}
 .section {
   padding: 0;
 }

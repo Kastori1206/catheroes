@@ -172,6 +172,7 @@ public class AccountController {
 			result.nickName = userOpt.get().getNickname().split("_")[0];
 			result.uid = userOpt.get().getUid();
 			result.password = userOpt.get().getPassword();
+			result.image = userOpt.get().getImage();
 			response = new ResponseEntity<>(result, HttpStatus.OK);
 
 		} else {
@@ -191,12 +192,13 @@ public class AccountController {
 		ResponseEntity response = null;
 
 		if (userOpt.isPresent()) {
-			System.out.println();
+			System.out.println( userOpt.get().getImage());
 			final UserInfoResponse result = new UserInfoResponse();
 			result.status = true;
 			result.data = "success";
 			result.email = userOpt.get().getEmail();
 			result.nickName = userOpt.get().getNickname().split("_")[0];
+			result.image = userOpt.get().getImage();
 			response = new ResponseEntity<>(result, HttpStatus.OK);
 
 		} else {
@@ -242,7 +244,7 @@ public class AccountController {
 
 		User kakaoUser = User.builder()
 				.nickname(kakaoProfile.getProperties().getNickname() + "_" + kakaoProfile.getId())
-				.email(kakaoProfile.getKakao_account().getEmail()).auth("kakao").build();
+				.email(kakaoProfile.getKakao_account().getEmail()).auth("kakao").image("defaule.jpg").build();
 
 		ResponseEntity response = null;
 

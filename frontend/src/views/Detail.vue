@@ -9,7 +9,7 @@
               <div class="profile">
                 <div class="avatar">
                   <img
-                    :src="catinfo.image"
+                    :src="this.catinfo.image"
                     alt="Circle Image"
                     class="img-raised rounded-circle img-fluid"
                   />
@@ -391,10 +391,7 @@ export default {
           this.catinfo.lng = res.data.lng;
           this.catinfo.catid = this.$route.params.catid;
           this.catinfo.image =
-            process.env.VUE_APP_IMAGE_SERVER +
-            "static/profile/cat/" +
-            catid +
-            ".jpg";
+            process.env.VUE_APP_IMAGE_SERVER + res.data.image;
         })
         .catch(error => {
           console.log(error);

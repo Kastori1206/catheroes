@@ -1,30 +1,21 @@
 package com.web.blog.controller;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 import java.util.Optional;
 
-import javax.validation.Valid;
-
-import com.web.blog.dao.CatDao;
-import com.web.blog.model.Cat;
-import com.web.blog.model.request.CatRegistRequest;
-import com.web.blog.model.request.UserSignupRequest;
-import com.web.blog.model.response.BasicResponse;
-import com.web.blog.model.response.CatInfoResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import io.swagger.annotations.ApiOperation;
+import com.web.blog.dao.UserDao;
+import com.web.blog.model.User;
+import com.web.blog.model.response.BasicResponse;
+import com.web.blog.utill.amazon.AmazonClient;
+
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -39,8 +30,10 @@ import io.swagger.annotations.ApiResponses;
 public class ProfileController {
 
 	@Autowired
-	private CatDao catDao;
+	private UserDao userDao;
 
+	@Autowired
+	private AmazonClient amazonClient;
 	// @Autowired
 	// private JwtService jwtService;
 
@@ -182,5 +175,16 @@ public class ProfileController {
 //
 //		return response;
 //	}
+	@PostMapping("/image")
+	public String updateImage(@RequestParam("image") MultipartFile image, @RequestParam("userId") Long userId) throws IOException {
+		String path = this.amazonClient.uploadFile(image, userId, "profile/user/");
+		try {
+			userDao.updateImage(userId, path);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return path;
+	}
 }
 
