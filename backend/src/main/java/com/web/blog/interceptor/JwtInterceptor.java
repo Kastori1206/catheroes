@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.web.blog.exception.UnauthorizedException;
-import com.web.blog.service.JwtService;
+import com.web.blog.utill.jwt.JwtService;
 
 @Component
 public class JwtInterceptor implements HandlerInterceptor {
