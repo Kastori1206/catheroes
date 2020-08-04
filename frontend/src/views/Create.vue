@@ -11,23 +11,20 @@
               <h4 slot="title" class="card-title">길냥이 정보 입력</h4>
               <p slot="description" class="description">무슨말을해야하나</p>
 
-              <md-field class="md-form-group" slot="inputs">
-                <!-- 아이콘 확인하는 페이지 -->
-                <!-- https://material.io/resources/icons/?style=baseline -->
-                <md-icon>adb</md-icon>
+              <md-field slot="inputs">
                 <label>고양이 이름</label>
                 <md-input v-model="nickname" id="nickname" ref="nickname"></md-input>
               </md-field>
 
               <md-field slot="inputs">
-                <md-icon>remove</md-icon>
                 <label>길냥이 종류</label>
                 <md-input v-model="breed" id="breed" ref="breed"></md-input>
                 <span class="md-helper-text">예상 종류를 입력해주세요</span>
               </md-field>
 
               <md-field slot="inputs">
-                <md-input ref="imageInput" type="file" hidden @change="onChangeImages"></md-input>
+                <label for>이미지입력</label>
+                <md-file accept="image/*" @change="onChangeImages" />
               </md-field>
 
               <md-field slot="inputs" v-if="imgpreview">
@@ -155,11 +152,15 @@ export default {
       request.append("breed", "breed");
 
       axios
-        .post("http://localhost:8080/cat/regist", request, {
-          headers: {
-            "Content-Type": "multipart/form-data"
+        .post(
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "cat/regist",
+          request,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
           }
-        })
+        )
         .then(response => {
           console.log(response);
           if (response.data.data === "success") {

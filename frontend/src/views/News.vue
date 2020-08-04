@@ -39,7 +39,6 @@
 
 <script>
 import axios from "axios";
-const SERVER_URL = "http://localhost:8080";
 export default {
   name: "Media",
   bodyClass: "landing-page",
@@ -82,7 +81,7 @@ export default {
     },
     retrieveNewsInfo() {
       axios
-        .get(SERVER_URL + "/news")
+        .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "news")
         .then(res => {
           console.log(res.data);
           this.items = res.data;
