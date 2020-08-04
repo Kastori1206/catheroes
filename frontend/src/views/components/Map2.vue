@@ -1,6 +1,10 @@
 <template>
   <div style="text-align: center;">
     <md-button class="md-simple md-success md-lg" v-if="iscreate" @click="senddata">위치정보입력</md-button>
+<<<<<<< HEAD
+=======
+    <h2>{{centerDong}}</h2>
+>>>>>>> origin/develop
     <div>
       <vue-daum-map
         :appKey="appKey"
@@ -13,7 +17,11 @@
         @zoom_start="onMapEvent('zoom_start', $event)"
         @zoom_changed="onMapEvent('zoom_changed', $event)"
         @bounds_changed="onMapEvent('bounds_changed', $event)"
+<<<<<<< HEAD
         @click="setCenter"
+=======
+        @click=null
+>>>>>>> origin/develop
         @dblclick="onMapEvent('dblclick', $event)"
         @rightclick="onMapEvent('rightclick', $event)"
         @mousemove="onMapEvent('mousemove', $event)"
@@ -37,6 +45,7 @@ import config from "./config";
 export default {
   name: "App",
   components: { VueDaumMap },
+<<<<<<< HEAD
 
   data: () => ({
     appKey: config.appKey,
@@ -68,6 +77,54 @@ export default {
       console.log("Daum Map Loaded", boundsStr);
       this.mapObject = map;
 
+=======
+
+  data: () => ({
+    appKey: config.appKey,
+    center: { lat: 36.1069968, lng: 128.4163122 },
+    level: 3,
+    mapTypeId: VueDaumMap.MapTypeId.NORMAL,
+    libraries: [],
+    mapObject: null,
+    myoverlay: null,
+    mymap: null,
+    mymarker: null,
+    centerDong: null
+  }),
+  props: {
+    iscreate: Boolean
+  },
+
+  methods: {
+    senddata() {
+      // console.log(this.mymarker);
+      // console.log(this.centerDong);
+      this.$emit("send-data", this.mymarker);
+      this.$emit("send-dong", this.centerDong);
+    },
+    onLoad(map) {
+      this.mymap = map;
+      // 지도의 현재 영역을 얻어옵니다
+      var bounds = map.getBounds();
+      // 영역정보를 문자열로 얻어옵니다. ((남,서), (북,동)) 형식입니다
+      var boundsStr = bounds.toString();
+      console.log("Daum Map Loaded", boundsStr);
+      this.mapObject = map;
+
+      /////좌표값에서 법정동 가져오기/////
+
+      // 주소-좌표 변환 객체를 생성합니다
+      this.geocoder = new kakao.maps.services.Geocoder();
+
+      // // 현재 지도 중심좌표로 주소를 검색해서 지도 좌측 상단에 표시합니다
+      this.searchAddrFromCoords(map.getCenter(), this.displayCenterInfo);
+
+      kakao.maps.event.addListener(map, "idle", () => {
+        this.searchAddrFromCoords(map.getCenter(), this.displayCenterInfo);
+      });
+      //////////////////////////////////
+
+>>>>>>> origin/develop
       var imageSrc =
           "https://raw.githubusercontent.com/khg6152450/AboutMe/master/CatMarker.png", // 마커이미지의 주소입니다
         imageSize = new kakao.maps.Size(50, 50), // 마커이미지의 크기입니다
@@ -87,6 +144,7 @@ export default {
       kakao.maps.event.addListener(this.mymap, "click", mouseEvent => {
         var latlng = mouseEvent.latLng;
         marker.setPosition(latlng);
+<<<<<<< HEAD
 
         this.mymarker = latlng;
       });
@@ -95,6 +153,39 @@ export default {
     },
     onMapEvent(event, params) {
       // console.log(`Daum Map Event(${event})`, params);
+=======
+
+        this.mymarker = latlng;
+      });
+
+      marker.setMap(this.mymap);
+    },
+    onMapEvent(event, params) {
+      // console.log(`Daum Map Event(${event})`, params);
+    },
+    searchAddrFromCoords(coords, callback) {
+      // 좌표로 행정동 주소 정보를 요청합니다
+      this.geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), callback);
+    },
+    searchDetailAddrFromCoords(coords, callback) {
+      // 좌표로 법정동 상세 주소 정보를 요청합니다
+      this.sgeocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
+    },
+    displayCenterInfo(result, status) {
+      if (status === kakao.maps.services.Status.OK) {
+        var infoDiv = document.getElementById("centerAddr");
+
+        for (var i = 0; i < result.length; i++) {
+          // 행정동의 region_type 값은 'H' 이므로
+          if (result[i].region_type === "H") {
+            console.log(result[i].address_name);
+            this.centerDong = result[i].address_name;
+            // infoDiv.innerHTML = result[i].address_name;
+            break;
+          }
+        }
+      }
+>>>>>>> origin/develop
     }
   }
 };

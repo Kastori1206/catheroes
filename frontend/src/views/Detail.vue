@@ -53,6 +53,63 @@
                 </div>
               </template>
               <template slot="tab-pane-2">
+                <!-- -->
+                <div class="md-layout">
+                <div class="md-layout-item md-size-35">
+                  <md-button
+                    class="md-success md-block"
+                    @click="postCreateModal = true"
+                    >글쓰기</md-button
+                  >
+                  <modal v-if="postCreateModal" @close="postCreateModalHide">
+                    <template slot="header">
+                      <h4 class="modal-title">포스트 작성</h4>
+                      <md-button
+                        class="md-simple md-just-icon md-round modal-default-button"
+                        @click="postCreateModalHide"
+                      >
+                        <md-icon>clear</md-icon>
+                      </md-button>
+                    </template>
+
+                    <template slot="body">
+                      <!-- -->
+                      <md-field>
+                        <label>제 목</label>
+                        <md-input v-model="title"></md-input>
+                      </md-field>
+
+                      <md-field>
+                        <label>내 용</label>
+                        <md-textarea v-model="content"></md-textarea>
+                      </md-field>
+
+                      <md-field slot="inputs">
+                        <md-input ref="imageInput" type="file" hidden @change="onChangeImages"></md-input>
+                      </md-field>
+
+                      <md-field slot="inputs" v-if="imgpreview">
+                        <img :src="imgpreview">
+                      </md-field>
+                      <!-- -->
+                    </template>
+
+                    <template slot="footer">
+                      <md-button 
+                        class="md-simple"
+                        @click="checkHandler"
+                        >등록</md-button
+                      >
+                      <md-button
+                        class="md-danger md-simple"
+                        @click="postCreateModalHide"
+                        >닫기</md-button
+                      >
+                    </template>
+                  </modal>
+                </div>
+                </div>
+                <!-- -->
                 <div v-for="(post, index) in posts" :key="index + '_posts'">
                   <div class="md-layout">
                     <md-card style="width: 50vw;">
@@ -71,8 +128,8 @@
 
                       <md-card-content>{{post.content}}</md-card-content>
                       <!-- 댓글 더 보기 -->
-                      <button v-if="!post.isclick" @click="commentTest(index)">댓글 더 보기</button>
-                      <button v-if="post.isclick" @click="commentTest(index)">댓글 닫기</button>
+                      <button v-if="!post.isclick" @click="commentTest(index); test2(index)">댓글 더 보기</button>
+                      <button v-if="post.isclick" @click="commentTest(index); test2(index)">댓글 닫기</button>
                       <div v-if="post.isclick">
                         <div
                           v-for="(comment, index2) in comments[index]"
@@ -146,16 +203,27 @@
 </template>
 
 <script>
+import { Pagination } from "@/components";
+import { LoginCard } from "@/components";
+import { Modal } from "@/components";
 import { Tabs } from "@/components";
 import axios from "axios";
 
 export default {
   components: {
+    Pagination,
+    LoginCard,
+    Modal,
     Tabs
   },
   bodyClass: "profile-page",
   data() {
     return {
+      title: '',
+      content: '',
+      image: null,			
+			imgpreview: null,
+      postCreateModal: false,
       isFollow: false,
       isclick: false,
       isclicks: [],
@@ -182,7 +250,12 @@ export default {
       ],
       userinfo: {
         email: null,
+<<<<<<< HEAD
         nickname: null
+=======
+        nickname: null,
+        userid: null,
+>>>>>>> origin/develop
       },
       catinfo: {
         nickname: null,
@@ -214,6 +287,63 @@ export default {
     isLoggedIn: Boolean
   },
   methods: {
+    onChangeImages(e) {
+      console.log(e.target.files)
+      const file = e.target.files[0];
+      this.image = file;
+      this.imgpreview = URL.createObjectURL(file);
+      console.log(this.imgpreview);
+    },
+    postCreateModalHide() {
+      this.postCreateModal = false;
+    },
+    checkHandler() {
+      let err = true;
+      let msg = '';
+      err && !this.title && ((msg = '제목을 입력해주세요.'), (err = false));
+      err && !this.content && ((msg = '내용을 입력해주세요.'), (err = false));
+      err && !this.image && ((msg = '사진을 올려주세요.'), (err = false));
+
+      if(!err) alert(msg);
+      else this.createHandler();
+    },
+    createHandler() {
+      const request = new FormData();
+      request.append("image", this.image);
+      request.append("catid", this.catinfo.catid);
+      request.append("userid", this.userinfo.userid);
+      request.append("title", this.title);
+      request.append("content", this.content);
+      request.append("imgpath", "/");
+      axios
+            .post(SERVER_URL + "/article/saveArticle", request, {
+              headers: {
+                "Content-Type": "multipart/form-data"
+              }
+            })
+            .then((res) => {
+                console.log(res);
+                alert('등록이 완료되었습니다.');
+                this.posts.unshift({
+                  title: this.title,
+                  content: this.content,
+                  image: this.image,
+                  isclick: false
+                });
+                this.writers.unshift(this.userinfo.nickname);
+                this.comments.unshift([]);
+                this.title = '';
+                this.content = '';
+                this.image = null;
+                this.imgpreview = null;
+                this.postCreateModalHide();
+            })
+            .catch((error) => {
+                this.error = error;
+                console.log(error);
+            })
+            .finally(() => {});
+    },
     saveComment(articleid, comment, writer, index) {
       axios
         .post(
@@ -253,6 +383,7 @@ export default {
           console.log(res.data);
           this.userinfo.email = res.data.email;
           this.userinfo.nickname = res.data.nickName;
+          this.userinfo.userid = res.data.uid;
         })
         .catch(error => {
           console.log(error);
@@ -466,6 +597,10 @@ export default {
       this.posts[index].isclick
         ? (this.posts[index].isclick = false)
         : (this.posts[index].isclick = true);
+    },
+    test2(index) {
+      console.log("현재 댓글의 인덱스 : ");
+      console.log(index);
     }
   },
   computed: {

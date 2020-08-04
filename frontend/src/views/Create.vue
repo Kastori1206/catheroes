@@ -91,7 +91,7 @@ export default {
   data() {
     return {
       // 데이터
-
+	  dong: null,
       nickname: null,
       breed: null,
       lat: null,
@@ -119,8 +119,12 @@ export default {
     getdata(mymarker) {
       this.lng = mymarker.Ga;
       this.lat = mymarker.Ha;
-      console.log(this.lat);
-      console.log(this.lng);
+    //   console.log(this.lat);
+    //   console.log(this.lng);
+    },
+    getdong(dong) {
+      this.dong = dong;
+    //   console.log(dong);
     },
     onChangeImages(e) {
       console.log(e.target.files);
@@ -141,37 +145,12 @@ export default {
       else this.createHandler();
     },
     createHandler() {
-      // alert('123');
-      // this.moveList();
-      // axios
-      //     .post('http://localhost:8080/cat/regist', {
-      //         nickname: this.nickname,
-      // 		breed: this.breed,
-      // 		image: 'image',
-      // 		lat: this.lat,
-      // 		lng: this.lng
-      //     })
-      //     .then((response) => {
-      //         console.log(response);
-      //         if(response.data.data === 'success') {
-      //             alert('등록이 완료되었습니다.');
-      //             this.moveList();
-      //         } else {
-      //             alert('error');
-      //         }
-
-      //     })
-      //     .catch((error) => {
-      //         this.error = error;
-      //         console.log(error);
-      //         // this.moveList();
-      //     })
-      //     .finally(() => {});
       const request = new FormData();
       request.append("image", this.image);
       request.append("nickname", this.nickname);
       request.append("lat", this.lat);
-      request.append("lng", this.lng);
+	  request.append("lng", this.lng);
+	  request.append("location", this.dong);
       request.append("imgpath", "/");
       request.append("breed", "breed");
 
