@@ -8,14 +8,26 @@
             <div class="md-layout-item md-size-50 mx-auto">
               <div class="profile">
                 <div class="avatar">
-                  <img :src="catinfo.image" alt="Circle Image" class="img-raised rounded-circle img-fluid" />
+                  <img
+                    :src="catinfo.image"
+                    alt="Circle Image"
+                    class="img-raised rounded-circle img-fluid"
+                  />
                 </div>
                 <div class="name">
                   <h3 class="title">이름(별명): {{ this.catinfo.nickname }}</h3>
-                  <md-button v-if="isFollow" @click="follow()" class="md-just-icon md-simple md-fa-heart">
+                  <md-button
+                    v-if="isFollow"
+                    @click="follow()"
+                    class="md-just-icon md-simple md-fa-heart"
+                  >
                     <i class="fa fa-heart"></i>
                   </md-button>
-                  <md-button v-if="!isFollow" @click="follow()" class="md-just-icon md-simple md-fa-heart">
+                  <md-button
+                    v-if="!isFollow"
+                    @click="follow()"
+                    class="md-just-icon md-simple md-fa-heart"
+                  >
                     <i class="far fa-heart"></i>
                   </md-button>
                 </div>
@@ -70,7 +82,9 @@
                         </div>
                         <div>
                           <textarea v-model="comment"></textarea>
-                          <button @click="saveComment(post.articleid, comment, userinfo.nickname, index)">등록</button>
+                          <button
+                            @click="saveComment(post.articleid, comment, userinfo.nickname, index)"
+                          >등록</button>
                         </div>
                       </div>
                     </md-card>
@@ -134,9 +148,6 @@
 <script>
 import { Tabs } from "@/components";
 import axios from "axios";
-const SERVER_URL = "http://localhost:8080";
-const IMG_URL =
-  "https://catheroes.s3.ap-northeast-2.amazonaws.com/static/profile/cat/";         
 
 export default {
   components: {
@@ -171,7 +182,7 @@ export default {
       ],
       userinfo: {
         email: null,
-        nickname: null,
+        nickname: null
       },
       catinfo: {
         nickname: null,
@@ -205,31 +216,38 @@ export default {
   methods: {
     saveComment(articleid, comment, writer, index) {
       axios
-        .post(SERVER_URL + "/article/saveComment/", {
-          articleid,
-          comment,
-          writer
-        })
-        .then((res) => {
-          if(res.data.data === 'success'){
-            alert('댓글 등록이 완료되었습니다.');
-            this.comments[index].push({articleid, comment, writer});
+        .post(
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "article/saveComment/",
+          {
+            articleid,
+            comment,
+            writer
+          }
+        )
+        .then(res => {
+          if (res.data.data === "success") {
+            alert("댓글 등록이 완료되었습니다.");
+            this.comments[index].push({ articleid, comment, writer });
           }
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         })
         .finally(() => {
-          this.comment = '';
+          this.comment = "";
         });
     },
     retrieveUserInfo() {
-      console.log('유저정보받아오라고했다')
+      console.log("유저정보받아오라고했다");
       const token = this.$cookies.get("auth-token");
       axios
-        .post(SERVER_URL + "/account/info/", null, {
-          headers: { Authorization: `${token}` }
-        })
+        .post(
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "account/info/",
+          null,
+          {
+            headers: { Authorization: `${token}` }
+          }
+        )
         .then(res => {
           console.log("user정보 출력");
           console.log(res.data);
@@ -245,7 +263,7 @@ export default {
       // const number = 1;
       const catid = this.$route.params.catid;
       axios
-        .get(SERVER_URL + "/cat/detail/" + catid)
+        .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "cat/detail/" + catid)
         .then(res => {
           // console.log(res.data);
           this.catinfo.nickname = res.data.nickName;
@@ -257,7 +275,11 @@ export default {
           this.catinfo.lat = res.data.lat;
           this.catinfo.lng = res.data.lng;
           this.catinfo.catid = this.$route.params.catid;
-          this.catinfo.image = IMG_URL+catid+".jpg"
+          this.catinfo.image =
+            process.env.VUE_APP_IMAGE_SERVER +
+            "static/profile/cat/" +
+            catid +
+            ".jpg";
         })
         .catch(error => {
           console.log(error);
@@ -271,7 +293,10 @@ export default {
       const formData = new FormData();
       formData.append("catid", catid);
       axios
-        .post(SERVER_URL + "/follow/findByCatId", formData)
+        .post(
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "follow/findByCatId",
+          formData
+        )
         .then(res => {
           // console.log(res.data.length);
           for (var i = 0; i < res.data.length; i++) {
@@ -280,7 +305,10 @@ export default {
             formData.append("uid", res.data[i].userid);
 
             axios
-              .post(SERVER_URL + "/account/findByUid", formData)
+              .post(
+                process.env.VUE_APP_SPRING_API_SERVER_URL + "account/findByUid",
+                formData
+              )
               .then(res => {
                 // console.log(res.data);
                 ////
@@ -303,7 +331,10 @@ export default {
       const formData = new FormData();
       formData.append("catid", catid);
       axios
-        .post(SERVER_URL + "/article/findByCatId", formData)
+        .post(
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "article/findByCatId",
+          formData
+        )
         .then(res => {
           for (var i = 0; i < res.data.length; i++) {
             console.log("왜안됨?" + res.data[i].userid);
@@ -311,7 +342,10 @@ export default {
             formData.append("uid", res.data[i].userid);
 
             axios
-              .post(SERVER_URL + "/account/findByUid", formData)
+              .post(
+                process.env.VUE_APP_SPRING_API_SERVER_URL + "account/findByUid",
+                formData
+              )
               .then(res2 => {
                 // console.log(res2.data.nickName);
                 ////
@@ -326,7 +360,11 @@ export default {
             formData.append("articleid", res.data[i].articleid);
 
             axios
-              .post(SERVER_URL + "/article/findCommentByArticleId", formData)
+              .post(
+                process.env.VUE_APP_SPRING_API_SERVER_URL +
+                  "article/findCommentByArticleId",
+                formData
+              )
               .then(res2 => {
                 console.log(res2.data);
                 this.comments.push(res2.data);
@@ -349,9 +387,13 @@ export default {
       const token = this.$cookies.get("auth-token");
 
       axios
-        .post(SERVER_URL + "/account/info/", null, {
-          headers: { Authorization: `${token}` }
-        })
+        .post(
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "account/info/",
+          null,
+          {
+            headers: { Authorization: `${token}` }
+          }
+        )
         .then(res => {
           console.log(res.data);
           this.userinfo.uid = res.data.uid;
@@ -364,7 +406,10 @@ export default {
           formData.append("userid", uid);
 
           axios
-            .post(SERVER_URL + "/follow/followCat", formData)
+            .post(
+              process.env.VUE_APP_SPRING_API_SERVER_URL + "follow/followCat",
+              formData
+            )
             .then(res => {
               // console.log(res.data);
               this.isFollow = res.data;
@@ -378,12 +423,16 @@ export default {
         });
     },
     follow2() {
-     const token = this.$cookies.get("auth-token");
+      const token = this.$cookies.get("auth-token");
 
       axios
-        .post(SERVER_URL + "/account/info/", null, {
-          headers: { Authorization: `${token}` }
-        })
+        .post(
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "account/info/",
+          null,
+          {
+            headers: { Authorization: `${token}` }
+          }
+        )
         .then(res => {
           console.log(res.data);
           this.userinfo.uid = res.data.uid;
@@ -396,7 +445,10 @@ export default {
           formData.append("userid", uid);
 
           axios
-            .post(SERVER_URL + "/follow/followCheck", formData)
+            .post(
+              process.env.VUE_APP_SPRING_API_SERVER_URL + "follow/followCheck",
+              formData
+            )
             .then(res => {
               // console.log(res.data);
               console.log(res.data);

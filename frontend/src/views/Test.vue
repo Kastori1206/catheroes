@@ -35,6 +35,8 @@
 import axios from "axios";
 import { LoginCard } from "@/components";
 
+const DJANGO_SERVER_URL = process.env.VUE_APP_DJANGO_API_SERVER_URL;
+
 export default {
   components: {
     LoginCard
@@ -70,7 +72,7 @@ export default {
       const fd = new FormData();
       fd.append("image", this.image);
       axios
-        .post("http://127.0.0.1:8000/keras/", fd, {
+        .post(process.env.VUE_APP_DJANGO_API_SERVER_URL + "keras/", fd, {
           headers: {
             "Content-Type": "multipart/form-data"
           }
@@ -82,6 +84,9 @@ export default {
           console.log(err);
         });
     }
+  },
+  mounted() {
+    console.log(process.env);
   }
 };
 </script>
