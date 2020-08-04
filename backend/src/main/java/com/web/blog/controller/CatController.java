@@ -119,7 +119,7 @@ public class CatController {
 	@ApiOperation(value = "가입하기")
 	public Object signup(@RequestParam("image") MultipartFile image, @RequestParam("nickname") String nickname,
 			@RequestParam("lat") String lat, @RequestParam("lng") String lng, @RequestParam("imgpath") String imgpath,
-			@RequestParam("breed") String breed
+			@RequestParam("breed") String breed,
 			@RequestParam("location") String location) throws IOException {
 		final BasicResponse result = new BasicResponse();
 		// 중복처리 필수

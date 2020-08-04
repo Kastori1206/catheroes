@@ -3,7 +3,7 @@
     <div :class="{ 'nav-open': NavbarStore.showNavbar }">
       <router-view name="header" @submit-logout="logout" :isLoggedIn="isLoggedIn" />
       <div>
-        <router-view @submit-login-data="login" @kakao-login="kakaoLogin" @submit-cat-data="createCat"/>
+        <router-view @submit-login-data="login" @kakao-login="kakaoLogin"/>
       </div>
       <router-view name="footer" />
     </div>
@@ -12,7 +12,6 @@
 
 <script>
 import axios from "axios";
-const SERVER_URL = "http://localhost:8080";
 
 export default {
   created() {},
@@ -24,7 +23,7 @@ export default {
       formData.append("email", loginData.email);
       formData.append("password", loginData.password);
       axios
-        .post(SERVER_URL + "/account/login/", formData)
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "account/login/", formData)
         .then(res => {
           this.$cookies.set("auth-token", res.data.token); //토큰 날라오는거 설정해줘야함!!
           this.isLoggedIn = true;
@@ -45,7 +44,7 @@ export default {
       console.log("앱에서 보내는거");
       console.log(res);
       axios
-        .post("http://localhost:8080/auth/kakao/Login", {
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "auth/kakao/Login", {
           access_token: res.access_token,
           expires_in: res.expires_in,
           refresh_token: res.refresh_token,
@@ -63,15 +62,6 @@ export default {
         .catch(error => {
           console.log(error);
         });
-    },
-    createCat(catData) {
-      axios.post(SERVER_URL + '/어디로보내야하오', catData)
-        .then(res => {
-          console.log(res)
-        })
-        .catch(err => {
-          console.log(err)
-        })
     },
   },
   data: function() {
