@@ -40,18 +40,15 @@
                   <modal v-if="classicModal" @close="classicModalHide">
                     <template slot="header">
                       <h4 class="modal-title">Modal Title</h4>
-                      <md-button
-                        class="md-simple md-just-icon md-round modal-default-button"
-                        @click="classicModalHide"
-                      >
-                        <md-icon>clear</md-icon>
-                      </md-button>
+                      <!-- <md-button class="md-simple md-just-icon md-round modal-default-button" @click="classicModalHide">
+										<md-icon>clear</md-icon>
+                      </md-button>-->
                     </template>
 
                     <template slot="body">
                       <div class="section section-map">
                         <div class="container" style="margin: auto;">
-                          <Map2 :iscreate="iscreate" @send-data="getdata"></Map2>
+                          <Map2 :iscreate="iscreate" @send-data="getdata" @send-dong="getdong"></Map2>
                         </div>
                       </div>
                     </template>
