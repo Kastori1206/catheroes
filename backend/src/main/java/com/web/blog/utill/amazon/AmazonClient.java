@@ -53,7 +53,7 @@ public class AmazonClient {
 		try {
 			File file = convertMultiPartToFile(multipartFile);
 			String fileName = multipartFile.getOriginalFilename();
-			fileUrl = endpointUrl + "/" + bucketName + catId;
+			fileUrl = "static/"+ path + catId+this.getExt(fileName);
 			uploadFileTos3bucket(Long.toString(catId) +this.getExt(fileName) , file, path);
 			file.delete();
 		} /*

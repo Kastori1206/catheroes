@@ -11,5 +11,7 @@ public class UserInfoResponse extends BasicResponse{
     public long uid;
     @ApiModelProperty(value = "password", position = 7)
     public String password;
+    @ApiModelProperty(value = "image", position = 8)
+    public String image;
 }
 
