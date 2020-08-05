@@ -178,4 +178,88 @@ public class CatController {
 
 		return response;
 	}
+
+	@PostMapping("/search")
+	@ApiOperation(value = "고양이 이름으로 검색")
+	public Object searchName(@RequestParam(required = true) final String nickname,
+	@RequestParam(required = true) final String location) {
+		System.out.println("nickname : " + nickname);
+		System.out.println("location : " + location);
+
+		List<Cat> catOpt = catDao.findCatByLocationAndNicknameContaining(location, nickname);
+
+		ResponseEntity response = null;
+
+		if (!catOpt.isEmpty()) {	
+			final List<CatInfoResponse> results = new ArrayList<CatInfoResponse>();
+
+			for(Cat cat : catOpt) {
+				CatInfoResponse result = new CatInfoResponse();
+				result.status = true;
+				result.data = "success";
+				result.age = cat.getAge();
+				result.attr = cat.getAttr();
+				result.breed = cat.getBreed();
+				result.catid = cat.getCatid();
+				result.conditions = cat.getConditions();
+				result.family = cat.getFamily();
+				result.food = cat.getFood();
+				result.hospital = cat.getHospital();
+				result.image = cat.getImage();
+				result.lat = cat.getLat();
+				result.lng = cat.getLng();
+				result.location = cat.getLocation();
+				result.neutered = cat.getNeutered();
+				result.nickName = cat.getNickname();
+				results.add(result);
+			}
+
+			response = new ResponseEntity<>(results, HttpStatus.OK);
+		} else {
+			response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		}
+		return response;
+	}
+
+	@PostMapping("/searchImage")
+	@ApiOperation(value = "고양이 사진으로 검색")
+	public Object searchImage(@RequestParam(required = true) final String breed,
+	@RequestParam(required = true) final String location) {
+		System.out.println("breed : " + breed);
+		System.out.println("location : " + location);
+
+		List<Cat> catOpt = catDao.findCatByLocationAndBreed(location, breed);
+
+		ResponseEntity response = null;
+
+		if (!catOpt.isEmpty()) {	
+			final List<CatInfoResponse> results = new ArrayList<CatInfoResponse>();
+
+			for(Cat cat : catOpt) {
+				CatInfoResponse result = new CatInfoResponse();
+				result.status = true;
+				result.data = "success";
+				result.age = cat.getAge();
+				result.attr = cat.getAttr();
+				result.breed = cat.getBreed();
+				result.catid = cat.getCatid();
+				result.conditions = cat.getConditions();
+				result.family = cat.getFamily();
+				result.food = cat.getFood();
+				result.hospital = cat.getHospital();
+				result.image = cat.getImage();
+				result.lat = cat.getLat();
+				result.lng = cat.getLng();
+				result.location = cat.getLocation();
+				result.neutered = cat.getNeutered();
+				result.nickName = cat.getNickname();
+				results.add(result);
+			}
+
+			response = new ResponseEntity<>(results, HttpStatus.OK);
+		} else {
+			response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		}
+		return response;
+	}
 }

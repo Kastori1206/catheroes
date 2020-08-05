@@ -24,13 +24,13 @@
                   <i class="fas fa-paw"></i>
                 </md-icon>
                 <label>길냥이 종류</label>
-                <md-input v-model="breed" id="breed" ref="breed"></md-input>
+                <md-input v-model="breed" id="breed" ref="breed">{{this.breed}}</md-input>
                 <span class="md-helper-text">예상 종류를 입력해주세요</span>
               </md-field>
 
               <md-field slot="inputs">
                 <label for>이미지입력</label>
-                <md-file accept="image/*" @change="onChangeImages" />
+                <md-file accept="image/*" @change="onChangeImages"  />
               </md-field>
 
               <md-field slot="inputs" v-if="imgpreview">
@@ -67,8 +67,10 @@
                 </div>
               </div>
               <md-button @click="checkCat" slot="footer" class="md-simple md-success md-lg">
-                <!-- Get Started -->
                 길냥이 등록!
+              </md-button>
+              <md-button @click="test_image" slot="footer" class="md-simple md-success md-lg">
+                TEST!!!
               </md-button>
             </login-card>
           </div>
@@ -131,11 +133,43 @@ export default {
       //   console.log(dong);
     },
     onChangeImages(e) {
-      console.log(e.target.files);
+      // console.log(e.target.files);
       const file = e.target.files[0];
       this.image = file;
       this.imgpreview = URL.createObjectURL(file);
-      console.log(this.imgpreview);
+      // console.log(this.imgpreview);
+      const fd = new FormData();
+      fd.append("image", this.image);
+      axios
+        .post(process.env.VUE_APP_DJANGO_API_SERVER_URL + "keras/", fd, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+        .then(res => {
+          // console.log(res);
+          this.breed = res.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    test_image() {
+      const fd = new FormData();
+      fd.append("image", this.image);
+      axios
+        .post(process.env.VUE_APP_DJANGO_API_SERVER_URL + "keras/", fd, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+        .then(res => {
+          console.log(res);
+          this.breed = res.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     checkCat() {
       let err = true;

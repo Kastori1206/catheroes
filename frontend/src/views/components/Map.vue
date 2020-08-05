@@ -256,6 +256,8 @@ export default {
             break;
           }
         }
+        // console.log("@@@1")
+        this.$emit('submit-dong', this.centerDong)
       }
     }
     //////////

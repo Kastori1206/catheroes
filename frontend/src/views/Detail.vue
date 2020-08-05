@@ -300,7 +300,7 @@ export default {
       request.append("content", this.content);
       request.append("imgpath", "/");
       axios
-        .post(SERVER_URL + "/article/saveArticle", request, {
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "article/saveArticle", request, {
           headers: {
             "Content-Type": "multipart/form-data"
           }
