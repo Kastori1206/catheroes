@@ -1,6 +1,9 @@
 <template>
   <div class="wrapper">
-    <parallax class="section page-header header-filter" :style="headerStyle"></parallax>
+    <parallax
+      class="section page-header header-filter"
+      :style="headerStyle"
+    ></parallax>
     <div class="main main-raised">
       <div class="section profile-content">
         <div class="container">
@@ -56,7 +59,11 @@
                 <!-- -->
                 <div class="md-layout">
                   <div class="md-layout-item md-size-35">
-                    <md-button class="md-success md-block" @click="postCreateModal = true">글쓰기</md-button>
+                    <md-button
+                      class="md-success md-block"
+                      @click="postCreateModal = true"
+                      >글쓰기</md-button
+                    >
                     <modal v-if="postCreateModal" @close="postCreateModalHide">
                       <template slot="header">
                         <h4 class="modal-title">포스트 작성</h4>
@@ -81,7 +88,12 @@
                         </md-field>
 
                         <md-field slot="inputs">
-                          <md-input ref="imageInput" type="file" hidden @change="onChangeImages"></md-input>
+                          <md-input
+                            ref="imageInput"
+                            type="file"
+                            hidden
+                            @change="onChangeImages"
+                          ></md-input>
                         </md-field>
 
                         <md-field slot="inputs" v-if="imgpreview">
@@ -91,8 +103,14 @@
                       </template>
 
                       <template slot="footer">
-                        <md-button class="md-simple" @click="checkHandler">등록</md-button>
-                        <md-button class="md-danger md-simple" @click="postCreateModalHide">닫기</md-button>
+                        <md-button class="md-simple" @click="checkHandler"
+                          >등록</md-button
+                        >
+                        <md-button
+                          class="md-danger md-simple"
+                          @click="postCreateModalHide"
+                          >닫기</md-button
+                        >
                       </template>
                     </modal>
                   </div>
@@ -103,33 +121,64 @@
                     <md-card style="width: 50vw;">
                       <md-card-header>
                         <md-avatar style="margin-left: 10px;">
-                          <img src="@/assets/img/faces/avatar.jpg" style="margin-bottom: 0px;" />
+                          <img
+                            src="@/assets/img/faces/avatar.jpg"
+                            style="margin-bottom: 0px;"
+                          />
                         </md-avatar>
 
-                        <div class="md-title">{{post.title}}</div>
-                        <div class="md-subhead">{{writers[index]}}</div>
+                        <div class="md-title">{{ post.title }}</div>
+                        <div class="md-subhead">{{ writers[index] }}</div>
                       </md-card-header>
 
                       <md-card-media>
                         <img src="@/assets/img/examples/mariya-georgieva.jpg" />
                       </md-card-media>
 
-                      <md-card-content>{{post.content}}</md-card-content>
+                      <md-card-content>{{ post.content }}</md-card-content>
                       <!-- 댓글 더 보기 -->
-                      <button v-if="!post.isclick" @click="commentTest(index); test2(index)">댓글 더 보기</button>
-                      <button v-if="post.isclick" @click="commentTest(index); test2(index)">댓글 닫기</button>
+                      <button
+                        v-if="!post.isclick"
+                        @click="
+                          commentTest(index);
+                          test2(index);
+                        "
+                      >
+                        댓글 더 보기
+                      </button>
+                      <button
+                        v-if="post.isclick"
+                        @click="
+                          commentTest(index);
+                          test2(index);
+                        "
+                      >
+                        댓글 닫기
+                      </button>
                       <div v-if="post.isclick">
                         <div
                           v-for="(comment, index2) in comments[index]"
                           :key="index2 + '_comments'"
                         >
-                          <md-card-content>{{comment.comment}} - 글쓴사람 : {{comment.writer}}</md-card-content>
+                          <md-card-content
+                            >{{ comment.comment }} - 글쓴사람 :
+                            {{ comment.writer }}</md-card-content
+                          >
                         </div>
                         <div>
                           <textarea v-model="comment"></textarea>
                           <button
-                            @click="saveComment(post.articleid, comment, userinfo.nickname, index)"
-                          >등록</button>
+                            @click="
+                              saveComment(
+                                post.articleid,
+                                comment,
+                                userinfo.nickname,
+                                index
+                              )
+                            "
+                          >
+                            등록
+                          </button>
                         </div>
                       </div>
                     </md-card>
@@ -153,6 +202,8 @@
                   </md-card>-->
                   <!--  -->
                 </div>
+                <!-- 무한스크롤 -->
+                <infinite-loading @infinite="CatPost"></infinite-loading>
               </template>
               <template slot="tab-pane-3">
                 <!-- <div class="wrapper"> -->
@@ -162,13 +213,18 @@
                   <div class="features text-center">
                     <div class="md-layout">
                       <!--  -->
-                      <div v-for="(user, index) in items" :key="index + '_items'">
+                      <div
+                        v-for="(user, index) in items"
+                        :key="index + '_items'"
+                      >
                         <div class="md-card-new">
                           <md-card-header>
                             <md-card-header-text>
-                              <div class="md-title">{{user.nickName}}</div>
+                              <div class="md-title">{{ user.nickName }}</div>
                             </md-card-header-text>
-                            <div style="width: 85px; height: 50px; margin: 10px;">
+                            <div
+                              style="width: 85px; height: 50px; margin: 10px;"
+                            >
                               <img :src="tabPane2[3].image" alt="NewsImage" />
                             </div>
                           </md-card-header>
@@ -196,17 +252,20 @@ import { LoginCard } from "@/components";
 import { Modal } from "@/components";
 import { Tabs } from "@/components";
 import axios from "axios";
+import InfiniteLoading from "vue-infinite-loading";
 
 export default {
   components: {
     Pagination,
     LoginCard,
     Modal,
-    Tabs
+    Tabs,
+    InfiniteLoading,
   },
   bodyClass: "profile-page",
   data() {
     return {
+      limit: -1,
       title: "",
       content: "",
       image: null,
@@ -227,19 +286,19 @@ export default {
         { image: require("@/assets/img/bg7.jpg") },
         { image: require("@/assets/img/profile_city.jpg") },
         { image: require("@/assets/img/profile_city.jpg") },
-        { image: require("@/assets/img/profile_city.jpg") }
+        { image: require("@/assets/img/profile_city.jpg") },
       ],
       tabPane3: [
         { image: require("@/assets/img/examples/mariya-georgieva.jpg") },
         { image: require("@/assets/img/examples/studio-3.jpg") },
         { image: require("@/assets/img/examples/clem-onojeghuo.jpg") },
         { image: require("@/assets/img/examples/olu-eletu.jpg") },
-        { image: require("@/assets/img/examples/studio-1.jpg") }
+        { image: require("@/assets/img/examples/studio-1.jpg") },
       ],
       userinfo: {
         email: null,
         nickname: null,
-        userid: null
+        userid: null,
       },
       catinfo: {
         nickname: null,
@@ -255,20 +314,20 @@ export default {
         image: null,
         lat: null,
         lng: null,
-        catid: null
-      }
+        catid: null,
+      },
     };
   },
   props: {
     header: {
       type: String,
-      default: require("@/assets/img/profile_city.jpg")
+      default: require("@/assets/img/profile_city.jpg"),
     },
     img: {
       type: String,
-      default: require("@/assets/img/vue-mk-header.jpg")
+      default: require("@/assets/img/vue-mk-header.jpg"),
     },
-    isLoggedIn: Boolean
+    isLoggedIn: Boolean,
   },
   methods: {
     onChangeImages(e) {
@@ -302,17 +361,17 @@ export default {
       axios
         .post(SERVER_URL + "/article/saveArticle", request, {
           headers: {
-            "Content-Type": "multipart/form-data"
-          }
+            "Content-Type": "multipart/form-data",
+          },
         })
-        .then(res => {
+        .then((res) => {
           console.log(res);
           alert("등록이 완료되었습니다.");
           this.posts.unshift({
             title: this.title,
             content: this.content,
             image: this.image,
-            isclick: false
+            isclick: false,
           });
           this.writers.unshift(this.userinfo.nickname);
           this.comments.unshift([]);
@@ -322,7 +381,7 @@ export default {
           this.imgpreview = null;
           this.postCreateModalHide();
         })
-        .catch(error => {
+        .catch((error) => {
           this.error = error;
           console.log(error);
         })
@@ -335,16 +394,16 @@ export default {
           {
             articleid,
             comment,
-            writer
+            writer,
           }
         )
-        .then(res => {
+        .then((res) => {
           if (res.data.data === "success") {
             alert("댓글 등록이 완료되었습니다.");
             this.comments[index].push({ articleid, comment, writer });
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         })
         .finally(() => {
@@ -359,17 +418,17 @@ export default {
           process.env.VUE_APP_SPRING_API_SERVER_URL + "account/info/",
           null,
           {
-            headers: { Authorization: `${token}` }
+            headers: { Authorization: `${token}` },
           }
         )
-        .then(res => {
+        .then((res) => {
           console.log("user정보 출력");
           console.log(res.data);
           this.userinfo.email = res.data.email;
           this.userinfo.nickname = res.data.nickName;
           this.userinfo.userid = res.data.uid;
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
@@ -379,7 +438,7 @@ export default {
       const catid = this.$route.params.catid;
       axios
         .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "cat/detail/" + catid)
-        .then(res => {
+        .then((res) => {
           // console.log(res.data);
           this.catinfo.nickname = res.data.nickName;
           this.catinfo.age = res.data.age;
@@ -396,7 +455,7 @@ export default {
             catid +
             ".jpg";
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
@@ -412,7 +471,7 @@ export default {
           process.env.VUE_APP_SPRING_API_SERVER_URL + "follow/findByCatId",
           formData
         )
-        .then(res => {
+        .then((res) => {
           // console.log(res.data.length);
           for (var i = 0; i < res.data.length; i++) {
             // console.log("follow userid = " + res.data[i].userid);
@@ -424,24 +483,24 @@ export default {
                 process.env.VUE_APP_SPRING_API_SERVER_URL + "account/findByUid",
                 formData
               )
-              .then(res => {
+              .then((res) => {
                 // console.log(res.data);
                 ////
                 this.items.push(res.data);
                 ////
               })
-              .catch(error => {
+              .catch((error) => {
                 console.log(error);
               });
           }
           // console.log(this.items);
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
-    CatPost() {
-      // console.log("고양이포스트받아오라고했다");
+    CatPost($state) {
+      console.log("고양이포스트받아오라고했다");
       const catid = this.$route.params.catid;
       const formData = new FormData();
       formData.append("catid", catid);
@@ -450,53 +509,68 @@ export default {
           process.env.VUE_APP_SPRING_API_SERVER_URL + "article/findByCatId",
           formData
         )
-        .then(res => {
-          for (var i = 0; i < res.data.length; i++) {
-            console.log("왜안됨?" + res.data[i].userid);
-            const formData = new FormData();
-            formData.append("uid", res.data[i].userid);
-
-            axios
-              .post(
-                process.env.VUE_APP_SPRING_API_SERVER_URL + "account/findByUid",
-                formData
-              )
-              .then(res2 => {
-                // console.log(res2.data.nickName);
-                ////
-                this.writers.push(res2.data.nickName);
-                ////
-              })
-              .catch(error => {
-                console.log(error);
-              });
-
-            formData = new FormData();
-            formData.append("articleid", res.data[i].articleid);
-
-            axios
-              .post(
-                process.env.VUE_APP_SPRING_API_SERVER_URL +
-                  "article/findCommentByArticleId",
-                formData
-              )
-              .then(res2 => {
-                console.log(res2.data);
-                this.comments.push(res2.data);
-              })
-              .catch(error => {
-                console.log(error);
-              });
-            // console.log("이제 res.data[i]에 isclick변수를 넣을거야");
-            res.data[i].isclick = false;
-            console.log(res.data[i]);
-            this.posts.push(res.data[i]);
+        .then((res) => {
+          if (this.limit < res.data.length) {
+            console.log(res.data.length);
+            for (
+              var i = this.limit;
+              i < this.limit + 1 && i < res.data.length;
+              i++
+            ) {
+              // console.log("왜안됨?" + res.data[i].userid);
+              const formData = new FormData();
+              formData.append("uid", res.data[i].userid);
+              // 유저 아이디로 유저 닉네임 가져오기
+              axios
+                .post(
+                  process.env.VUE_APP_SPRING_API_SERVER_URL +
+                    "account/findByUid",
+                  formData
+                )
+                .then((res2) => {
+                  // console.log(res2.data.nickName);
+                  ////
+                  this.writers.push(res2.data.nickName);
+                  ////
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+              //
+              formData = new FormData();
+              formData.append("articleid", res.data[i].articleid);
+              // 댓글불러오기
+              axios
+                .post(
+                  process.env.VUE_APP_SPRING_API_SERVER_URL +
+                    "article/findCommentByArticleId",
+                  formData
+                )
+                .then((res2) => {
+                  console.log(res2.data);
+                  this.comments.push(res2.data);
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+              // console.log("이제 res.data[i]에 isclick변수를 넣을거야");
+              res.data[i].isclick = false;
+              console.log(res);
+              this.posts.push(res.data[i]);
+              $state.loaded();
+            }
+          } else {
+            console.log(
+              "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2"
+            );
+            $state.complete();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
       console.log(this.comments);
+      this.limit += 1;
     },
     follow() {
       const token = this.$cookies.get("auth-token");
@@ -506,10 +580,10 @@ export default {
           process.env.VUE_APP_SPRING_API_SERVER_URL + "account/info/",
           null,
           {
-            headers: { Authorization: `${token}` }
+            headers: { Authorization: `${token}` },
           }
         )
-        .then(res => {
+        .then((res) => {
           console.log(res.data);
           this.userinfo.uid = res.data.uid;
 
@@ -525,15 +599,15 @@ export default {
               process.env.VUE_APP_SPRING_API_SERVER_URL + "follow/followCat",
               formData
             )
-            .then(res => {
+            .then((res) => {
               // console.log(res.data);
               this.isFollow = res.data;
             })
-            .catch(error => {
+            .catch((error) => {
               console.log(error);
             });
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
@@ -545,10 +619,10 @@ export default {
           process.env.VUE_APP_SPRING_API_SERVER_URL + "account/info/",
           null,
           {
-            headers: { Authorization: `${token}` }
+            headers: { Authorization: `${token}` },
           }
         )
-        .then(res => {
+        .then((res) => {
           console.log(res.data);
           this.userinfo.uid = res.data.uid;
 
@@ -564,16 +638,16 @@ export default {
               process.env.VUE_APP_SPRING_API_SERVER_URL + "follow/followCheck",
               formData
             )
-            .then(res => {
+            .then((res) => {
               // console.log(res.data);
               console.log(res.data);
               this.isFollow = res.data;
             })
-            .catch(error => {
+            .catch((error) => {
               console.log(error);
             });
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
@@ -585,14 +659,14 @@ export default {
     test2(index) {
       console.log("현재 댓글의 인덱스 : ");
       console.log(index);
-    }
+    },
   },
   computed: {
     headerStyle() {
       return {
-        backgroundImage: `url(${this.header})`
+        backgroundImage: `url(${this.header})`,
       };
-    }
+    },
   },
   mounted() {
     // this.retrieveCatInfo();
@@ -604,7 +678,7 @@ export default {
     this.retrieveCatInfo();
     this.CatFollow();
     this.CatPost();
-  }
+  },
 };
 </script>
 
@@ -643,53 +717,7 @@ export default {
   }
 
   .md-card-header {
-    // @include shadow-big();
     margin: 0;
-
-    // border-radius: 3px;
-    // padding: 15px + 5 0;
-    // background-color: #999999;
-
-    // .title,
-    // .card-title {
-    //   color: #ffffff;
-    // }
-    // .category {
-    //   margin: 0;
-    //   color: rgba(#ffffff, 0.62);
-    // }
-
-    // a {
-    //   color: #ffffff !important;
-    // }
-
-    // &.card-chart {
-    //   padding: 0;
-    //   min-height: 160px;
-
-    //   + .content {
-    //     h4 {
-    //       margin-top: 0;
-    //     }
-    //   }
-    // }
-
-    // .ct-label {
-    //   color: rgba(#ffffff, 0.7);
-    // }
-    // .ct-grid {
-    //   stroke: rgba(255, 255, 255, 0.2);
-    // }
-    // .ct-series-a .ct-point,
-    // .ct-series-a .ct-line,
-    // .ct-series-a .ct-bar,
-    // .ct-series-a .ct-slice-donut {
-    //   stroke: rgba(255, 255, 255, 0.8);
-    // }
-    // .ct-series-a .ct-slice-pie,
-    // .ct-series-a .ct-area {
-    //   fill: rgba(255, 255, 255, 0.4);
-    // }
   }
 }
 </style>
