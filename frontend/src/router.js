@@ -11,6 +11,7 @@ import Create from "./views/Create.vue";
 import Test from "./views/Test.vue";
 import MainNavbar from "./layout/MainNavbar.vue";
 import MainFooter from "./layout/MainFooter.vue";
+import Funding from "./views/Funding.vue";
 
 Vue.use(Router);
 
@@ -108,6 +109,24 @@ export default new Router({
       path: "/news",
       name: "news",
       components: { default: News, header: MainNavbar, footer: MainFooter },
+      props: {
+        header: { colorOnScroll: 400 },
+        footer: { backgroundColor: "black" },
+      },
+      beforeEnter(to, from, next) {
+        if (Vue.$cookies.isKey("auth-token")) {
+          console.log("로그인되어있다고했다");
+          next();
+        } else {
+          console.log("로그인안되어있다고 했다");
+          next("/");
+        }
+      },
+    },
+    {
+      path: "/funding",
+      name: "funding",
+      components: { default: Funding, header: MainNavbar, footer: MainFooter },
       props: {
         header: { colorOnScroll: 400 },
         footer: { backgroundColor: "black" },

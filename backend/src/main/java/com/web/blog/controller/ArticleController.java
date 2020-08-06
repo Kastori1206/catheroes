@@ -1,20 +1,10 @@
 package com.web.blog.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
-
-import com.web.blog.dao.ArticleDao;
-import com.web.blog.dao.CommentDao;
-import com.web.blog.model.Article;
-import com.web.blog.model.Cat;
-import com.web.blog.model.Comment;
-import com.web.blog.model.request.CatRegistRequest;
-import com.web.blog.model.request.CommentSaveRequest;
-import com.web.blog.model.response.ArticleResponse;
-import com.web.blog.model.response.BasicResponse;
-import com.web.blog.model.response.CommentResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +15,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.web.blog.dao.ArticleDao;
+import com.web.blog.dao.CommentDao;
+import com.web.blog.model.Article;
+import com.web.blog.model.Comment;
+import com.web.blog.model.request.CommentSaveRequest;
+import com.web.blog.model.response.ArticleResponse;
+import com.web.blog.model.response.BasicResponse;
+import com.web.blog.model.response.CommentResponse;
+import com.web.blog.utill.amazon.AmazonClient;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -35,7 +36,7 @@ import io.swagger.annotations.ApiResponses;
 		@ApiResponse(code = 404, message = "Not Found", response = BasicResponse.class),
 		@ApiResponse(code = 500, message = "Failure", response = BasicResponse.class) })
 
-@CrossOrigin(origins = { "http://localhost:3000" })
+//@CrossOrigin(origins = { "http://localhost:3000" })
 @RequestMapping("/article")
 @RestController
 public class ArticleController {
@@ -45,6 +46,62 @@ public class ArticleController {
 
 	@Autowired
 	private CommentDao commentDao;
+	
+	private AmazonClient amazonClient;
+
+	@Autowired
+	ArticleController(AmazonClient amazonClient) {
+	   this.amazonClient = amazonClient;
+	}
+
+	@PostMapping("/deleteArticle")
+	@ApiOperation(value = "포스트 삭제하기")
+	public Object deleteArticle(@RequestParam(required = true) final long articleid) {
+		final BasicResponse result = new BasicResponse();
+		Article article = null;		
+//		System.out.println(articleid);
+		
+		if(articleDao.deleteArticleByArticleid(articleid)>0) {
+			result.status = true;
+			result.data = "success";
+		} else {
+			result.status = false;
+			result.data = "fail";
+		}
+		
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
+	@PostMapping("/saveArticle")
+	@ApiOperation(value = "포스트 등록하기")
+	public Object signup(@RequestParam("image") MultipartFile image,
+				   @RequestParam("userid") long userid,
+				   @RequestParam("catid") long catid,
+				   @RequestParam("title") String title,
+				   @RequestParam("content") String content,         
+				   @RequestParam("imgpath") String imgpath
+		  ) throws IOException  {
+	   final BasicResponse result = new BasicResponse();
+
+	   Article article = null;      
+	
+
+	   // 생성 코드
+	   article = Article.builder()
+			  .userid(userid)
+			  .catid(catid)
+			  .image(imgpath)
+			  .title(title)
+			  .content(content)
+			  .build();
+	   
+	   articleDao.save(article);
+	   this.amazonClient.uploadFile(image, article.getArticleid(), imgpath);
+	   result.status = true;
+	   result.data = "success";
+
+	   return new ResponseEntity<>(result, HttpStatus.OK);
+ 	}
 
 	@PostMapping("/deleteComment")
 	@ApiOperation(value = "댓글 삭제하기")

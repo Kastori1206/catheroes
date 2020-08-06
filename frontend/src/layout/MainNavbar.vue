@@ -70,6 +70,12 @@
                   <p>NEWS</p>
                 </router-link>
               </md-list-item>
+
+              <md-list-item>
+                <router-link to="/funding">
+                  <p>Funding</p>
+                </router-link>
+              </md-list-item>
             </md-list>
           </div>
         </div>

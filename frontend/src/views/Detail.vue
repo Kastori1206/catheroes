@@ -182,7 +182,14 @@
                         <md-avatar style="margin-left: 10px;">
                           <img src="@/assets/img/faces/avatar.jpg" style="margin-bottom: 0px;" />
                         </md-avatar>
-
+                        <!-- start closeBtn -->
+                        <md-button
+                          class="md-simple md-just-icon md-round modal-default-button"
+                          @click="postCreateModalHide"
+                        >
+                          <md-icon>clear</md-icon>
+                        </md-button>
+                        <!-- start endBtn -->
                         <div class="md-title">{{post.title}}</div>
                         <div class="md-subhead">{{writers[index]}}</div>
                       </md-card-header>
