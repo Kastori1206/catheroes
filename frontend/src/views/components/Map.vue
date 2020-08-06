@@ -148,10 +148,10 @@ export default {
       axios
         .post(SERVER_URL + "/cat/catList", formData)        
         .then(res => {
-          res.data.forEach(e => {          
-
+          var index = 0;
+          res.data.forEach(e => {     
             var imageSrc =
-                "https://raw.githubusercontent.com/khg6152450/AboutMe/master/CatMarker.png", // 마커이미지의 주소입니다
+                "https://catheroes.s3.ap-northeast-2.amazonaws.com/static/marker/"+res.data[index++].breed+".png", // 마커이미지의 주소입니다
               imageSize = new kakao.maps.Size(50, 50), // 마커이미지의 크기입니다
               imageOption = { offset: new kakao.maps.Point(27, 69) }; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
 
@@ -184,6 +184,7 @@ export default {
         });
     },
     createOverlay(data) {
+      console.log(data)
       var content =
         '<div class="wrap">' +
         '    <div class="info2">' +
@@ -192,7 +193,7 @@ export default {
         "        </div>" +
         '        <div class="body2">' +
         '            <div class="img">' +
-        '                <img src="https://raw.githubusercontent.com/khg6152450/AboutMe/master/CatMarker.png" width="73" height="70">' +
+        '                <img src="https://catheroes.s3.ap-northeast-2.amazonaws.com/' + data.image + '" width="73" height="70">' +
         "           </div>" +
         '            <div class="desc">' +
         '                <div class="ellipsis">' +

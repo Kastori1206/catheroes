@@ -50,6 +50,35 @@ public class CatController {
 	// @Autowired
 	// private JwtService jwtService;
 
+	@PostMapping("/update")
+	@ApiOperation(value = "고양이 상세정보 수정")
+	public Object update(@RequestParam("catid") long catid, @RequestParam("attr") String attr, @RequestParam("breed") String breed, @RequestParam("conditions") String conditions) {
+		ResponseEntity response = null;
+		final CatInfoResponse result = new CatInfoResponse();
+		Cat cat = catDao.getCatByCatid(catid).get();
+
+		// 고양이 상세정보 수정 부분 코드작성
+		cat.setBreed(breed);
+		cat.setAttr(attr);
+		cat.setConditions(conditions);
+		catDao.save(cat);
+		
+		Optional<Cat> catOpt = catDao.getCatByCatid(catid);
+		result.status = true;
+		result.data = "success";
+		result.nickName = catOpt.get().getNickname();
+		result.age = catOpt.get().getAge();
+		result.breed = catOpt.get().getBreed();
+		result.location = catOpt.get().getLocation();
+		result.attr = catOpt.get().getAttr();
+		result.conditions = catOpt.get().getConditions();
+		result.lat = catOpt.get().getLat();
+		result.lng = catOpt.get().getLng();
+		response = new ResponseEntity<>(result, HttpStatus.OK);
+
+		return response;
+	}
+
 	@GetMapping("/detail/{catid}")
 	@ApiOperation(value = "고양이 상세정보")
 	public Object detail(@PathVariable("catid") int catid) {
@@ -104,6 +133,7 @@ public class CatController {
 				result.lat = cat.getLat();
 				result.lng = cat.getLng();
 				result.catid = cat.getCatid();
+				result.image = cat.getImage();
 				results.add(result);
 			}
 

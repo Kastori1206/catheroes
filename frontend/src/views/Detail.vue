@@ -42,14 +42,90 @@
               nav-pills-icons
               color-button="success"
             >
-              <!-- here you can add your content for tab-content -->
+              <!-- 고양이 상세정보 -->
               <template slot="tab-pane-1">
                 <div class="description text-center">
-                  <h2>나이(추정) : {{ this.catinfo.age }}</h2>
-                  <h2>품종(추정) : {{ this.catinfo.breed }}</h2>
-                  <h2>사는 지역 : {{ this.catinfo.location }}</h2>
-                  <h2>특징 : {{ this.catinfo.attr }}</h2>
-                  <h2>근황 : {{ this.catinfo.conditions }}</h2>
+                  <h4>&#x1F476; 품종</h4>
+                  <div class="button" id="breed" @click="breedUpdateModal = true">{{this.catinfo.breed}}</div>
+                  <modal v-if="breedUpdateModal" @close="breedUpdateModalHide">
+                    <template slot="header">
+                      <h4 class="modal-title">품종을 선택하세요.</h4>
+                      <md-button
+                        class="md-simple md-just-icon md-round modal-default-button"
+                        @click="breedUpdateModalHide"
+                      >
+                        <md-icon>clear</md-icon>
+                      </md-button>
+                    </template>
+
+                    <template slot="body">
+                      <input type="radio" id="one" value="고등어태비" v-model="catinfo.breed">
+                      <label for="one">고등어태비</label>
+                      <br>
+                      <input type="radio" id="two" value="치즈태비" v-model="catinfo.breed">
+                      <label for="two">치즈태비</label>
+                      <br>
+                      <input type="radio" id="three" value="삼색이" v-model="catinfo.breed">
+                      <label for="three">삼색이</label>
+                      <br>
+                      <input type="radio" id="four" value="턱시도" v-model="catinfo.breed">
+                      <label for="four">턱시도</label>
+                      <br>
+                      <input type="radio" id="five" value="젖소" v-model="catinfo.breed">
+                      <label for="five">젖소</label>
+                      <br>
+                      <input type="radio" id="six" value="카오스" v-model="catinfo.breed">
+                      <label for="six">카오스</label>
+                      <br>
+                      <input type="radio" id="seven" value="올블랙" v-model="catinfo.breed">
+                      <label for="seven">올블랙</label>
+                      <br>
+                    </template>
+
+                    <template slot="footer">
+                      <md-button class="md-danger md-simple" @click="breedUpdateModalHide">닫기</md-button>
+                    </template>
+                  </modal>
+                  <h4>&#x1F43E; 사는곳</h4>
+                  <div class="button" id="location">{{this.catinfo.location}}</div>
+                  <h4>&#x1F48A; 오늘 {{this.catinfo.nickname}}의 건강상태</h4>
+                  <div class="md-layout-item" style="width:180px; margin:0 auto;">
+                    <md-field>
+                      <md-select v-model="this.catinfo.conditions" name="conditions" id="conditions" placeholder="오늘의 건강 상태 선택하기">
+                        <md-option value="1">&#x1F63C; 기운 넘쳐요</md-option>
+                        <md-option value="2">&#x1F63A; 튼튼해요</md-option>
+                        <md-option value="3">&#x1F63B; 사랑스러워요</md-option>
+                        <md-option value="4">&#x1F63E; 가까이 가지 마세요</md-option>
+                        <md-option value="5">&#x1F63F; 기운이 없어요</md-option>
+                        <md-option value="6">&#x1F640; 아파요</md-option>
+                      </md-select>
+                    </md-field>
+                  </div>
+                  <h4>&#x1F4AC; {{this.catinfo.nickname}} 고양이를 소개해요!</h4>
+                  <div class="button" id="attr" @click="attrUpdateModal = true">{{this.catinfo.attr}}</div>
+                  <modal v-if="attrUpdateModal" @close="attrUpdateModalHide">
+                    <template slot="header">
+                      <h4 class="modal-title">{{this.catinfo.nickname}}의 성격은?</h4>
+                      <md-button
+                        class="md-simple md-just-icon md-round modal-default-button"
+                        @click="attrUpdateModalHide"
+                      >
+                        <md-icon>clear</md-icon>
+                      </md-button>
+                    </template>
+
+                    <template slot="body">
+                        <md-field>
+                          <md-input style="text-align:center;" v-model="catinfo.attr" placeholder></md-input>
+                        </md-field>
+                    </template>
+
+                    <template slot="footer">
+                      <md-button class="md-danger md-simple" @click="attrUpdateModalHide">닫기</md-button>
+                    </template>
+                  </modal>
+                  <br><br>  
+                  <md-button v-if="isUpdated" style="width:60px; margin:0 auto;" class="md-success md-block" @click="updateCatinfo">수정하기!</md-button>
                 </div>
               </template>
               <template slot="tab-pane-2">
@@ -103,15 +179,44 @@
                     <md-card style="width: 50vw;">
                       <md-card-header>
                         <md-avatar style="margin-left: 10px;">
-                          <img src="@/assets/img/faces/avatar.jpg" style="margin-bottom: 0px;" />
+                          <img :src="writers[index].image" style="margin-bottom: 0px;" />
                         </md-avatar>
+                        <!-- start closeBtn -->
+                        <md-button
+                          class="md-simple md-just-icon md-round modal-default-button"
+                          @click="deleteConfirmModal = true"
+                        >
+                          <md-icon>clear</md-icon>
+                        </md-button>
+                        <!-- end closeBtn -->
+                        <!-- start deleteConfirm modal -->
+                        <modal v-if="deleteConfirmModal" @close="deleteConfirmModalHide">
+                          <template slot="header">
+                            <h4 class="modal-title">포스트 삭제</h4>
+                            <md-button
+                              class="md-simple md-just-icon md-round modal-default-button"
+                              @click="deleteConfirmModalHide"
+                            >
+                              <md-icon>clear</md-icon>
+                            </md-button>
+                          </template>
 
+                          <template slot="body">
+                            <p>정말 삭제하시겠습니까?</p>
+                          </template>
+
+                          <template slot="footer">
+                            <md-button style="margin: 0 auto" class="md-danger md-simple" @click="deletePost(post.articleid, index)">삭제</md-button>
+                          </template>
+                        </modal>
+                        <!-- end deleteConfirm modal -->
                         <div class="md-title">{{post.title}}</div>
-                        <div class="md-subhead">{{writers[index]}}</div>
+                        <div class="md-subhead">{{writers[index].nickname}}</div>
                       </md-card-header>
 
                       <md-card-media>
-                        <img src="@/assets/img/examples/mariya-georgieva.jpg" />
+                        <!-- <img src="@/assets/img/examples/mariya-georgieva.jpg" /> -->
+                        <img :src=post.image />
                       </md-card-media>
 
                       <md-card-content>{{post.content}}</md-card-content>
@@ -169,7 +274,7 @@
                               <div class="md-title">{{user.nickName}}</div>
                             </md-card-header-text>
                             <div style="width: 85px; height: 50px; margin: 10px;">
-                              <img :src="tabPane2[3].image" alt="NewsImage" />
+                              <img :src=user.image alt="NewsImage" />
                             </div>
                           </md-card-header>
                         </div>
@@ -207,6 +312,10 @@ export default {
   bodyClass: "profile-page",
   data() {
     return {
+      deleteConfirmModal: false,
+      isUpdated: false,
+      attrUpdateModal: false,
+      breedUpdateModal: false,
       title: "",
       content: "",
       image: null,
@@ -239,7 +348,8 @@ export default {
       userinfo: {
         email: null,
         nickname: null,
-        userid: null
+        userid: null,
+        image: null
       },
       catinfo: {
         nickname: null,
@@ -271,6 +381,49 @@ export default {
     isLoggedIn: Boolean
   },
   methods: {
+    deleteConfirmModalHide() {
+      this.deleteConfirmModal = false;
+    },
+    deletePost(articleid, index) {
+      const formData = new FormData();
+      formData.append("articleid", articleid);
+      axios
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "article/deleteArticle", formData)
+        .then(res => {
+          this.posts.splice(index,1);
+        })
+        .catch(err => {
+
+        });
+    },
+    updateCatinfo() {
+      const catid = this.$route.params.catid;
+      const formData = new FormData();
+      formData.append("catid", this.$route.params.catid);
+      formData.append("breed", this.catinfo.breed);
+      formData.append("attr", this.catinfo.attr);
+      formData.append("conditions", this.catinfo.conditions);
+      axios
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "cat/update", formData)
+        .then(res => {
+          // console.log(res.data);
+          this.catinfo.breed = res.data.breed;
+          this.catinfo.attr = res.data.attr;
+          this.catinfo.conditions = res.data.conditions;
+          alert("수정이 완료되었습니다 :)");
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    attrUpdateModalHide() {
+      this.attrUpdateModal = false;
+      this.isUpdated = true;
+    },
+    breedUpdateModalHide() {
+      this.breedUpdateModal = false;
+      this.isUpdated = true;
+    },
     onChangeImages(e) {
       console.log(e.target.files);
       const file = e.target.files[0];
@@ -279,6 +432,7 @@ export default {
       console.log(this.imgpreview);
     },
     postCreateModalHide() {
+      this.imgpreview = null;
       this.postCreateModal = false;
     },
     checkHandler() {
@@ -298,7 +452,6 @@ export default {
       request.append("userid", this.userinfo.userid);
       request.append("title", this.title);
       request.append("content", this.content);
-      request.append("imgpath", "/");
       axios
         .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "article/saveArticle", request, {
           headers: {
@@ -415,6 +568,7 @@ export default {
           for (var i = 0; i < res.data.length; i++) {
             // console.log("follow userid = " + res.data[i].userid);
             const formData = new FormData();
+            
             formData.append("uid", res.data[i].userid);
 
             axios
@@ -423,7 +577,8 @@ export default {
                 formData
               )
               .then(res => {
-                // console.log(res.data);
+                res.data.image = process.env.VUE_APP_IMAGE_SERVER + res.data.image;
+                console.log(res.data);
                 ////
                 this.items.push(res.data);
                 ////
@@ -451,6 +606,9 @@ export default {
         .then(res => {
           for (var i = 0; i < res.data.length; i++) {
             // console.log("왜안됨?" + res.data[i].userid);
+            console.log("포스트 정보")
+            console.log(res.data[i]);
+            res.data[i].image = process.env.VUE_APP_IMAGE_SERVER+res.data[i].image
             const formData = new FormData();
             formData.append("uid", res.data[i].userid);
 
@@ -462,7 +620,8 @@ export default {
               .then(res2 => {
                 // console.log(res2.data.nickName);
                 ////
-                this.writers.push(res2.data.nickName);
+                res2.data.image = process.env.VUE_APP_IMAGE_SERVER + res2.data.image
+                this.writers.push({nickname : res2.data.nickName, image : res2.data.image});
                 ////
               })
               .catch(error => {
@@ -540,7 +699,7 @@ export default {
         window.setTimeout(this.CatFollow, 150);
         // this.CatFollow();
     },
-    follow2() {
+    followCheck() {
       const token = this.$cookies.get("auth-token");
 
       axios
@@ -598,7 +757,7 @@ export default {
   },
   mounted() {
     // this.retrieveCatInfo();
-    this.follow2();
+    this.followCheck();
   },
   updated() {},
   created() {
@@ -611,10 +770,75 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// @mixin shadow-big() {
-//   box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.14 * 3),
-//     0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
-// }
+.button {
+  display: inline-block;
+//  position: absolute;
+//  top: 50%;
+//  left: 50%;
+//  transform: translate(-50, -50);
+}
+
+.button {
+ background: none;
+ color: rgb(143, 134, 134);
+ width: 180px;
+ height: 25px;
+ border: 1px solid #FFAD7E;
+ font-size: 16px;
+ border-radius: 4px;
+ transition: .6s;
+ overflow: hidden;
+}
+
+.button:focus {
+ outline: none;
+}
+
+.button:before {
+    content: '';
+    display: block;
+    position: absolute;
+    background: rgba(255,255,255,.5);
+    width: 60px;
+    height: 100%;
+    left: 0;
+    top: 0;
+    opacity: .5;
+    filter: blur(30px);
+    transform: translateX(-130px) skewX(-15deg);
+}
+
+.button:after {
+    content: '';
+    display: block;
+    position: absolute;
+    background: rgba(255,255,255,.2);
+    width: 30px;
+    height: 100%;
+    left: 30px;
+    top: 0;
+    opacity: 0;
+    filter: blur(30px);
+    transform: translateX(-100px) scaleX(-15deg);
+}
+
+.button:hover {
+   background: #FFC192;
+   cursor: pointer;
+}
+
+.button:hover:before {
+ transform: translateX(300px) skewX(-15deg);
+ opacity: .6;
+ transition: .7s;
+}
+
+.button:hover:after {
+ transform: translateX(300px) skewX(-15deg);
+ opacity: 1;
+ transition: .7s;
+}
+
 .section {
   padding: 0;
 }
