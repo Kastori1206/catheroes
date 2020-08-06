@@ -19,7 +19,7 @@
     <div class="main main-raised">
       <div class="section section-map">
         <div class="container" style="margin: auto;">
-          <Map></Map>
+          <Map @submit-dong="centerDong"></Map>
         </div>
       </div>
     </div>
@@ -102,6 +102,10 @@ export default {
       } else {
         this.leafShow = true;
       }
+    },
+    centerDong(dong){
+      // console.log("@@@2")
+      this.$emit('submit-dong', dong)
     }
   },
   computed: {

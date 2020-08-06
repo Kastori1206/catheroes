@@ -50,6 +50,35 @@ public class CatController {
 	// @Autowired
 	// private JwtService jwtService;
 
+	@PostMapping("/update")
+	@ApiOperation(value = "고양이 상세정보 수정")
+	public Object update(@RequestParam("catid") long catid, @RequestParam("attr") String attr, @RequestParam("breed") String breed, @RequestParam("conditions") String conditions) {
+		ResponseEntity response = null;
+		final CatInfoResponse result = new CatInfoResponse();
+		Cat cat = catDao.getCatByCatid(catid).get();
+
+		// 고양이 상세정보 수정 부분 코드작성
+		cat.setBreed(breed);
+		cat.setAttr(attr);
+		cat.setConditions(conditions);
+		catDao.save(cat);
+		
+		Optional<Cat> catOpt = catDao.getCatByCatid(catid);
+		result.status = true;
+		result.data = "success";
+		result.nickName = catOpt.get().getNickname();
+		result.age = catOpt.get().getAge();
+		result.breed = catOpt.get().getBreed();
+		result.location = catOpt.get().getLocation();
+		result.attr = catOpt.get().getAttr();
+		result.conditions = catOpt.get().getConditions();
+		result.lat = catOpt.get().getLat();
+		result.lng = catOpt.get().getLng();
+		response = new ResponseEntity<>(result, HttpStatus.OK);
+
+		return response;
+	}
+
 	@GetMapping("/detail/{catid}")
 	@ApiOperation(value = "고양이 상세정보")
 	public Object detail(@PathVariable("catid") int catid) {
@@ -104,6 +133,7 @@ public class CatController {
 				result.lat = cat.getLat();
 				result.lng = cat.getLng();
 				result.catid = cat.getCatid();
+				result.image = cat.getImage();
 				results.add(result);
 			}
 
@@ -176,6 +206,90 @@ public class CatController {
 			response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 		}
 
+		return response;
+	}
+
+	@PostMapping("/search")
+	@ApiOperation(value = "고양이 이름으로 검색")
+	public Object searchName(@RequestParam(required = true) final String nickname,
+	@RequestParam(required = true) final String location) {
+		System.out.println("nickname : " + nickname);
+		System.out.println("location : " + location);
+
+		List<Cat> catOpt = catDao.findCatByLocationAndNicknameContaining(location, nickname);
+
+		ResponseEntity response = null;
+
+		if (!catOpt.isEmpty()) {	
+			final List<CatInfoResponse> results = new ArrayList<CatInfoResponse>();
+
+			for(Cat cat : catOpt) {
+				CatInfoResponse result = new CatInfoResponse();
+				result.status = true;
+				result.data = "success";
+				result.age = cat.getAge();
+				result.attr = cat.getAttr();
+				result.breed = cat.getBreed();
+				result.catid = cat.getCatid();
+				result.conditions = cat.getConditions();
+				result.family = cat.getFamily();
+				result.food = cat.getFood();
+				result.hospital = cat.getHospital();
+				result.image = cat.getImage();
+				result.lat = cat.getLat();
+				result.lng = cat.getLng();
+				result.location = cat.getLocation();
+				result.neutered = cat.getNeutered();
+				result.nickName = cat.getNickname();
+				results.add(result);
+			}
+
+			response = new ResponseEntity<>(results, HttpStatus.OK);
+		} else {
+			response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		}
+		return response;
+	}
+
+	@PostMapping("/searchImage")
+	@ApiOperation(value = "고양이 사진으로 검색")
+	public Object searchImage(@RequestParam(required = true) final String breed,
+	@RequestParam(required = true) final String location) {
+		System.out.println("breed : " + breed);
+		System.out.println("location : " + location);
+
+		List<Cat> catOpt = catDao.findCatByLocationAndBreed(location, breed);
+
+		ResponseEntity response = null;
+
+		if (!catOpt.isEmpty()) {	
+			final List<CatInfoResponse> results = new ArrayList<CatInfoResponse>();
+
+			for(Cat cat : catOpt) {
+				CatInfoResponse result = new CatInfoResponse();
+				result.status = true;
+				result.data = "success";
+				result.age = cat.getAge();
+				result.attr = cat.getAttr();
+				result.breed = cat.getBreed();
+				result.catid = cat.getCatid();
+				result.conditions = cat.getConditions();
+				result.family = cat.getFamily();
+				result.food = cat.getFood();
+				result.hospital = cat.getHospital();
+				result.image = cat.getImage();
+				result.lat = cat.getLat();
+				result.lng = cat.getLng();
+				result.location = cat.getLocation();
+				result.neutered = cat.getNeutered();
+				result.nickName = cat.getNickname();
+				results.add(result);
+			}
+
+			response = new ResponseEntity<>(results, HttpStatus.OK);
+		} else {
+			response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		}
 		return response;
 	}
 }

@@ -1,9 +1,10 @@
 <template>
   <div id="material-kit">
     <div :class="{ 'nav-open': NavbarStore.showNavbar }">
-      <router-view name="header" @submit-logout="logout" :isLoggedIn="isLoggedIn" />
+      <router-view name="header" @submit-logout="logout" :isLoggedIn="isLoggedIn" :centerdong="centerdong"/>
       <div>
-        <router-view @submit-login-data="login" @kakao-login="kakaoLogin"/>
+        <router-view @submit-login-data="login" @kakao-login="kakaoLogin" @submit-dong="dong"/>
+        
       </div>
       <router-view name="footer" />
     </div>
@@ -17,6 +18,10 @@ export default {
   created() {},
   watch: {},
   methods: {
+    dong(dong){
+      // console.log("@@@3")
+      this.centerdong = dong;
+    },
     login(loginData) {
       console.log("로그인요청받았다요청받았다요청받았다요청받았다");
       const formData = new FormData();
@@ -71,7 +76,8 @@ export default {
   },
   data: function() {
     return {
-      isLoggedIn: false
+      isLoggedIn: false,
+      centerdong: null
     };
   },
   mounted() {

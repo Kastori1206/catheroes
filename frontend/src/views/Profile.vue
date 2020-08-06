@@ -65,7 +65,7 @@
                           <div class="md-title">{{ follow.nickName }}</div>
                         </md-card-header-text>
                         <div style="width: 85px; height: 50px; margin: 10px;">
-                          <img :src="tabPane2[3].image" alt="CatImage" />
+                          <img :src=follow.image />
                         </div>
                       </md-card-header>
                     </div>
@@ -80,7 +80,7 @@
                     <md-card style="width: 50vw;">
                       <md-card-header>
                         <md-avatar style="margin-left: 10px;">
-                          <img src="@/assets/img/faces/avatar.jpg" style="margin-bottom: 0px;" />
+                          <img :src="userinfo.image" style="margin-bottom: 0px;" />
                         </md-avatar>
 
                         <div class="md-title">{{ post.title }}</div>
@@ -88,7 +88,7 @@
                       </md-card-header>
 
                       <md-card-media>
-                        <img src="@/assets/img/examples/mariya-georgieva.jpg" />
+                        <img :src=post.image />
                       </md-card-media>
 
                       <md-card-content>{{ post.content }}</md-card-content>
@@ -318,7 +318,7 @@ export default {
       }
     },
     onChangeImages(e) {
-      console.log(e.target.files);
+      // console.log(e.target.files);
       this.file = e.target.files[0];
 
       // this.imgpreview = URL.createObjectURL(file);
@@ -339,7 +339,7 @@ export default {
       else this.deleteHandler();
     },
     deleteHandler() {
-      console.log("유저정보 지우라 했다");
+      // console.log("유저정보 지우라 했다");
       const formData = new FormData();
       formData.append("email", this.userinfo.email);
       axios
@@ -349,7 +349,7 @@ export default {
         )
         .then(res => {
           alert("회원탈퇴가 완료되었습니다.");
-          console.log(res);
+          // console.log(res);
           this.$cookies.remove("auth-token");
           this.$router.push("/");
         })
@@ -397,7 +397,7 @@ export default {
           password: this.password
         })
         .then(res => {
-          console.log(res);
+          // console.log(res);
           this.userinfo.email = res.data.email;
           this.userinfo.nickname = res.data.nickName;
           this.userinfo.uid = res.data.uid;
@@ -420,7 +420,7 @@ export default {
     },
     //유저 정보 확인
     retrieveUserInfo() {
-      console.log("유저정보받아오라고했다");
+      // console.log("유저정보받아오라고했다");
       const token = this.$cookies.get("auth-token");
       axios
         .post(
@@ -431,8 +431,8 @@ export default {
           }
         )
         .then(res => {
-          console.log("user정보 출력");
-          console.log(res.data);
+          // console.log("user정보 출력");
+          // console.log(res.data);
           this.userinfo.email = res.data.email;
           this.userinfo.nickname = res.data.nickName;
           this.userinfo.uid = res.data.uid;
@@ -445,10 +445,10 @@ export default {
         });
     },
     UserFollow() {
-      console.log("해당 유저의 팔로우한 고양이를 받아오라고했다");
+      // console.log("해당 유저의 팔로우한 고양이를 받아오라고했다");
       // const number = 1;
       const userid = this.userinfo.uid;
-      console.log("uid 는 : " + userid);
+      // console.log("uid 는 : " + userid);
       const formData = new FormData();
       formData.append("userid", userid);
       axios
@@ -459,7 +459,7 @@ export default {
         .then(res => {
           // console.log(res.data.length);
           for (var i = 0; i < res.data.length; i++) {
-            console.log("follow catid = " + res.data[i].catid);
+            // console.log("follow catid = " + res.data[i].catid);
             axios
               .get(
                 process.env.VUE_APP_SPRING_API_SERVER_URL +
@@ -467,8 +467,9 @@ export default {
                   res.data[i].catid
               )
               .then(res => {
-                console.log(res.data);
+                // console.log(res.data);
                 ////
+                res.data.image = process.env.VUE_APP_IMAGE_SERVER + res.data.image
                 this.follows.push(res.data);
                 ////
               })
@@ -476,14 +477,14 @@ export default {
                 console.log(error);
               });
           }
-          console.log(this.items);
+          // console.log(this.items);
         })
         .catch(error => {
           console.log(error);
         });
     },
     UserPost() {
-      console.log("유저포스트받아오라고했다");
+      // console.log("유저포스트받아오라고했다");
       const userid = this.userinfo.uid;
       const formData = new FormData();
       formData.append("userid", userid);
@@ -494,7 +495,8 @@ export default {
         )
         .then(res => {
           for (var i = 0; i < res.data.length; i++) {
-            console.log(res.data[i].userid);
+            // console.log(res.data[i]);
+            res.data[i].image = process.env.VUE_APP_IMAGE_SERVER + res.data[i].image
             this.posts.push(res.data[i]);
           }
         })

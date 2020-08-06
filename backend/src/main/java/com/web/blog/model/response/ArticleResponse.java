@@ -13,5 +13,7 @@ public class ArticleResponse extends BasicResponse {
     public String title;
     @ApiModelProperty(value = "content", position = 8)
     public String content;
+    @ApiModelProperty(value = "image", position = 9)
+    public String image;
 }
 

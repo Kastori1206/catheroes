@@ -12,6 +12,33 @@
           <h3 class="md-title">길냥이히어로즈</h3>
         </router-link>
       </div>
+
+      <div id="inputs">
+        <!-- <i class="fas fa-camera" @click="searchImage"></i> -->
+        <!-- <md-field class="md-form-group" slot="inputs"> -->
+        <label for="ttest">
+          <i class="fas fa-camera"></i>
+        </label>
+        <md-input
+          id="ttest"
+          ref="imageInput"
+          type="file"
+          style="display:none;"
+          @change="onChangeImages"
+        ></md-input>
+        <!-- </md-field> -->
+        <!-- <md-field> -->
+        <!-- <label>Only images</label>
+        <md-file @change="onChangeImages" accept="image/*" />
+        </md-field>-->
+        <div class="md-layout">
+          <md-field class="md-form-group">
+            <i class="fas fa-search"></i>
+            <md-input @keydown.enter="searchName" v-model="search" placeholder="Search Cat's Name"></md-input>
+          </md-field>
+        </div>
+      </div>
+
       <div class="md-toolbar-section-end">
         <md-button
           class="md-just-icon md-simple md-toolbar-toggle"
@@ -57,7 +84,7 @@
                 <router-link to="/detail">
                   <p>DETAIL</p>
                 </router-link>
-              </md-list-item> -->
+              </md-list-item>-->
 
               <md-list-item>
                 <router-link to="/create">
@@ -93,6 +120,8 @@ function resizeThrottler(actualResizeHandler) {
 }
 
 import MobileMenu from "@/layout/MobileMenu";
+import axios from "axios";
+
 export default {
   components: {
     MobileMenu
@@ -111,24 +140,50 @@ export default {
           "warning",
           "info"
         ].includes(value);
-      },
+      }
     },
     colorOnScroll: {
       type: Number,
       default: 0
     },
     isLoggedIn: Boolean,
+    centerdong: String
   },
   data() {
     return {
+      image: null,
       extraNavClasses: "",
       toggledClass: false,
+      search: "",
+      imageInput: "",
+      center: this.dong
     };
   },
-  computed: {
-
-  },
+  computed: {},
   methods: {
+    onChangeImages(e) {
+      // console.log(e.target.files);
+      const file = e.target.files[0];
+      this.image = file;
+      const fd = new FormData();
+      fd.append("image", this.image);
+      axios
+        .post(process.env.VUE_APP_DJANGO_API_SERVER_URL + "keras/", fd, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+        .then(res => {
+          // console.log(res);
+          this.breed = res.data;
+          // console.log(this.breed)
+
+          this.searchImage(res.data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     bodyClick() {
       let bodyClick = document.getElementById("bodyClick");
 
@@ -168,9 +223,43 @@ export default {
       resizeThrottler(this.handleScroll);
     },
     logout() {
-      console.log('로그아웃요청보냈다고했다')
-      this.$emit('submit-logout')
+      console.log("로그아웃요청보냈다고했다");
+      this.$emit("submit-logout");
     },
+    searchName() {
+      // console.log(this.search);
+      // console.log(this.centerdong);
+
+      const formData = new FormData();
+      formData.append("nickname", this.search);
+      formData.append("location", this.centerdong);
+
+      axios
+        .post(
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "cat/search",
+          formData
+        )
+        .then(res => {
+          console.log(res);
+        })
+        .catch(error => {});
+    },
+    searchImage(data) {
+      // console.log(data)
+      const formData = new FormData();
+      formData.append("breed", data);
+      formData.append("location", this.centerdong);
+
+      axios
+        .post(
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "cat/searchImage",
+          formData
+        )
+        .then(res => {
+          console.log(res);
+        })
+        .catch(error => {});
+    }
   },
   mounted() {
     document.addEventListener("scroll", this.scrollListener);

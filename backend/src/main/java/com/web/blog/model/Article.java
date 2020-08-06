@@ -37,4 +37,5 @@ public class Article {
     private long catid;
     private String title;
     private String content;
+    private String image;
 }

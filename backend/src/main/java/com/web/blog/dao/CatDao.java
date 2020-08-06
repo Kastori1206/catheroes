@@ -17,9 +17,12 @@ public interface CatDao extends JpaRepository<Cat, String> {
     
     List<Cat> findAll();    
     List<Cat> findCatByLocation(String location);
-
+    List<Cat> findCatByLocationAndNicknameContaining(String location, String nickname);
+    List<Cat> findCatByLocationAndBreed(String location, String breed);
+    
     @Transactional
     @Query(value=" SELECT max(catid) "
     		   + " FROM cat ", nativeQuery = true)
     Long getMaxCatId() ;
+
 }
