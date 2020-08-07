@@ -6,7 +6,7 @@ import os, glob, numpy as np
 from keras.models import load_model
 
 directory = os.getcwd()
-model = load_model(directory + '/keras_drf/multi_img_classification.model')
+model = load_model(directory + '/keras_drf/cat_model.h5')
 
 @api_view(['POST'])
 def keras(request):
@@ -24,11 +24,27 @@ def keras(request):
     pre_ans = prediction[0].argmax()
     if pre_ans == 0: 
         pre_ans_str = "고등어태비"
-    else: 
+    elif pre_ans == 1:
         pre_ans_str = "치즈태비"
+    elif pre_ans == 2:
+        pre_ans_str = "검은고양이"
+    elif pre_ans == 3:
+        pre_ans_str = "턱시도"
+    elif pre_ans == 4:
+        pre_ans_str = "삼색이"
+    else: 
+        pre_ans_str = "흰고양이"
     if prediction[0][0] >= 0.8 : 
         print("해당 이미지는 " + pre_ans_str + "로 추정됩니다.")
     elif prediction[0][1] >= 0.8: 
+        print("해당 이미지는 " + pre_ans_str + "으로 추정됩니다.")
+    elif prediction[0][2] >= 0.8: 
+        print("해당 이미지는 " + pre_ans_str + "으로 추정됩니다.")
+    elif prediction[0][3] >= 0.8: 
+        print("해당 이미지는 " + pre_ans_str + "으로 추정됩니다.")
+    elif prediction[0][4] >= 0.8: 
+        print("해당 이미지는 " + pre_ans_str + "으로 추정됩니다.")
+    elif prediction[0][5] >= 0.8: 
         print("해당 이미지는 " + pre_ans_str + "으로 추정됩니다.")
     res = pre_ans_str
     return Response(res)

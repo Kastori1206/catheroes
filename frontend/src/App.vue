@@ -1,9 +1,9 @@
 <template>
   <div id="material-kit">
     <div :class="{ 'nav-open': NavbarStore.showNavbar }">
-      <router-view name="header" @submit-logout="logout" :isLoggedIn="isLoggedIn" :centerdong="centerdong"/>
+      <router-view name="header" @submit-logout="logout" :isLoggedIn="isLoggedIn" :centerdong="centerdong" @submit-search-data="passsearch"/>
       <div>
-        <router-view @submit-login-data="login" @kakao-login="kakaoLogin" @submit-dong="dong"/>
+        <router-view @submit-login-data="login" @kakao-login="kakaoLogin" @submit-dong="dong" :searchData="searchData"/>
         
       </div>
       <router-view name="footer" />
@@ -18,6 +18,9 @@ export default {
   created() {},
   watch: {},
   methods: {
+    passsearch(res) {
+      this.searchData = res;
+    },
     dong(dong){
       // console.log("@@@3")
       this.centerdong = dong;
@@ -76,6 +79,7 @@ export default {
   },
   data: function() {
     return {
+      searchData: null,
       isLoggedIn: false,
       centerdong: null
     };

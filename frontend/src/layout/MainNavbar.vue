@@ -97,6 +97,12 @@
                   <p>NEWS</p>
                 </router-link>
               </md-list-item>
+
+              <md-list-item>
+                <router-link to="/funding">
+                  <p>FUNDING</p>
+                </router-link>
+              </md-list-item>
             </md-list>
           </div>
         </div>
@@ -241,6 +247,8 @@ export default {
         )
         .then(res => {
           console.log(res);
+          this.$emit("submit-search-data", res);
+          this.$router.push("/search");
         })
         .catch(error => {});
     },
@@ -257,6 +265,8 @@ export default {
         )
         .then(res => {
           console.log(res);
+          this.$emit("submit-search-data", res);
+          this.$router.push("/search");
         })
         .catch(error => {});
     }
