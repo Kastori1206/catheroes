@@ -148,6 +148,7 @@ export default {
       axios
         .post(SERVER_URL + "/cat/catList", formData)        
         .then(res => {
+          console.log(res.data)
           var index = 0;
           res.data.forEach(e => {     
             var imageSrc =
@@ -184,7 +185,7 @@ export default {
         });
     },
     createOverlay(data) {
-      console.log(data)
+      // console.log(data)
       var content =
         '<div class="wrap">' +
         '    <div class="info2">' +

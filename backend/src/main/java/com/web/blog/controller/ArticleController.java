@@ -212,6 +212,7 @@ public class ArticleController {
 	   articleDao.save(article);
 	   result.status = true;
 	   result.data = "success";
+	   result.object = path;
  
 	   return new ResponseEntity<>(result, HttpStatus.OK);
 	 }

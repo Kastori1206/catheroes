@@ -190,7 +190,7 @@ export default {
       request.append("lng", this.lng);
       request.append("location", this.dong);
       request.append("imgpath", "/");
-      request.append("breed", "breed");
+      request.append("breed", this.breed);
 
       axios
         .post(

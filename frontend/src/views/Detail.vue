@@ -190,9 +190,9 @@
                         </md-button>
                         <!-- end closeBtn -->
                         <!-- start deleteConfirm modal -->
-                        <modal v-if="deleteConfirmModal" @close="deleteConfirmModalHide">
+                        <modal :id="'modal_'+index" v-if="deleteConfirmModal" @close="deleteConfirmModalHide">
                           <template slot="header">
-                            <h4 class="modal-title">포스트 삭제</h4>
+                            <h4 class="modal-title">포스트 삭제 {{ index }}</h4>
                             <md-button
                               class="md-simple md-just-icon md-round modal-default-button"
                               @click="deleteConfirmModalHide"
@@ -206,7 +206,7 @@
                           </template>
 
                           <template slot="footer">
-                            <md-button style="margin: 0 auto" class="md-danger md-simple" @click="deletePost(post.articleid, index)">삭제</md-button>
+                            <md-button style="margin: 0 auto" class="md-danger md-simple" @click="deletePost(posts[index].articleid, index)">삭제</md-button>
                           </template>
                         </modal>
                         <!-- end deleteConfirm modal -->
@@ -258,6 +258,7 @@
                   </md-card>-->
                   <!--  -->
                 </div>
+                <infinite-loading @infinite="CatPost"></infinite-loading>
               </template>
               <template slot="tab-pane-3">
                 <!-- <div class="wrapper"> -->
@@ -274,7 +275,7 @@
                               <div class="md-title">{{user.nickName}}</div>
                             </md-card-header-text>
                             <div style="width: 85px; height: 50px; margin: 10px;">
-                              <img :src=user.image alt="NewsImage" />
+                              <img style="height: 150%" :src=user.image alt="NewsImage" />
                             </div>
                           </md-card-header>
                         </div>
@@ -301,17 +302,20 @@ import { LoginCard } from "@/components";
 import { Modal } from "@/components";
 import { Tabs } from "@/components";
 import axios from "axios";
+import InfiniteLoading from "vue-infinite-loading";
 
 export default {
   components: {
     Pagination,
     LoginCard,
     Modal,
-    Tabs
+    Tabs,
+    InfiniteLoading,
   },
   bodyClass: "profile-page",
   data() {
     return {
+      limit: -1,
       deleteConfirmModal: false,
       isUpdated: false,
       attrUpdateModal: false,
@@ -385,6 +389,7 @@ export default {
       this.deleteConfirmModal = false;
     },
     deletePost(articleid, index) {
+      console.log(articleid)
       const formData = new FormData();
       formData.append("articleid", articleid);
       axios
@@ -464,10 +469,10 @@ export default {
           this.posts.unshift({
             title: this.title,
             content: this.content,
-            image: this.image,
+            image: process.env.VUE_APP_IMAGE_SERVER+res.data.object,
             isclick: false
           });
-          this.writers.unshift(this.userinfo.nickname);
+          this.writers.unshift({nickname: this.userinfo.nickname, image: this.userinfo.image});
           this.comments.unshift([]);
           this.title = "";
           this.content = "";
@@ -593,7 +598,7 @@ export default {
           console.log(error);
         });
     },
-    CatPost() {
+    CatPost($state) {
       // console.log("고양이포스트받아오라고했다");
       const catid = this.$route.params.catid;
       const formData = new FormData();
@@ -603,57 +608,70 @@ export default {
           process.env.VUE_APP_SPRING_API_SERVER_URL + "article/findByCatId",
           formData
         )
-        .then(res => {
-          for (var i = 0; i < res.data.length; i++) {
-            // console.log("왜안됨?" + res.data[i].userid);
-            console.log("포스트 정보")
-            console.log(res.data[i]);
-            res.data[i].image = process.env.VUE_APP_IMAGE_SERVER+res.data[i].image
-            const formData = new FormData();
-            formData.append("uid", res.data[i].userid);
+        .then((res) => {
+          if (this.limit < res.data.length) {
+            console.log(res.data.length);
+            for (
+              var i = this.limit;
+              i < this.limit + 1 && i < res.data.length;
+              i++
+            ) {
+              // console.log("왜안됨?" + res.data[i].userid);
+              const formData = new FormData();
+              formData.append("uid", res.data[i].userid);
+              // 유저 아이디로 유저 닉네임 가져오기
+              axios
+                .post(
+                  process.env.VUE_APP_SPRING_API_SERVER_URL +
+                    "account/findByUid",
+                  formData
+                )
+                .then((res2) => {
+                  // console.log(res2.data.nickName);
+                  ////
+                  this.writers.push({nickname: res2.data.nickName, image: process.env.VUE_APP_IMAGE_SERVER+res2.data.image});
+                  ////
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+              //
+              formData = new FormData();
+              formData.append("articleid", res.data[i].articleid);
+              // 댓글불러오기
+              axios
+                .post(
+                  process.env.VUE_APP_SPRING_API_SERVER_URL +
+                    "article/findCommentByArticleId",
+                  formData
+                )
+                .then((res2) => {
+                  console.log(res2.data);
+                  this.comments.push(res2.data);
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+              // console.log("이제 res.data[i]에 isclick변수를 넣을거야");
+              res.data[i].isclick = false;
+              console.log(res);
+              res.data[i].image = process.env.VUE_APP_IMAGE_SERVER+res.data[i].image;
+              this.posts.push(res.data[i]);
+              $state.loaded();
+            }
+          } else {
+            console.log(
+              "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2"
+            );
+            $state.complete();
 
-            axios
-              .post(
-                process.env.VUE_APP_SPRING_API_SERVER_URL + "account/findByUid",
-                formData
-              )
-              .then(res2 => {
-                // console.log(res2.data.nickName);
-                ////
-                res2.data.image = process.env.VUE_APP_IMAGE_SERVER + res2.data.image
-                this.writers.push({nickname : res2.data.nickName, image : res2.data.image});
-                ////
-              })
-              .catch(error => {
-                console.log(error);
-              });
-
-            formData = new FormData();
-            formData.append("articleid", res.data[i].articleid);
-
-            axios
-              .post(
-                process.env.VUE_APP_SPRING_API_SERVER_URL +
-                  "article/findCommentByArticleId",
-                formData
-              )
-              .then(res2 => {
-                // console.log(res2.data);
-                this.comments.push(res2.data);
-              })
-              .catch(error => {
-                console.log(error);
-              });
-            // console.log("이제 res.data[i]에 isclick변수를 넣을거야");
-            res.data[i].isclick = false;
-            // console.log(res.data[i]);
-            this.posts.push(res.data[i]);
           }
         })
         .catch(error => {
           console.log(error);
         });
       // console.log(this.comments);
+      this.limit += 1;
     },
     follow() {
       const token = this.$cookies.get("auth-token");
@@ -761,10 +779,11 @@ export default {
   },
   updated() {},
   created() {
+    this.posts = [];
     this.retrieveUserInfo();
     this.retrieveCatInfo();
     this.CatFollow();
-    this.CatPost();
+    this.CatPost($state);
   }
 };
 </script>

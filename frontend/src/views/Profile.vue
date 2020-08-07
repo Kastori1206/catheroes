@@ -309,6 +309,7 @@ export default {
             }
           )
           .then(res => {
+            console.log(res.data)
             this.userinfo.image = process.env.VUE_APP_IMAGE_SERVER + res.data;
             this.classicModalHide();
           })
