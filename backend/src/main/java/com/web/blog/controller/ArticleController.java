@@ -1,33 +1,26 @@
 package com.web.blog.controller;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.validation.Valid;
-
-import com.web.blog.dao.ArticleDao;
-import com.web.blog.dao.CommentDao;
-import com.web.blog.model.Article;
-import com.web.blog.model.Cat;
-import com.web.blog.model.Comment;
-import com.web.blog.model.request.CatRegistRequest;
-import com.web.blog.model.request.CommentSaveRequest;
-import com.web.blog.model.response.ArticleResponse;
-import com.web.blog.model.response.BasicResponse;
-import com.web.blog.model.response.CommentResponse;
-import com.web.blog.utill.amazon.AmazonClient;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.web.blog.model.Article;
+import com.web.blog.model.Comment;
+import com.web.blog.model.request.CommentRequest;
+import com.web.blog.model.response.BasicResponse;
+import com.web.blog.service.ArticleService;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -39,198 +32,71 @@ import io.swagger.annotations.ApiResponses;
 		@ApiResponse(code = 500, message = "Failure", response = BasicResponse.class) })
 
 @CrossOrigin(origins = { "http://localhost:3000" })
-@RequestMapping("/article")
+@RequestMapping("/api/v1")
 @RestController
 public class ArticleController {
 
 	@Autowired
-	private ArticleDao articleDao;
-
-	@Autowired
-	private CommentDao commentDao;
-
-	@Autowired
-	private AmazonClient amazonClient;
-
-	@PostMapping("/deleteComment")
-	@ApiOperation(value = "댓글 삭제하기")
-	public Object deleteComment(@RequestParam(required = true) final long commentid) {
-		final BasicResponse result = new BasicResponse();
-		Comment comment = null;		
-		System.out.println(commentid);
-		
-		if(commentDao.deleteCommentByCommentid(commentid)>0) {
-			result.status = true;
-			result.data = "success";
-		} else {
-			result.status = false;
-			result.data = "fail";
-		}
-
-		return new ResponseEntity<>(result, HttpStatus.OK);
+	ArticleService articleService;
+	
+	@GetMapping("/article/")
+	@ApiOperation(value="포스트 전체 조회")
+	public ResponseEntity<List<Article>> getAllArticle(){
+		return ResponseEntity.ok().body(articleService.findAll());
 	}
 	
-	@PostMapping("/saveComment")
+	@GetMapping("/article/{mid}")
+	@ApiOperation(value="사용자 게시글 조회")
+	public ResponseEntity<List<Article>> getMemberArticle(@PathVariable long mid){
+		return ResponseEntity.ok().body(articleService.findArticleByMemberid(mid));
+	}
+	
+	@GetMapping("/article/detail/{articleid}")
+	@ApiOperation(value="포스트 상세 조회")
+	public ResponseEntity<Article> getArticle(@PathVariable long articleid){
+		Article test = articleService.findByArticleId(articleid);
+		System.out.println(test.getMember());
+		return ResponseEntity.ok().body(articleService.findByArticleId(articleid));
+	}
+
+	//수정해야함(DTO만들어서 해결해야할듯)
+	@PostMapping("/article/")
+	@ApiOperation(value="포스트 등록")
+	public ResponseEntity<Article> saveArticle(@RequestBody Article article, MultipartFile file){
+		return ResponseEntity.ok().body(articleService.saveArticle(article, file));
+	}
+	@PutMapping("/article/{articleid}")
+	@ApiOperation(value="포스트 수정")
+	public ResponseEntity<Article> updateArticle(@PathVariable long articleid, @RequestBody Article article){
+		article.setArticleid(articleid);
+		return ResponseEntity.ok().body(articleService.updateArticle(article));
+	}
+	
+	@DeleteMapping("/article/{articleid}")
+	@ApiOperation(value = "포스트 삭제")
+	public HttpStatus deleteArticle(@PathVariable long articleid) {
+		articleService.deleteByArticleId(articleid);
+		return HttpStatus.OK;
+	}
+	
+	@GetMapping("/article/comment/{articleid}")
+	@ApiOperation(value = "commnet 조회")
+	public ResponseEntity<List<Comment>> getCommentByArticleId(long articleid) {
+		return ResponseEntity.ok().body(articleService.findCommentByArticleArticleid(articleid));
+	}
+	
+	@PostMapping("/article/comment")
 	@ApiOperation(value = "댓글 등록하기")
-	public Object saveComment(@Valid @RequestBody CommentSaveRequest req) {
-		final BasicResponse result = new BasicResponse();
-		Comment comment = null;		
-		System.out.println(req);
-
-		comment = Comment.builder()
-				 .articleid(req.getArticleid())
-				 .comment(req.getComment())
-				 .writer(req.getWriter())
-				 .build();
-		System.out.println(comment.toString());		 
-		commentDao.save(comment);
-		result.status = true;
-		result.data = "success";
-
-		return new ResponseEntity<>(result, HttpStatus.OK);
+	public ResponseEntity<Comment> saveComment(@RequestBody CommentRequest commentRequest) {
+		System.out.println(commentRequest.toString());
+		return ResponseEntity.ok().body(articleService.saveComment(commentRequest));
 	}
 	
-	@PostMapping("/findByCatId")
-	@ApiOperation(value = "catid에 해당하는 게시글 조회")
-	public Object findByCatId(@RequestParam(required = true) final long catid) {
-		System.out.println("------------------------------");
-
-		List<Article> articleOpt = articleDao.findArticleByCatidOrderByArticleidDesc(catid);
-
-		ResponseEntity response = null;
-
-		if (!articleOpt.isEmpty()) {	
-			final List<ArticleResponse> results = new ArrayList<ArticleResponse>();
-
-			for(Article article : articleOpt) {
-				ArticleResponse result = new ArticleResponse();
-				result.status = true;
-				result.data = "success";
-				result.articleid = article.getArticleid();
-				result.userid = article.getUserid();
-				result.catid = article.getCatid();
-				result.title = article.getTitle();
-				result.content = article.getContent();
-				result.image = article.getImage();
-				results.add(result);
-			}
-
-			response = new ResponseEntity<>(results, HttpStatus.OK);
-		} else {
-			response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-		}
-
-		return response;
-	}
-	
-	@PostMapping("/findByUserId")
-	@ApiOperation(value = "userid에 해당하는 게시글 조회")
-	public Object findByUserId(@RequestParam(required = true) final long userid) {
-		System.out.println("------------------------------");
-
-		List<Article> articleOpt = articleDao.findArticleByUserid(userid);
-
-		ResponseEntity response = null;
-
-		if (!articleOpt.isEmpty()) {	
-			final List<ArticleResponse> results = new ArrayList<ArticleResponse>();
-
-			for(Article article : articleOpt) {
-				ArticleResponse result = new ArticleResponse();
-				result.status = true;
-				result.data = "success";
-				result.articleid = article.getArticleid();
-				result.userid = article.getUserid();
-				result.catid = article.getCatid();
-				result.title = article.getTitle();
-				result.content = article.getContent();
-				result.image = article.getImage();
-				results.add(result);
-			}
-
-			response = new ResponseEntity<>(results, HttpStatus.OK);
-		} else {
-			response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-		}
-
-		return response;
-	}
-
-	@PostMapping("/findCommentByArticleId")
-	@ApiOperation(value = "userid에 해당하는 게시글 조회")
-	public Object findCommentByArticleId(@RequestParam(required = true) final long articleid) {
-		System.out.println("------------------------------");
-
-		List<Comment> commentOpt = commentDao.findCommentByArticleid(articleid);
-
-		ResponseEntity response = null;
-
-		if (!commentOpt.isEmpty()) {	
-			final List<CommentResponse> results = new ArrayList<CommentResponse>();
-
-			for(Comment comment : commentOpt) {
-				CommentResponse result = new CommentResponse();
-				result.status = true;
-				result.data = "success";
-				result.commentid = comment.getCommentid();
-				result.articleid = comment.getArticleid();
-				result.comment = comment.getComment();
-				result.writer = comment.getWriter();
-				results.add(result);
-			}
-
-			response = new ResponseEntity<>(results, HttpStatus.OK);
-		} else {
-			response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-		}
-
-		return response;
-	}
-	@PostMapping("/saveArticle")
-	@ApiOperation(value = "포스트 등록하기")
-	public Object signup(@RequestParam("image") MultipartFile image,
-				@RequestParam("userid") long userid,
-				@RequestParam("catid") long catid,
-				@RequestParam("title") String title,
-				@RequestParam("content") String content        
-		 ) throws IOException  {
-	   final BasicResponse result = new BasicResponse();
- 
-	   Article article = null;      
-	
-	   String path = this.amazonClient.uploadFile(image, articleDao.getMaxArticleId()+1,"post/");
- 
-	   // 생성 코드
-	   article = Article.builder()
-			.userid(userid)
-			.catid(catid)
-			.image(path)
-			.title(title)
-			.content(content)
-			.build();
-	   
-	   articleDao.save(article);
-	   result.status = true;
-	   result.data = "success";
- 
-	   return new ResponseEntity<>(result, HttpStatus.OK);
-	 }
-
-	@PostMapping("/deleteArticle")
-	@ApiOperation(value = "포스트 삭제하기")
-	public Object deleteArticle(@RequestParam(required = true) final long articleid) {
-		final BasicResponse result = new BasicResponse();
-		Article article = null;		
-		System.out.println(articleid);
-		
-		if(articleDao.deleteArticleByArticleid(articleid)>0) {
-			result.status = true;
-			result.data = "success";
-		} else {
-			result.status = false;
-			result.data = "fail";
-		}
-
-		return new ResponseEntity<>(result, HttpStatus.OK);
+	@DeleteMapping("/comment/{commentid}")
+	@ApiOperation(value = "댓글 삭제하기")
+	public HttpStatus deleteComment(@PathVariable long commentid) {
+		System.out.println(commentid);
+		articleService.deleteComment(commentid);
+		return HttpStatus.OK;
 	}
 }

@@ -13,11 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.web.blog.model.Cat;
 
 public interface CatDao extends JpaRepository<Cat, String> {
-    Optional<Cat> getCatByCatid(long catid);
-    
-    List<Cat> findAll();    
+	//고양이 상세조회
+    Optional<Cat> findCatByCatid(long catid);
+    //고양이 전체검색->위치
     List<Cat> findCatByLocation(String location);
+    //고양이 이름으로 검색
     List<Cat> findCatByLocationAndNicknameContaining(String location, String nickname);
+    //고양이 검색->종(이미지검색)
     List<Cat> findCatByLocationAndBreed(String location, String breed);
     
     @Transactional

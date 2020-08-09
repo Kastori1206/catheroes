@@ -26,7 +26,6 @@ public class Cat {
     @GeneratedValue(strategy = GenerationType.IDENTITY	)
     private long catid;
 
-    @JsonIgnore   
     private String nickname;
     @Column(name="age")
     private int age; 

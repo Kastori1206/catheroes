@@ -1,0 +1,30 @@
+package com.web.blog.service;
+
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import com.web.blog.model.Article;
+import com.web.blog.model.Comment;
+import com.web.blog.model.request.CommentRequest;
+
+public interface ArticleService {
+	//포스트 전체 조회
+	List<Article> findAll();
+	//포스트 상세조회
+	Article findByArticleId(long articleid);
+	//포스트 등록
+	Article saveArticle(Article article,MultipartFile file);
+	//포스트 삭제
+	void deleteByArticleId(long articleid);
+	//포스트 수정
+	Article updateArticle(Article article);
+	//유저가 작성한 글 보기
+	List<Article> findArticleByMemberid(long mid);
+	//코멘트 조회
+	List<Comment> findCommentByArticleArticleid(long articleid);
+	//코멘트 등록
+	Comment saveComment(CommentRequest commentRequest);
+	//코멘트 삭제
+	void deleteComment(long commentid);
+}
