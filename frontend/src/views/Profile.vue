@@ -65,7 +65,7 @@
                           <div class="md-title">{{ follow.nickName }}</div>
                         </md-card-header-text>
                         <div style="width: 85px; height: 50px; margin: 10px;">
-                          <img :src=follow.image />
+                          <img :src="follow.image" />
                         </div>
                       </md-card-header>
                     </div>
@@ -88,7 +88,7 @@
                       </md-card-header>
 
                       <md-card-media>
-                        <img :src=post.image />
+                        <img :src="post.image" />
                       </md-card-media>
 
                       <md-card-content>{{ post.content }}</md-card-content>
@@ -281,7 +281,7 @@ export default {
   props: {
     header: {
       type: String,
-      default: require("@/assets/img/city-profile.jpg")
+      default: require("@/assets/img/kitty-2948404_1920.jpg")
     }
     // img: {
     //   type: String,
@@ -309,7 +309,7 @@ export default {
             }
           )
           .then(res => {
-            console.log(res.data)
+            console.log(res.data);
             this.userinfo.image = process.env.VUE_APP_IMAGE_SERVER + res.data;
             this.classicModalHide();
           })
@@ -470,7 +470,8 @@ export default {
               .then(res => {
                 // console.log(res.data);
                 ////
-                res.data.image = process.env.VUE_APP_IMAGE_SERVER + res.data.image
+                res.data.image =
+                  process.env.VUE_APP_IMAGE_SERVER + res.data.image;
                 this.follows.push(res.data);
                 ////
               })
@@ -497,7 +498,8 @@ export default {
         .then(res => {
           for (var i = 0; i < res.data.length; i++) {
             // console.log(res.data[i]);
-            res.data[i].image = process.env.VUE_APP_IMAGE_SERVER + res.data[i].image
+            res.data[i].image =
+              process.env.VUE_APP_IMAGE_SERVER + res.data[i].image;
             this.posts.push(res.data[i]);
           }
         })

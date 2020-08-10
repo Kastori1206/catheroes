@@ -15,33 +15,51 @@
         <div class="container">
           <div class="features text-center">
             <h2>전체보기</h2>
-              <!-- start funding elements -->
-                <md-card>
-                  <md-card-media >
-                    <img @click="onPayment" src="@/assets/img/funsam1.jpg" style="height:140px" alt="People">
-                  </md-card-media>
-                  <md-card-header style="margin:0; padding:0; background-color:#ffffff">
-                    <div class="md-title" style="font-size:14px">말랑이 중성화수술 비용 펀딩</div>
-                    <md-progress-bar md-mode="determinate" :md-value="amount" style="width:80%;margin:0 auto"></md-progress-bar>
-                    <div class="md-subhead">30% 58,300원</div>
-                  </md-card-header>
-                </md-card>
-                <md-card>
-                  <md-card-media @click="onPayment">
-                    <img @click="onPayment" src="@/assets/img/funsam2.jpg" style="height:140px" alt="People">
-                  </md-card-media>
-                  <md-card-header style="margin:0; padding:0; background-color:#ffffff">
-                    <div class="md-title" style="font-size:14px">김치 중성화수술 비용 펀딩</div>
-                    <md-progress-bar md-mode="determinate" :md-value="amount2" style="width:80%;margin:0 auto"></md-progress-bar>
-                    <div class="md-subhead">60% 106,500원</div>
-                  </md-card-header>
-                </md-card>
-              <!-- end funding elements -->
-            </div>
+            <!-- start funding elements -->
+            <md-card>
+              <md-card-media>
+                <img
+                  @click="onPayment"
+                  src="@/assets/img/funsam1.jpg"
+                  style="height:140px"
+                  alt="People"
+                />
+              </md-card-media>
+              <md-card-header style="margin:0; padding:0; background-color:#ffffff">
+                <div class="md-title" style="font-size:14px">말랑이 중성화수술 비용 펀딩</div>
+                <md-progress-bar
+                  md-mode="determinate"
+                  :md-value="amount"
+                  style="width:80%;margin:0 auto"
+                ></md-progress-bar>
+                <div class="md-subhead">30% 58,300원</div>
+              </md-card-header>
+            </md-card>
+            <md-card>
+              <md-card-media @click="onPayment">
+                <img
+                  @click="onPayment"
+                  src="@/assets/img/funsam2.jpg"
+                  style="height:140px"
+                  alt="People"
+                />
+              </md-card-media>
+              <md-card-header style="margin:0; padding:0; background-color:#ffffff">
+                <div class="md-title" style="font-size:14px">김치 중성화수술 비용 펀딩</div>
+                <md-progress-bar
+                  md-mode="determinate"
+                  :md-value="amount2"
+                  style="width:80%;margin:0 auto"
+                ></md-progress-bar>
+                <div class="md-subhead">60% 106,500원</div>
+              </md-card-header>
+            </md-card>
+            <!-- end funding elements -->
           </div>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -52,8 +70,8 @@ export default {
   props: {
     header: {
       type: String,
-      default: require("@/assets/img/bg7.jpg")
-    },
+      default: require("@/assets/img/cat-2536662_1920.jpg")
+    }
   },
   data() {
     return {
@@ -73,20 +91,20 @@ export default {
     onPayment() {
       /* 1. 가맹점 식별하기 */
       const { IMP } = window;
-      IMP.init('imp80887593');
+      IMP.init("imp80887593");
 
       /* 2. 결제 데이터 정의하기 */
       const data = {
-        pg: 'html5_inicis',                           // PG사
-        pay_method: 'card',                           // 결제수단
-        merchant_uid: `mid_${new Date().getTime()}`,   // 주문번호
-        amount: 1000,                                 // 결제금액
-        name: '아임포트 결제 데이터 분석',                  // 주문명
-        buyer_name: '홍길동',                           // 구매자 이름
-        buyer_tel: '01012341234',                     // 구매자 전화번호
-        buyer_email: 'example@example',               // 구매자 이메일
-        buyer_addr: '신사동 661-16',                    // 구매자 주소
-        buyer_postcode: '06018',                      // 구매자 우편번호
+        pg: "html5_inicis", // PG사
+        pay_method: "card", // 결제수단
+        merchant_uid: `mid_${new Date().getTime()}`, // 주문번호
+        amount: 1000, // 결제금액
+        name: "아임포트 결제 데이터 분석", // 주문명
+        buyer_name: "홍길동", // 구매자 이름
+        buyer_tel: "01012341234", // 구매자 전화번호
+        buyer_email: "example@example", // 구매자 이메일
+        buyer_addr: "신사동 661-16", // 구매자 주소
+        buyer_postcode: "06018" // 구매자 우편번호
         // ...
       };
 
@@ -98,32 +116,30 @@ export default {
       const {
         success,
         merchant_uid,
-        error_msg,
+        error_msg
         // ...
       } = response;
 
       if (success) {
-        alert('결제 성공');
+        alert("결제 성공");
       } else {
         alert(`결제 실패: ${error_msg}`);
       }
-    },
+    }
   },
-  created() {
-  }
+  created() {}
 };
-
 </script>
 
 <style lang="scss" scoped>
-  .card-expansion {
-    height: 480px;
-  }
+.card-expansion {
+  height: 480px;
+}
 
-  .md-card {
-    width: 320px;
-    margin: 4px;
-    display: inline-block;
-    vertical-align: top;
-  }
+.md-card {
+  width: 320px;
+  margin: 4px;
+  display: inline-block;
+  vertical-align: top;
+}
 </style>
