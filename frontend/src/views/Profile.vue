@@ -57,20 +57,24 @@
               <!-- here you can add your content for tab-content -->
               <template slot="tab-pane-1">
                 <div class="md-layout">
-                  <!--  -->
-                  <div v-for="(follow, index) in follows" :key="index + '_items'">
-                    <div class="md-card-new">
-                      <md-card-header>
-                        <md-card-header-text>
-                          <div class="md-title">{{ follow.nickName }}</div>
-                        </md-card-header-text>
-                        <div style="width: 85px; height: 50px; margin: 10px;">
-                          <img :src=follow.image />
-                        </div>
-                      </md-card-header>
-                    </div>
-                  </div>
-                  <!--  -->
+                  <!-- start print follow list -->
+                    <md-list v-if="follows.length" style="padding:0">
+                      <div v-for="(follow, index) in follows" :key="index + '_items'">
+                      <md-list-item>
+                        <md-avatar>
+                          <img style="margin-bottom:0; float:left" :src=follow.image alt="People">
+                        </md-avatar>
+
+                        <span style="position:relative" class="md-list-item-text">{{ follow.nickName }}</span>
+
+                        <md-button style="background-color:#4B89DC !important" class="md-icon-button">
+                          팔로우
+                        </md-button>
+                      </md-list-item>
+                      <md-divider class="md-inset"></md-divider>
+                      </div>
+                    </md-list>
+                  <!-- end print follow list -->
                 </div>
               </template>
               <template slot="tab-pane-2">
@@ -570,4 +574,12 @@ export default {
     }
   }
 }
+
+.md-list {
+    width: 320px;
+    max-width: 100%;
+    display: inline-block;
+    vertical-align: top;
+    border: 1px solid rgba(#000, .12);
+  }
 </style>

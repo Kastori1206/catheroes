@@ -91,7 +91,7 @@
                   <h4>&#x1F48A; 오늘 {{this.catinfo.nickname}}의 건강상태</h4>
                   <div class="md-layout-item" style="width:180px; margin:0 auto;">
                     <md-field>
-                      <md-select v-model="this.catinfo.conditions" name="conditions" id="conditions" placeholder="오늘의 건강 상태 선택하기">
+                      <md-select v-model="catinfo.conditions" name="conditions" id="conditions" placeholder="오늘의 건강 상태 선택하기">
                         <md-option value="1">&#x1F63C; 기운 넘쳐요</md-option>
                         <md-option value="2">&#x1F63A; 튼튼해요</md-option>
                         <md-option value="3">&#x1F63B; 사랑스러워요</md-option>
@@ -266,6 +266,24 @@
                 <div class="container">
                   <div class="features text-center">
                     <div class="md-layout">
+                      <!-- start print follow list -->
+                        <md-list v-if="items.length" style="padding:0">
+                          <div v-for="(user, index) in items" :key="index + '_items'">
+                          <md-list-item>
+                            <md-avatar>
+                              <img style="margin-bottom:0; float:left" :src=user.image alt="People">
+                            </md-avatar>
+
+                            <span style="position:relative" class="md-list-item-text">{{user.nickName}}</span>
+
+                            <md-button style="background-color:#4B89DC !important" class="md-icon-button">
+                              팔로우
+                            </md-button>
+                          </md-list-item>
+                          <md-divider class="md-inset"></md-divider>
+                          </div>
+                        </md-list>
+                      <!-- end print follow list -->
                       <!--  -->
                       <div v-for="(user, index) in items" :key="index + '_items'">
                         <div class="md-card-new">
@@ -918,5 +936,12 @@ export default {
     // }
   }
 }
+.md-list {
+    width: 320px;
+    max-width: 100%;
+    display: inline-block;
+    vertical-align: top;
+    border: 1px solid rgba(#000, .12);
+  }
 </style>
 
