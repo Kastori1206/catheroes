@@ -141,12 +141,10 @@ export default {
     },
     loadMarker(dong) {
       // console.log('고양이정보받아오라고했다')
-      this.closeMarker();
-      const formData = new FormData();
-      formData.append("location", dong);
+      this.closeMarker();     
 
       axios
-        .post(SERVER_URL + "/cat/catList", formData)        
+        .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "/cat/"+ dong)
         .then(res => {
           console.log(res.data)
           var index = 0;
@@ -185,7 +183,6 @@ export default {
         });
     },
     createOverlay(data) {
-      // console.log(data)
       var content =
         '<div class="wrap">' +
         '    <div class="info2">' +
@@ -198,7 +195,7 @@ export default {
         "           </div>" +
         '            <div class="desc">' +
         '                <div class="ellipsis">' +
-        data.nickName +
+        data.nickname +
         "</div>" +
         '                <div class="jibun ellipsis">' +
         data.breed +

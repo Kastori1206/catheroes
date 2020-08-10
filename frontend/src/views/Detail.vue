@@ -46,7 +46,11 @@
               <template slot="tab-pane-1">
                 <div class="description text-center">
                   <h4>&#x1F476; 품종</h4>
-                  <div class="button" id="breed" @click="breedUpdateModal = true">{{this.catinfo.breed}}</div>
+                  <div
+                    class="button"
+                    id="breed"
+                    @click="breedUpdateModal = true"
+                  >{{this.catinfo.breed}}</div>
                   <modal v-if="breedUpdateModal" @close="breedUpdateModalHide">
                     <template slot="header">
                       <h4 class="modal-title">품종을 선택하세요.</h4>
@@ -59,27 +63,24 @@
                     </template>
 
                     <template slot="body">
-                      <input type="radio" id="one" value="고등어태비" v-model="catinfo.breed">
+                      <input type="radio" id="one" value="고등어태비" v-model="catinfo.breed" />
                       <label for="one">고등어태비</label>
-                      <br>
-                      <input type="radio" id="two" value="치즈태비" v-model="catinfo.breed">
+                      <br />
+                      <input type="radio" id="two" value="치즈태비" v-model="catinfo.breed" />
                       <label for="two">치즈태비</label>
-                      <br>
-                      <input type="radio" id="three" value="삼색이" v-model="catinfo.breed">
+                      <br />
+                      <input type="radio" id="three" value="삼색이" v-model="catinfo.breed" />
                       <label for="three">삼색이</label>
-                      <br>
-                      <input type="radio" id="four" value="턱시도" v-model="catinfo.breed">
+                      <br />
+                      <input type="radio" id="four" value="턱시도" v-model="catinfo.breed" />
                       <label for="four">턱시도</label>
-                      <br>
-                      <input type="radio" id="five" value="젖소" v-model="catinfo.breed">
-                      <label for="five">젖소</label>
-                      <br>
-                      <input type="radio" id="six" value="카오스" v-model="catinfo.breed">
-                      <label for="six">카오스</label>
-                      <br>
-                      <input type="radio" id="seven" value="올블랙" v-model="catinfo.breed">
-                      <label for="seven">올블랙</label>
-                      <br>
+                      <br />
+                      <input type="radio" id="five" value="흰고양이" v-model="catinfo.breed" />
+                      <label for="five">흰고양이</label>
+                      <br />
+                      <input type="radio" id="six" value="검은고양이" v-model="catinfo.breed" />
+                      <label for="six">검은고양이</label>
+                      <br />                      
                     </template>
 
                     <template slot="footer">
@@ -91,7 +92,12 @@
                   <h4>&#x1F48A; 오늘 {{this.catinfo.nickname}}의 건강상태</h4>
                   <div class="md-layout-item" style="width:180px; margin:0 auto;">
                     <md-field>
-                      <md-select v-model="this.catinfo.conditions" name="conditions" id="conditions" placeholder="오늘의 건강 상태 선택하기">
+                      <md-select
+                        v-model="catinfo.conditions"
+                        name="conditions"
+                        id="conditions"
+                        placeholder="오늘의 건강 상태 선택하기"
+                      >
                         <md-option value="1">&#x1F63C; 기운 넘쳐요</md-option>
                         <md-option value="2">&#x1F63A; 튼튼해요</md-option>
                         <md-option value="3">&#x1F63B; 사랑스러워요</md-option>
@@ -102,7 +108,11 @@
                     </md-field>
                   </div>
                   <h4>&#x1F4AC; {{this.catinfo.nickname}} 고양이를 소개해요!</h4>
-                  <div class="button" id="attr" @click="attrUpdateModal = true">{{this.catinfo.attr}}</div>
+                  <div
+                    class="button"
+                    id="attr"
+                    @click="attrUpdateModal = true"
+                  >{{this.catinfo.attr}}</div>
                   <modal v-if="attrUpdateModal" @close="attrUpdateModalHide">
                     <template slot="header">
                       <h4 class="modal-title">{{this.catinfo.nickname}}의 성격은?</h4>
@@ -115,17 +125,23 @@
                     </template>
 
                     <template slot="body">
-                        <md-field>
-                          <md-input style="text-align:center;" v-model="catinfo.attr" placeholder></md-input>
-                        </md-field>
+                      <md-field>
+                        <md-input style="text-align:center;" v-model="catinfo.attr" placeholder></md-input>
+                      </md-field>
                     </template>
 
                     <template slot="footer">
                       <md-button class="md-danger md-simple" @click="attrUpdateModalHide">닫기</md-button>
                     </template>
                   </modal>
-                  <br><br>  
-                  <md-button v-if="isUpdated" style="width:60px; margin:0 auto;" class="md-success md-block" @click="updateCatinfo">수정하기!</md-button>
+                  <br />
+                  <br />
+                  <md-button
+                    v-if="isUpdated"
+                    style="width:60px; margin:0 auto;"
+                    class="md-success md-block"
+                    @click="updateCatinfo"
+                  >수정하기!</md-button>
                 </div>
               </template>
               <template slot="tab-pane-2">
@@ -179,7 +195,7 @@
                     <md-card style="width: 50vw;">
                       <md-card-header>
                         <md-avatar style="margin-left: 10px;">
-                          <img :src="writers[index].image" style="margin-bottom: 0px;" />
+                          <img :src="post.member.image" style="margin-bottom: 0px;" />
                         </md-avatar>
                         <!-- start closeBtn -->
                         <md-button
@@ -190,7 +206,11 @@
                         </md-button>
                         <!-- end closeBtn -->
                         <!-- start deleteConfirm modal -->
-                        <modal :id="'modal_'+index" v-if="deleteConfirmModal" @close="deleteConfirmModalHide">
+                        <modal
+                          :id="'modal_'+index"
+                          v-if="deleteConfirmModal"
+                          @close="deleteConfirmModalHide"
+                        >
                           <template slot="header">
                             <h4 class="modal-title">포스트 삭제 {{ index }}</h4>
                             <md-button
@@ -206,22 +226,26 @@
                           </template>
 
                           <template slot="footer">
-                            <md-button style="margin: 0 auto" class="md-danger md-simple" @click="deletePost(posts[index].articleid, index)">삭제</md-button>
+                            <md-button
+                              style="margin: 0 auto"
+                              class="md-danger md-simple"
+                              @click="deletePost(posts[index].articleid, index)"
+                            >삭제</md-button>
                           </template>
                         </modal>
                         <!-- end deleteConfirm modal -->
                         <div class="md-title">{{post.title}}</div>
-                        <div class="md-subhead">{{writers[index].nickname}}</div>
+                        <div class="md-subhead">{{post.member.nickname}}</div>
                       </md-card-header>
 
                       <md-card-media>
                         <!-- <img src="@/assets/img/examples/mariya-georgieva.jpg" /> -->
-                        <img :src=post.image />
+                        <img :src="post.image" />
                       </md-card-media>
 
                       <md-card-content>{{post.content}}</md-card-content>
                       <!-- 댓글 더 보기 -->
-                      <button v-if="!post.isclick" @click="commentTest(index); test2(index)">댓글 더 보기</button>
+                      <button v-if="!post.isclick" @click="commentTest(index); test2(index)">댓글 보기</button>
                       <button v-if="post.isclick" @click="commentTest(index); test2(index)">댓글 닫기</button>
                       <div v-if="post.isclick">
                         <div
@@ -233,7 +257,7 @@
                         <div>
                           <textarea v-model="comment"></textarea>
                           <button
-                            @click="saveComment(post.articleid, comment, userinfo.nickname, index)"
+                            @click="saveComment(post.articleid, comment, memberinfo.nickname, index)"
                           >등록</button>
                         </div>
                       </div>
@@ -267,20 +291,24 @@
                 <div class="container">
                   <div class="features text-center">
                     <div class="md-layout">
-                      <!--  -->
-                      <div v-for="(user, index) in items" :key="index + '_items'">
-                        <div class="md-card-new">
-                          <md-card-header>
-                            <md-card-header-text>
-                              <div class="md-title">{{user.nickName}}</div>
-                            </md-card-header-text>
-                            <div style="width: 85px; height: 50px; margin: 10px;">
-                              <img style="height: 150%" :src=user.image alt="NewsImage" />
-                            </div>
-                          </md-card-header>
-                        </div>
-                      </div>
-                      <!--  -->
+                      <!-- start print follow list -->
+                        <md-list class="md-follow-list" v-if="items.length" style="padding:0">
+                          <div v-for="(member, index) in items" :key="index + '_items'">
+                          <md-list-item>
+                            <md-avatar>
+                              <img style="margin-bottom:0; float:left" :src=member.member.image alt="People">
+                            </md-avatar>
+
+                            <span style="position:relative" class="md-list-item-text">{{member.member.nickname}}</span>
+
+                            <md-button style="background-color:#4B89DC !important" class="md-icon-button">
+                              팔로우
+                            </md-button>
+                          </md-list-item>
+                          <md-divider class="md-inset"></md-divider>
+                          </div>
+                        </md-list>
+                      <!-- end print follow list -->
                     </div>
                   </div>
                 </div>
@@ -310,7 +338,7 @@ export default {
     LoginCard,
     Modal,
     Tabs,
-    InfiniteLoading,
+    InfiniteLoading
   },
   bodyClass: "profile-page",
   data() {
@@ -332,6 +360,7 @@ export default {
       posts: [],
       writers: [],
       comments: [],
+      comment: "",
       tabPane1: [],
       tabPane2: [
         { image: require("@/assets/img/bg.jpg") },
@@ -349,10 +378,10 @@ export default {
         { image: require("@/assets/img/examples/olu-eletu.jpg") },
         { image: require("@/assets/img/examples/studio-1.jpg") }
       ],
-      userinfo: {
+      memberinfo: {
         email: null,
         nickname: null,
-        userid: null,
+        mid: null,
         image: null
       },
       catinfo: {
@@ -385,31 +414,34 @@ export default {
     isLoggedIn: Boolean
   },
   methods: {
+    //삭제 창 닫기
     deleteConfirmModalHide() {
       this.deleteConfirmModal = false;
     },
+    // 포스트 삭제
     deletePost(articleid, index) {
-      console.log(articleid)
-      const formData = new FormData();
-      formData.append("articleid", articleid);
+      // console.log(articleid)
       axios
-        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "article/deleteArticle", formData)
+        .delete(
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "article/" + articleid
+        )
         .then(res => {
-          this.posts.splice(index,1);
+          this.posts.splice(index, 1);
         })
-        .catch(err => {
-
-        });
+        .catch(err => {});
     },
+    // 고양이 정보 수정 좀더 생각해보자
     updateCatinfo() {
       const catid = this.$route.params.catid;
-      const formData = new FormData();
-      formData.append("catid", this.$route.params.catid);
-      formData.append("breed", this.catinfo.breed);
-      formData.append("attr", this.catinfo.attr);
-      formData.append("conditions", this.catinfo.conditions);
+
+      const request = new FormData();
+      request.append("catid", catid);
+      request.append("breed", this.catinfo.breed);
+      request.append("attr", this.catinfo.attr);
+      request.append("conditions", this.catinfo.conditions);
+
       axios
-        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "cat/update", formData)
+        .patch(process.env.VUE_APP_SPRING_API_SERVER_URL + "cat", request)
         .then(res => {
           // console.log(res.data);
           this.catinfo.breed = res.data.breed;
@@ -421,14 +453,17 @@ export default {
           console.log(error);
         });
     },
+    // 고양이 소개 창 닫기
     attrUpdateModalHide() {
       this.attrUpdateModal = false;
       this.isUpdated = true;
     },
+    // 품종 선택창 닫기
     breedUpdateModalHide() {
       this.breedUpdateModal = false;
       this.isUpdated = true;
     },
+    // 파일 업로드 이미지 변경
     onChangeImages(e) {
       console.log(e.target.files);
       const file = e.target.files[0];
@@ -436,10 +471,12 @@ export default {
       this.imgpreview = URL.createObjectURL(file);
       console.log(this.imgpreview);
     },
+    // 글쓰기 창 닫기
     postCreateModalHide() {
       this.imgpreview = null;
       this.postCreateModal = false;
     },
+    // 글쓰기 버튼 클릭시 유효성 검사
     checkHandler() {
       let err = true;
       let msg = "";
@@ -450,15 +487,26 @@ export default {
       if (!err) alert(msg);
       else this.createHandler();
     },
+    // 글쓰기
     createHandler() {
       const request = new FormData();
-      request.append("image", this.image);
+      // let article = {
+      //   catid: this.catinfo.catid,
+      //   mid: this.memberinfo.mid,
+      //   title: this.title,
+      //   content: this.content
+      //   // file : this.image
+      // };
       request.append("catid", this.catinfo.catid);
-      request.append("userid", this.userinfo.userid);
+      request.append("mid", this.memberinfo.mid);
       request.append("title", this.title);
       request.append("content", this.content);
+      request.append("file", this.image);
+      // request.append("articleid",0);
+      // request.append("image","0");
+
       axios
-        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "article/saveArticle", request, {
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "article/", request, {
           headers: {
             "Content-Type": "multipart/form-data"
           }
@@ -469,10 +517,17 @@ export default {
           this.posts.unshift({
             title: this.title,
             content: this.content,
-            image: process.env.VUE_APP_IMAGE_SERVER+res.data.object,
+            image: process.env.VUE_APP_IMAGE_SERVER + res.data.image,
+            member: {
+              image: process.env.VUE_APP_IMAGE_SERVER + this.memberinfo.image,
+              nickname: this.memberinfo.nickname
+            },
             isclick: false
           });
-          this.writers.unshift({nickname: this.userinfo.nickname, image: this.userinfo.image});
+          this.writers.unshift({
+            nickname: this.memberinfo.nickname,
+            image: this.memberinfo.image
+          });
           this.comments.unshift([]);
           this.title = "";
           this.content = "";
@@ -486,21 +541,17 @@ export default {
         })
         .finally(() => {});
     },
+    // 댓글달기
     saveComment(articleid, comment, writer, index) {
       axios
-        .post(
-          process.env.VUE_APP_SPRING_API_SERVER_URL + "article/saveComment/",
-          {
-            articleid,
-            comment,
-            writer
-          }
-        )
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "article/comment", {
+          articleid,
+          comment,
+          writer
+        })
         .then(res => {
-          if (res.data.data === "success") {
-            alert("댓글 등록이 완료되었습니다.");
-            this.comments[index].push({ articleid, comment, writer });
-          }
+          alert("댓글 등록이 완료되었습니다.");
+          this.comments[index].push({ articleid, comment, writer });
         })
         .catch(err => {
           console.log(err);
@@ -509,28 +560,28 @@ export default {
           this.comment = "";
         });
     },
-    retrieveUserInfo() {
+    //유저정보 찾기
+    retrieveMemberInfo() {
       console.log("유저정보받아오라고했다");
       const token = this.$cookies.get("auth-token");
       axios
-        .post(
-          process.env.VUE_APP_SPRING_API_SERVER_URL + "account/info/",
-          null,
-          {
-            headers: { Authorization: `${token}` }
-          }
-        )
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "member/info", null, {
+          headers: { Authorization: `${token}` }
+        })
         .then(res => {
           console.log("user정보 출력");
           console.log(res.data);
-          this.userinfo.email = res.data.email;
-          this.userinfo.nickname = res.data.nickName;
-          this.userinfo.userid = res.data.uid;
+          this.memberinfo.email = res.data.email;
+          this.memberinfo.nickname = res.data.nickname;
+          this.memberinfo.mid = res.data.mid;
+          this.memberinfo.image = res.data.image;
+          this.followCheck(res.data.mid);
         })
         .catch(error => {
           console.log(error);
         });
     },
+    //  고양이 정보 조회
     retrieveCatInfo() {
       // console.log("고양이정보받아오라고했다");
       // const number = 1;
@@ -538,8 +589,7 @@ export default {
       axios
         .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "cat/detail/" + catid)
         .then(res => {
-          // console.log(res.data);
-          this.catinfo.nickname = res.data.nickName;
+          this.catinfo.nickname = res.data.nickname;
           this.catinfo.age = res.data.age;
           this.catinfo.breed = res.data.breed;
           this.catinfo.location = res.data.location;
@@ -555,116 +605,70 @@ export default {
           console.log(error);
         });
     },
+    // 고양이 팔로워 찾기
     CatFollow() {
-      // console.log("123")
-      // console.log("고양이팔로워받아오라고했다");
-      // const number = 1;
       const catid = this.$route.params.catid;
-      // console.log(catid);
-      const formData = new FormData();
-      formData.append("catid", catid);
+
       axios
-        .post(
-          process.env.VUE_APP_SPRING_API_SERVER_URL + "follow/findByCatId",
-          formData
-        )
+        .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "follow/cat/" + catid)
         .then(res => {
+          console.log("팔로워  찾기");
           // console.log(res.data.length);
           for (var i = 0; i < res.data.length; i++) {
-            // console.log("follow userid = " + res.data[i].userid);
-            const formData = new FormData();
-            
-            formData.append("uid", res.data[i].userid);
-
-            axios
-              .post(
-                process.env.VUE_APP_SPRING_API_SERVER_URL + "account/findByUid",
-                formData
-              )
-              .then(res => {
-                res.data.image = process.env.VUE_APP_IMAGE_SERVER + res.data.image;
-                console.log(res.data);
-                ////
-                this.items.push(res.data);
-                ////
-              })
-              .catch(error => {
-                console.log(error);
-              });
+            // console.log(res.data[i])
+            res.data[i].member.image =
+              process.env.VUE_APP_IMAGE_SERVER + res.data[i].member.image;
+            ////
+            this.items.push(res.data[i]);
+            ////
           }
-          // console.log(this.items);
         })
         .catch(error => {
           console.log(error);
         });
     },
+    // 고양이 게시글 조회
     CatPost($state) {
       // console.log("고양이포스트받아오라고했다");
       const catid = this.$route.params.catid;
-      const formData = new FormData();
-      formData.append("catid", catid);
       axios
-        .post(
-          process.env.VUE_APP_SPRING_API_SERVER_URL + "article/findByCatId",
-          formData
-        )
-        .then((res) => {
+        .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "article/cat/" + catid)
+        .then(res => {
           if (this.limit < res.data.length) {
-            console.log(res.data.length);
+            // console.log(res.data);
+            // console.log(res.data.length);
             for (
               var i = this.limit;
               i < this.limit + 1 && i < res.data.length;
               i++
             ) {
-              // console.log("왜안됨?" + res.data[i].userid);
-              const formData = new FormData();
-              formData.append("uid", res.data[i].userid);
-              // 유저 아이디로 유저 닉네임 가져오기
-              axios
-                .post(
-                  process.env.VUE_APP_SPRING_API_SERVER_URL +
-                    "account/findByUid",
-                  formData
-                )
-                .then((res2) => {
-                  // console.log(res2.data.nickName);
-                  ////
-                  this.writers.push({nickname: res2.data.nickName, image: process.env.VUE_APP_IMAGE_SERVER+res2.data.image});
-                  ////
-                })
-                .catch((error) => {
-                  console.log(error);
-                });
-              //
-              formData = new FormData();
-              formData.append("articleid", res.data[i].articleid);
               // 댓글불러오기
               axios
-                .post(
+                .get(
                   process.env.VUE_APP_SPRING_API_SERVER_URL +
-                    "article/findCommentByArticleId",
-                  formData
+                    "article/comment/" +
+                    res.data[i].articleid
                 )
-                .then((res2) => {
+                .then(res2 => {
+                  console.log("댓글 불러오기");
                   console.log(res2.data);
                   this.comments.push(res2.data);
                 })
-                .catch((error) => {
+                .catch(error => {
                   console.log(error);
                 });
               // console.log("이제 res.data[i]에 isclick변수를 넣을거야");
               res.data[i].isclick = false;
-              console.log(res);
-              res.data[i].image = process.env.VUE_APP_IMAGE_SERVER+res.data[i].image;
+              // console.log(res);
+              res.data[i].member.image =
+                process.env.VUE_APP_IMAGE_SERVER + res.data[i].member.image;
+              res.data[i].image =
+                process.env.VUE_APP_IMAGE_SERVER + res.data[i].image;
               this.posts.push(res.data[i]);
               $state.loaded();
             }
           } else {
-            console.log(
-              "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2"
-            );
             $state.complete();
-
           }
         })
         .catch(error => {
@@ -673,84 +677,47 @@ export default {
       // console.log(this.comments);
       this.limit += 1;
     },
+    // 팔로우 추가/제거
     follow() {
-      const token = this.$cookies.get("auth-token");
       this.items = [];
 
+      const mid = this.memberinfo.mid;
+      const catid = this.$route.params.catid;
+
+      const formData = new FormData();
+      formData.append("catid", catid);
+      formData.append("mid", mid);
+
       axios
-        .post(
-          process.env.VUE_APP_SPRING_API_SERVER_URL + "account/info/",
-          null,
-          {
-            headers: { Authorization: `${token}` }
-          }
-        )
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "follow", formData)
         .then(res => {
-          // console.log(this.items);
           // console.log(res.data);
-          this.userinfo.uid = res.data.uid;
-
-          const uid = this.userinfo.uid;
-          const catid = this.$route.params.catid;
-
-          const formData = new FormData();
-          formData.append("catid", catid);
-          formData.append("userid", uid);
-
-          axios
-            .post(
-              process.env.VUE_APP_SPRING_API_SERVER_URL + "follow/followCat",
-              formData
-            )
-            .then(res => {
-              // console.log(res.data);
-              this.isFollow = res.data;
-            })
-            .catch(error => {
-              console.log(error);
-            });
+          this.isFollow = res.data;
         })
         .catch(error => {
           console.log(error);
         });
 
-        window.setTimeout(this.CatFollow, 150);
-        // this.CatFollow();
+      window.setTimeout(this.CatFollow, 1000);
+      // this.CatFollow();
     },
-    followCheck() {
-      const token = this.$cookies.get("auth-token");
+
+    // 팔로우 중인지 아닌지 체크 (하트색깔 지정)
+    followCheck(mid) {
+      const catid = this.$route.params.catid;
+
+      const formData = new FormData();
+      formData.append("catid", catid);
+      formData.append("mid", mid);
+
 
       axios
         .post(
-          process.env.VUE_APP_SPRING_API_SERVER_URL + "account/info/",
-          null,
-          {
-            headers: { Authorization: `${token}` }
-          }
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "follow/check",
+          formData
         )
         .then(res => {
-          // console.log(res.data);
-          this.userinfo.uid = res.data.uid;
-
-          const uid = this.userinfo.uid;
-          const catid = this.$route.params.catid;
-
-          const formData = new FormData();
-          formData.append("catid", catid);
-          formData.append("userid", uid);
-
-          axios
-            .post(
-              process.env.VUE_APP_SPRING_API_SERVER_URL + "follow/followCheck",
-              formData
-            )
-            .then(res => {
-              // console.log(res.data);
-              this.isFollow = res.data;
-            })
-            .catch(error => {
-              console.log(error);
-            });
+          this.isFollow = res.data;
         })
         .catch(error => {
           console.log(error);
@@ -760,10 +727,6 @@ export default {
       this.posts[index].isclick
         ? (this.posts[index].isclick = false)
         : (this.posts[index].isclick = true);
-    },
-    test2(index) {
-      console.log("현재 댓글의 인덱스 : ");
-      console.log(index);
     }
   },
   computed: {
@@ -775,15 +738,16 @@ export default {
   },
   mounted() {
     // this.retrieveCatInfo();
-    this.followCheck();
+    // this.followCheck();
   },
   updated() {},
   created() {
     this.posts = [];
-    this.retrieveUserInfo();
+    this.retrieveMemberInfo();
     this.retrieveCatInfo();
     this.CatFollow();
     this.CatPost($state);
+    // this.followCheck();
   }
 };
 </script>
@@ -791,71 +755,71 @@ export default {
 <style lang="scss" scoped>
 .button {
   display: inline-block;
-//  position: absolute;
-//  top: 50%;
-//  left: 50%;
-//  transform: translate(-50, -50);
+  //  position: absolute;
+  //  top: 50%;
+  //  left: 50%;
+  //  transform: translate(-50, -50);
 }
 
 .button {
- background: none;
- color: rgb(143, 134, 134);
- width: 180px;
- height: 25px;
- border: 1px solid #FFAD7E;
- font-size: 16px;
- border-radius: 4px;
- transition: .6s;
- overflow: hidden;
+  background: none;
+  color: rgb(143, 134, 134);
+  width: 180px;
+  height: 25px;
+  border: 1px solid #ffad7e;
+  font-size: 16px;
+  border-radius: 4px;
+  transition: 0.6s;
+  overflow: hidden;
 }
 
 .button:focus {
- outline: none;
+  outline: none;
 }
 
 .button:before {
-    content: '';
-    display: block;
-    position: absolute;
-    background: rgba(255,255,255,.5);
-    width: 60px;
-    height: 100%;
-    left: 0;
-    top: 0;
-    opacity: .5;
-    filter: blur(30px);
-    transform: translateX(-130px) skewX(-15deg);
+  content: "";
+  display: block;
+  position: absolute;
+  background: rgba(255, 255, 255, 0.5);
+  width: 60px;
+  height: 100%;
+  left: 0;
+  top: 0;
+  opacity: 0.5;
+  filter: blur(30px);
+  transform: translateX(-130px) skewX(-15deg);
 }
 
 .button:after {
-    content: '';
-    display: block;
-    position: absolute;
-    background: rgba(255,255,255,.2);
-    width: 30px;
-    height: 100%;
-    left: 30px;
-    top: 0;
-    opacity: 0;
-    filter: blur(30px);
-    transform: translateX(-100px) scaleX(-15deg);
+  content: "";
+  display: block;
+  position: absolute;
+  background: rgba(255, 255, 255, 0.2);
+  width: 30px;
+  height: 100%;
+  left: 30px;
+  top: 0;
+  opacity: 0;
+  filter: blur(30px);
+  transform: translateX(-100px) scaleX(-15deg);
 }
 
 .button:hover {
-   background: #FFC192;
-   cursor: pointer;
+  background: #ffc192;
+  cursor: pointer;
 }
 
 .button:hover:before {
- transform: translateX(300px) skewX(-15deg);
- opacity: .6;
- transition: .7s;
+  transform: translateX(300px) skewX(-15deg);
+  opacity: 0.6;
+  transition: 0.7s;
 }
 
 .button:hover:after {
- transform: translateX(300px) skewX(-15deg);
- opacity: 1;
- transition: .7s;
+  transform: translateX(300px) skewX(-15deg);
+  opacity: 1;
+  transition: 0.7s;
 }
 
 .section {
@@ -888,54 +852,17 @@ export default {
   }
 
   .md-card-header {
-    // @include shadow-big();
     margin: 0;
-
-    // border-radius: 3px;
-    // padding: 15px + 5 0;
-    // background-color: #999999;
-
-    // .title,
-    // .card-title {
-    //   color: #ffffff;
-    // }
-    // .category {
-    //   margin: 0;
-    //   color: rgba(#ffffff, 0.62);
-    // }
-
-    // a {
-    //   color: #ffffff !important;
-    // }
-
-    // &.card-chart {
-    //   padding: 0;
-    //   min-height: 160px;
-
-    //   + .content {
-    //     h4 {
-    //       margin-top: 0;
-    //     }
-    //   }
-    // }
-
-    // .ct-label {
-    //   color: rgba(#ffffff, 0.7);
-    // }
-    // .ct-grid {
-    //   stroke: rgba(255, 255, 255, 0.2);
-    // }
-    // .ct-series-a .ct-point,
-    // .ct-series-a .ct-line,
-    // .ct-series-a .ct-bar,
-    // .ct-series-a .ct-slice-donut {
-    //   stroke: rgba(255, 255, 255, 0.8);
-    // }
-    // .ct-series-a .ct-slice-pie,
-    // .ct-series-a .ct-area {
-    //   fill: rgba(255, 255, 255, 0.4);
-    // }
   }
+
+  .md-follow-list {
+    width: 320px;
+    max-width: 100%;
+    display: inline-block;
+    vertical-align: top;
+    border: 1px solid rgba(#000, .12);
+  }
+
 }
 </style>
 

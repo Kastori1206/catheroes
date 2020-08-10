@@ -19,13 +19,13 @@
               <div v-for="(news, index) in items" :key="index + '_items'">
                 <div class="md-card-new">
                   <md-card-header>
+                    <md-card-media>
+                      <img :src="news.img" alt="NewsImage" @click="PopNews(index)" />
+                    </md-card-media>
                     <md-card-header-text>
                       <div class="md-title" @click="PopNews(index)">{{news.title}}</div>
                       <div class="md-subhead" @click="PopNews(index)">{{news.content}}</div>
                     </md-card-header-text>
-                    <md-card-media>
-                      <img :src="news.img" alt="NewsImage" @click="PopNews(index)" />
-                    </md-card-media>
                   </md-card-header>
                 </div>
               </div>
@@ -41,23 +41,10 @@
 import axios from "axios";
 export default {
   name: "Media",
-  bodyClass: "landing-page",
   props: {
     header: {
       type: String,
       default: require("@/assets/img/bg7.jpg")
-    },
-    teamImg1: {
-      type: String,
-      default: require("@/assets/img/faces/avatar.jpg")
-    },
-    teamImg2: {
-      type: String,
-      default: require("@/assets/img/faces/christian.jpg")
-    },
-    teamImg3: {
-      type: String,
-      default: require("@/assets/img/faces/kendall.jpg")
     }
   },
   data() {
@@ -131,6 +118,7 @@ export default {
   .md-card-media {
     margin: 0;
     border-radius: 3px;
+    float: left;
 
     img {
       border-radius: 3px;

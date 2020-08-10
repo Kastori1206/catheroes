@@ -52,7 +52,7 @@ export default {
   props: {
     header: {
       type: String,
-      default: require("@/assets/img/bg7.jpg")
+      default: require("@/assets/img/cat-2536662_1920.jpg")
     },
   },
   data() {

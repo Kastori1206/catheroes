@@ -22,7 +22,6 @@ export default {
       this.searchData = res;
     },
     dong(dong){
-      // console.log("@@@3")
       this.centerdong = dong;
     },
     login(loginData) {
@@ -31,13 +30,13 @@ export default {
       formData.append("email", loginData.email);
       formData.append("password", loginData.password);
       axios
-        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "account/login/", formData)
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "member/login/", formData)
         .then(res => {
           console.log(res);
           if(res.data.data ==  "fail") {
             alert("존재하지 않는 계정입니다. 아이디와 비밀번호를 다시 확인해주세요")
           } else{
-            this.$cookies.set("auth-token", res.data.token); //토큰 날라오는거 설정해줘야함!!
+            this.$cookies.set("auth-token", res.data); //토큰 날라오는거 설정해줘야함!!
             this.isLoggedIn = true;
             this.$router.push("/");
           }
@@ -68,7 +67,7 @@ export default {
         .then(res1 => {
           console.log(res1);
           // alert(res1.data);
-          this.$cookies.set("auth-token", res1.data.token); //토큰 날라오는거 설정해줘야함!!
+          this.$cookies.set("auth-token", res1.data); //토큰 날라오는거 설정해줘야함!!
           this.isLoggedIn = true;
           this.$router.push("/");
         })

@@ -2,6 +2,7 @@
 package com.web.blog.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -11,12 +12,12 @@ import org.springframework.data.jpa.repository.Query;
 import com.web.blog.model.Article;
 
 public interface ArticleDao extends JpaRepository<Article, String> {
-    List<Article> findArticleByCatidOrderByArticleidDesc(long catid);    
-    List<Article> findArticleByUserid(long userid);    
+    Optional<Article> findArticleByArticleid(long articleid);
+    
+    List<Article> findByMemberMid(long mid);
+    List<Article> findByCatCatid(long catid);
     @Transactional
     @Query(value=" SELECT max(articleid) "
     		   + " FROM article ", nativeQuery = true)
-    Long getMaxArticleId() ;
-    @Transactional
-	int deleteArticleByArticleid(long articleid);    
+    Long getMaxArticleId() ;       
 }

@@ -10,11 +10,14 @@ import javax.persistence.Id;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@DynamicUpdate
 @Entity
 @Data
 @NoArgsConstructor
@@ -25,12 +28,11 @@ public class Cat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY	)
     private long catid;
-
-    @JsonIgnore   
-    private String nickname;
-    @Column(name="age")
-    private int age; 
     
+    private String nickname;
+
+    @Column(name="age")
+    private int age;    
     @Column(name="breed")
     private String breed;
     @Column(name="location")
