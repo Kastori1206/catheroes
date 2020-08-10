@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.web.blog.model.Article;
 import com.web.blog.model.Member;
 import com.web.blog.model.response.BasicResponse;
+import com.web.blog.model.response.OAuthTokenResponse;
 import com.web.blog.service.MemberService;
 
 import io.swagger.annotations.ApiOperation;
@@ -57,7 +59,7 @@ public class MemberController {
 	
 	@PutMapping("/member/{mid}")
 	@ApiOperation(value = "회원 수정")
-	public ResponseEntity<Member> updateMember(@PathVariable long mid, @RequestBody Member member){
+	public ResponseEntity<Member> updateMember(@PathVariable @RequestParam("mid") long mid, @RequestBody Member member){
 		member.setMid(mid);
 		return ResponseEntity.ok().body(memberService.updateMember(member));
 	}
@@ -71,7 +73,13 @@ public class MemberController {
 	
 	@PostMapping("/member/login")
 	@ApiOperation(value = "로그인")
-	public ResponseEntity<String> Login(@RequestBody Member member){
-		return ResponseEntity.ok().body(memberService.Login(member.getEmail(), member.getPassword()));
+	public ResponseEntity<String> Login(@RequestParam("email") String email,@RequestParam("password") String password ){
+		return ResponseEntity.ok().body(memberService.Login(email,password));
+	}
+	
+	@PostMapping("/auth/kakao/Login")
+	@ApiOperation(value = "카카오 로그인")
+	public ResponseEntity<String> kakaoCallback(@RequestBody OAuthTokenResponse oauthToken) {// Data를 리턴해주는 컨트롤러
+		return ResponseEntity.ok().body(memberService.KakaoLogin(oauthToken));
 	}
 }

@@ -15,13 +15,19 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY	)
@@ -35,16 +41,4 @@ public class Member {
     @Column(insertable = false, updatable = false)
     private LocalDateTime create_date;
 
-    @JsonBackReference
-    @OneToMany(mappedBy = "member")
-    private List<Article> articles = new ArrayList<Article>();
-    
-    public void add(Article article) {
-    	article.setMember(this);
-    	getArticles().add(article);
-    }
-    @JsonBackReference
-    @OneToMany(mappedBy = "member")
-    private List<Follow> follows = new ArrayList<>();
-    
 }

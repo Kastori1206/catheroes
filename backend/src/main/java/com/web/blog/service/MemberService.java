@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.web.blog.model.Member;
+import com.web.blog.model.response.OAuthTokenResponse;
 
 public interface MemberService {
 	//회원 전체 조회
@@ -18,7 +19,7 @@ public interface MemberService {
 	//회원 가입
 	Member saveMember(Member member);
 	//카카오 로그인
-	Member KakaoLogin(String email);
+	String KakaoLogin(OAuthTokenResponse oauthToken);
 	//닉네임 중복검사
 	Member isNickName(String nickname);
 	//로그인

@@ -87,10 +87,9 @@ public class ArticleServiceImpl implements ArticleService {
 		
 	}
 
-	//수정가능
 	@Override
 	public List<Article> findArticleByMemberid(long mid) {
-		return memberDao.findMemberByMid(mid).get().getArticles();
+		return articleDao.findByMemberMid(mid);
 	}
 
 	@Override

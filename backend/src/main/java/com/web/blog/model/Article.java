@@ -37,7 +37,6 @@ public class Article {
     
     @ManyToOne
     @JoinColumn(name ="catid")
-    @JsonIgnore
     private Cat cat;
     
     
