@@ -102,4 +102,19 @@ public class MemberController {
 	public ResponseEntity<String> updateImage(@RequestParam("image") MultipartFile image, @RequestParam("mid") Long mid) throws Exception{// Data를 리턴해주는 컨트롤러
 		return ResponseEntity.ok().body(memberService.updateImageById(image, mid));
 	}
+	
+	@PostMapping("/member/nickname/")
+	@ApiOperation(value = "닉네임 중복 검사")
+	public ResponseEntity<Boolean> isNickname(@RequestParam("nickname") String nickname){
+		System.out.println(nickname);
+		return ResponseEntity.ok().body(memberService.isNickName(nickname));
+	}
+	
+	@PostMapping("/member/email/")
+	@ApiOperation(value = "이메일 중복 검사")
+	public ResponseEntity<Boolean> isEmail(@RequestParam("email") String email){
+		return ResponseEntity.ok().body(memberService.isEmail(email));
+	}
+	
+	
 }

@@ -150,13 +150,26 @@ public class MemberServiceImpl implements MemberService{
 		return null;		
 	}
 
+	//닉네임이 있으면 true 없으면 false
 	@Override
-	public Member isNickName(String nickname) {
+	public boolean isNickName(String nickname) {
 		Optional<Member> memberDb = memberDao.findMemberByNickname(nickname);
+		System.out.println(memberDb.get().getNickname());
 		if(memberDb.isPresent()) {
-			return memberDb.get();
+			return true;
 		}else {			
-			throw new ResourceNotFoundException("Record not found with nickname : "+nickname);
+			return false;
+		}
+	}
+	
+	//이메일이 있으면 true 없으면 false
+	@Override
+	public boolean isEmail(String email) {
+		Optional<Member> memberDb = memberDao.findMemberByEmail(email);		
+		if(memberDb.isPresent()) {
+			return true;
+		}else {			
+			return false;
 		}
 	}
 

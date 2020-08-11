@@ -11,7 +11,13 @@
               <md-field class="md-form-group" slot="inputs">
                 <md-icon>face</md-icon>
                 <label>Nickname...</label>
-                <md-input v-model="nickName" id="nickName" ref="nickName" type="text"></md-input>
+                <md-input
+                  v-model="nickName"
+                  id="nickName"
+                  ref="nickName"
+                  type="text"
+                  @blur="isNickname"
+                ></md-input>
               </md-field>
               <md-field class="md-form-group" slot="inputs">
                 <md-icon>email</md-icon>
@@ -92,7 +98,9 @@ export default {
       passwordConfirm: "",
       isTerm: true,
       passwordType: "password",
-      passwordConfirmType: "password"
+      passwordConfirmType: "password",
+      useNickname: true,
+      useEmail: true
     };
   },
   props: {
@@ -115,8 +123,11 @@ export default {
       let msg = "";
       err &&
         !this.nickName &&
-        ((msg = "닉네임을 입력해주세요."), (err = false));
-      err && !this.email && ((msg = "이메일을 입력해주세요."), (err = false));
+        ((msg = "닉네임을 입력해주세요.") && !isNickname, (err = false));
+
+      err &&
+        !this.email &&
+        ((msg = "이메일을 입력해주세요.") && !isEmail, (err = false));
       err &&
         document.getElementById("email_compare").innerHTML == "불일치" &&
         ((msg = "이메일을 확인해주세요."), (err = false));
@@ -135,6 +146,53 @@ export default {
 
       if (!err) alert(msg);
       else this.createHandler();
+    },
+    isNickname() {
+      const request = new FormData();
+      request.append("nickname", this.nickName);
+      axios
+        .post(
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "member/nickname/",
+          request
+        )
+        .then(response => {
+          alert(response.data);
+          if (response.data === true) {
+            alert("중복입니다.");
+            this.useNickname = false;
+          } else {
+            alert("사용할수있습니다.");
+            this.useNickname = true;
+          }
+        })
+        .catch(error => {
+          this.error = error;
+          console.log(error);
+          // this.moveList();
+        });
+    },
+    isEmail() {
+      const request = new FormData();
+      request.append("email", this.email);
+      axios
+        .post(
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "member/email/",
+          request
+        )
+        .then(response => {
+          if (response.data === true) {
+            this.useEmail = false;
+            alert("이메일 중복입니다.");
+          } else {
+            this.useEmail = true;
+            alert("사용할수있습니다.");
+          }
+        })
+        .catch(error => {
+          this.error = error;
+          console.log(error);
+          // this.moveList();
+        });
     },
     createHandler() {
       // alert('123');

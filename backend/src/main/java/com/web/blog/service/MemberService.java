@@ -21,7 +21,9 @@ public interface MemberService {
 	//카카오 로그인
 	String KakaoLogin(OAuthTokenResponse oauthToken);
 	//닉네임 중복검사
-	Member isNickName(String nickname);
+	boolean isNickName(String nickname);
+	//이메일 중복검사
+	boolean isEmail(String email);
 	//로그인
 	String Login(String email, String password);
 	//이미지 업데이트
