@@ -27,7 +27,7 @@
                       </md-avatar>
                     </md-card-media>
                     <md-card-header-text>
-                      <div class="md-title">이름: {{ cat.nickName }}</div>
+                      <div class="md-title">이름: {{ cat.nickname }}</div>
                       <div class="md-title">위치: {{ cat.location }}</div>
                       <div class="md-title">종류: {{ cat.breed }}</div>
                     </md-card-header-text>

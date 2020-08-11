@@ -73,7 +73,10 @@ public class CatController {
 
 	@PostMapping("/cat")
 	@ApiOperation(value = "가입하기")
-	public ResponseEntity<Cat> saveCat(CatRequest catRequest) {		
+	public ResponseEntity<Cat> saveCat(@RequestParam Map<String,String> request, @RequestPart("file") MultipartFile file) {	
+		ObjectMapper objectMapper = new ObjectMapper();	
+		CatRequest catRequest = objectMapper.convertValue(request, CatRequest.class);
+		catRequest.setFile(file);
 		return ResponseEntity.ok().body(catService.saveCat(catRequest));
 	}	
 
@@ -85,14 +88,14 @@ public class CatController {
 
 	@GetMapping("/cat/search")
 	@ApiOperation(value = "고양이 이름으로 검색")
-	public ResponseEntity<List<Cat>> getCatByNickName(String nickname, String location) {
+	public ResponseEntity<List<Cat>> getCatByNickName(@RequestParam(value="nickname", required = true) final String nickname, @RequestParam(value="location", required = true) final String location) {
 		return ResponseEntity.ok().body(catService.findCatByNickName(nickname, location));
 
 	}
 
 	@PostMapping("/cat/searchImage")
 	@ApiOperation(value = "고양이 사진으로 검색")
-	public ResponseEntity<List<Cat>> searchImage(String breed, String location) {
+	public ResponseEntity<List<Cat>> searchImage(@RequestParam(value="breed") String breed, @RequestParam(value="location") String location) {
 		return ResponseEntity.ok().body(catService.findCatByBreed(breed, location));
 	}
 }

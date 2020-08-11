@@ -232,18 +232,11 @@ export default {
       console.log("로그아웃요청보냈다고했다");
       this.$emit("submit-logout");
     },
+    // 이름, 주소로 고양이 검색
     searchName() {
-      // console.log(this.search);
-      // console.log(this.centerdong);
-
-      const formData = new FormData();
-      formData.append("nickname", this.search);
-      formData.append("location", this.centerdong);
-
       axios
-        .post(
-          process.env.VUE_APP_SPRING_API_SERVER_URL + "cat/search",
-          formData
+        .get(
+          `${process.env.VUE_APP_SPRING_API_SERVER_URL}cat/search?nickname=${this.search}&location=${this.centerdong}`,
         )
         .then(res => {
           console.log(res);
