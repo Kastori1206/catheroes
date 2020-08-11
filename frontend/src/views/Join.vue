@@ -140,23 +140,14 @@ export default {
       // alert('123');
       // this.moveList();
       axios
-        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "account/signup", {
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "member/", {
           email: this.email,
           nickname: this.nickName,
           password: this.password
         })
         .then(response => {
-          console.log(response);
-          if (response.data.data === "success") {
-            alert("등록이 완료되었습니다.");
-            this.moveList();
-          } else {
-            if (response.data.data === "email") {
-              alert("email이 중복입니다.");
-            } else if (response.data.data === "nickname") {
-              alert("nickname이 중복입니다.");
-            }
-          }
+          alert("등록이 완료되었습니다.");
+          this.moveList();
         })
         .catch(error => {
           this.error = error;

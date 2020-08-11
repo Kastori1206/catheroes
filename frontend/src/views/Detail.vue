@@ -245,20 +245,24 @@
 
                       <md-card-content>{{post.content}}</md-card-content>
                       <!-- 댓글 더 보기 -->
-                      <button v-if="!post.isclick" @click="commentTest(index); test2(index)">댓글 보기</button>
-                      <button v-if="post.isclick" @click="commentTest(index); test2(index)">댓글 닫기</button>
+                      <md-button v-if="!post.isclick" @click="commentTest(index); test2(index)" style="width:9vw; height:4vh; background-color:#F6BB43 !important; font-size:9px;" class="md-icon-button">
+                              댓글보기
+                      </md-button>
+                      <md-button v-if="post.isclick" @click="commentTest(index); test2(index)" style="width:9vw; height:4vh; background-color:#F6BB43 !important; font-size:9px;" class="md-icon-button">
+                              댓글닫기
+                      </md-button>
                       <div v-if="post.isclick">
                         <div
                           v-for="(comment, index2) in comments[index]"
                           :key="index2 + '_comments'"
                         >
-                          <md-card-content>{{comment.comment}} - 글쓴사람 : {{comment.writer}}</md-card-content>
+                          <md-card-content style="padding:0"><strong>{{comment.writer}}</strong> {{comment.comment}}</md-card-content>
                         </div>
                         <div>
-                          <textarea v-model="comment"></textarea>
-                          <button
-                            @click="saveComment(post.articleid, comment, memberinfo.nickname, index)"
-                          >등록</button>
+                          <textarea style="width:35vw" v-model="comment"></textarea>
+                          <md-button @click="saveComment(post.articleid, comment, memberinfo.nickname, index)" style="margin: 7px 5px; background-color:#F6BB43 !important" class="md-icon-button">
+                            등록
+                          </md-button>
                         </div>
                       </div>
                     </md-card>

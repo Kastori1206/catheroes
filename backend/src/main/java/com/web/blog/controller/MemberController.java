@@ -1,6 +1,7 @@
 package com.web.blog.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,8 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.web.blog.model.Article;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.blog.model.Member;
 import com.web.blog.model.response.BasicResponse;
 import com.web.blog.model.response.OAuthTokenResponse;
@@ -61,10 +63,12 @@ public class MemberController {
 		return ResponseEntity.ok().body(memberService.saveMember(member));
 	}
 	
-	@PutMapping("/member/{mid}")
+	@PutMapping("/member")
 	@ApiOperation(value = "회원 수정")
-	public ResponseEntity<Member> updateMember(@PathVariable @RequestParam("mid") long mid, @RequestBody Member member){
-		member.setMid(mid);
+	public ResponseEntity<Member> updateMember(@RequestParam Map<String,String> request) {
+		ObjectMapper objectMapper = new ObjectMapper();	
+		Member member = objectMapper.convertValue(request, Member.class);
+		
 		return ResponseEntity.ok().body(memberService.updateMember(member));
 	}
 	
@@ -91,5 +95,11 @@ public class MemberController {
 	@ApiOperation(value = "카카오 로그인")
 	public ResponseEntity<String> kakaoCallback(@RequestBody OAuthTokenResponse oauthToken) {// Data를 리턴해주는 컨트롤러
 		return ResponseEntity.ok().body(memberService.KakaoLogin(oauthToken));
+	}
+
+	@PostMapping("/member/image")
+	@ApiOperation(value = "사용자 이미지 변경")
+	public ResponseEntity<String> updateImage(@RequestParam("image") MultipartFile image, @RequestParam("mid") Long mid) throws Exception{// Data를 리턴해주는 컨트롤러
+		return ResponseEntity.ok().body(memberService.updateImageById(image, mid));
 	}
 }

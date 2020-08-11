@@ -55,7 +55,7 @@
             <mobile-menu nav-mobile-section-start="false">
               <!-- Here you can add your items from the section-start of your toolbar -->
             </mobile-menu>
-            <md-list>
+            <md-list @click="toggleNavbarMobile()">
               <md-list-item v-if="!isLoggedIn">
                 <router-link to="/login">
                   <p>LOGIN</p>
@@ -232,11 +232,10 @@ export default {
       console.log("로그아웃요청보냈다고했다");
       this.$emit("submit-logout");
     },
-    // 이름, 주소로 고양이 검색
-    searchName() {
+    searchName() {      
       axios
         .get(
-          `${process.env.VUE_APP_SPRING_API_SERVER_URL}cat/search?nickname=${this.search}&location=${this.centerdong}`,
+          `${process.env.VUE_APP_SPRING_API_SERVER_URL}cat/search?nickname=${this.search}&location=${this.centerdong}`
         )
         .then(res => {
           console.log(res);
