@@ -13,7 +13,7 @@
     <div class="main main-raised">
       <div class="section">
         <div class="container">
-          <div class="features text-center">
+          <div class="features text-left">
             <div class="md-layout">
               <!-- <h1>test</h1> -->
               <!-- <p>{{ searchData }}</p> -->
@@ -21,14 +21,16 @@
               <div v-for="(cat, index) in searchData.data" :key="index">
                 <div class="md-card-new" @click="toDetail(cat.catid)">
                   <md-card-header>
+                    <md-card-media style="transform: translateY(50%);">
+                      <md-avatar class="md-avatar-icon md-large">
+                        <img :src="imageUrl + cat.image" alt="CatImage" />
+                      </md-avatar>
+                    </md-card-media>
                     <md-card-header-text>
-                      <div class="md-title">이름: {{ cat.nickName }}</div>
+                      <div class="md-title">이름: {{ cat.nickname }}</div>
                       <div class="md-title">위치: {{ cat.location }}</div>
                       <div class="md-title">종류: {{ cat.breed }}</div>
                     </md-card-header-text>
-                    <md-card-media>
-                      <img :src="imageUrl + cat.image" alt="CatImage" />
-                    </md-card-media>
                   </md-card-header>
                 </div>
               </div>
@@ -48,19 +50,7 @@ export default {
   props: {
     header: {
       type: String,
-      default: require("@/assets/img/bg7.jpg")
-    },
-    teamImg1: {
-      type: String,
-      default: require("@/assets/img/faces/avatar.jpg")
-    },
-    teamImg2: {
-      type: String,
-      default: require("@/assets/img/faces/christian.jpg")
-    },
-    teamImg3: {
-      type: String,
-      default: require("@/assets/img/faces/kendall.jpg")
+      default: require("@/assets/img/cat-1543541_1920.jpg")
     },
     searchData: Object
   },
@@ -120,6 +110,7 @@ export default {
   .md-card-media {
     margin: 0;
     border-radius: 3px;
+    float: right;
 
     img {
       border-radius: 3px;

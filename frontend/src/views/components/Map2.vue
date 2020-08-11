@@ -1,7 +1,6 @@
 <template>
   <div style="text-align: center;">
-    <md-button class="md-simple md-success md-lg" v-if="iscreate" @click="senddata">위치정보입력</md-button>
-    <h2>{{centerDong}}</h2>
+    <h4>{{centerDong}}</h4>
     <div>
       <vue-daum-map
         :appKey="appKey"
@@ -24,8 +23,11 @@
         @idle="onMapEvent('idle', $event)"
         @tilesloaded="onMapEvent('tilesloaded', $event)"
         @maptypeid_changed="onMapEvent('maptypeid_changed', $event)"
-        style="height: 60vh; margin: auto;"
+        style="height: 30vh; margin: auto;"
       ></vue-daum-map>
+    </div>
+    <div class="md-layout-item md-size-35" style="margin: 0 auto; margin-top:10px">
+    <md-button class="md-success md-block" v-if="iscreate" @click="senddata">위치정보입력!</md-button>
     </div>
   </div>
 </template>
@@ -59,6 +61,7 @@ export default {
     senddata() {
       // console.log(this.mymarker);
       // console.log(this.centerDong);
+      this.$emit("classicModal", false);
       this.$emit("send-data", this.mymarker);
       this.$emit("send-dong", this.centerDong);
     },

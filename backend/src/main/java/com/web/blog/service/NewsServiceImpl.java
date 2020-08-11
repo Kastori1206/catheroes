@@ -19,7 +19,7 @@ import com.web.blog.model.News;
 @Service
 public class NewsServiceImpl implements NewsService{
 	// 뉴스를 받아올 URL 지정
-	private static String CAT_NEWS_URL = "https://search.naver.com/search.naver?where=news&sm=tab_jum&query=%EA%B8%B8%EA%B3%A0%EC%96%91%EC%9D%B4";
+	private static String CAT_NEWS_URL = "https://search.naver.com/search.naver?sm=tab_sug.top&where=news&query=%EA%B8%B8%EA%B3%A0%EC%96%91%EC%9D%B4+%EC%B9%9C%ED%95%B4%EC%A7%80%EA%B8%B0&oquery=%EA%B3%A0%EC%96%91%EC%9D%B4&tqi=Uzcx6lp0Jy0ssvkcYYlssssstaN-425208&acq=%EA%B8%B8%EA%B3%A0%EC%96%91%EC%9D%B4+&acr=10&qdt=0";
 
 	@Override
 	@PostConstruct

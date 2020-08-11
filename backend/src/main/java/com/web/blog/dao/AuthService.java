@@ -1,9 +1,9 @@
 package com.web.blog.dao;
 
-import com.web.blog.model.User;
+import com.web.blog.model.Member;
 
 public interface AuthService {
-	void singUpUser(User user);
+	void singUpUser(Member user);
 	
-	User loginUser(String email, String password);
+	Member loginUser(String email, String password);
 }

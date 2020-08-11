@@ -45,32 +45,24 @@
                   <!-- 모달창 -->
                   <modal v-if="classicModal" @close="classicModalHide">
                     <template slot="header">
-                      <h4 class="modal-title">Modal Title</h4>
-                      <!-- <md-button class="md-simple md-just-icon md-round modal-default-button" @click="classicModalHide">
+                      <h4 class="modal-title">{{nickname}}이 사는 곳은?</h4>
+                      <md-button class="md-simple md-just-icon md-round modal-default-button" @click="classicModalHide">
 										<md-icon>clear</md-icon>
-                      </md-button>-->
+                      </md-button>
                     </template>
 
                     <template slot="body">
                       <div class="section section-map" style="padding:0px">
                         <div class="container" style="margin: auto;">
-                          <Map2 :iscreate="iscreate" @send-data="getdata" @send-dong="getdong"></Map2>
+                          <Map2 :classicModal="classicModal" :iscreate="iscreate" @send-data="getdata" @send-dong="getdong"></Map2>
                         </div>
                       </div>
-                    </template>
-
-                    <template slot="footer">
-                      <md-button class="md-simple">Nice Button</md-button>
-                      <md-button class="md-danger md-simple" @click="classicModalHide">Close</md-button>
                     </template>
                   </modal>
                 </div>
               </div>
               <md-button @click="checkCat" slot="footer" class="md-simple md-success md-lg">
                 길냥이 등록!
-              </md-button>
-              <md-button @click="test_image" slot="footer" class="md-simple md-success md-lg">
-                TEST!!!
               </md-button>
             </login-card>
           </div>
@@ -154,23 +146,6 @@ export default {
           console.log(err);
         });
     },
-    test_image() {
-      const fd = new FormData();
-      fd.append("image", this.image);
-      axios
-        .post(process.env.VUE_APP_DJANGO_API_SERVER_URL + "keras/", fd, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        })
-        .then(res => {
-          console.log(res);
-          this.breed = res.data;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
     checkCat() {
       let err = true;
       let msg = "";
@@ -182,19 +157,19 @@ export default {
       if (!err) alert(msg);
       else this.createHandler();
     },
+    // 고양이 등록
     createHandler() {
       const request = new FormData();
-      request.append("image", this.image);
+      request.append("file", this.image);
       request.append("nickname", this.nickname);
       request.append("lat", this.lat);
       request.append("lng", this.lng);
       request.append("location", this.dong);
-      request.append("imgpath", "/");
       request.append("breed", this.breed);
 
       axios
         .post(
-          process.env.VUE_APP_SPRING_API_SERVER_URL + "cat/regist",
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "cat",
           request,
           {
             headers: {
@@ -204,12 +179,8 @@ export default {
         )
         .then(response => {
           console.log(response);
-          if (response.data.data === "success") {
-            alert("등록이 완료되었습니다.");
-            this.$router.push("/");
-          } else {
-            alert("error");
-          }
+          alert("등록이 완료되었습니다.");
+          this.$router.push("/");
         })
         .catch(error => {
           this.error = error;
@@ -224,4 +195,6 @@ export default {
 };
 </script>
 
-<style lang="css"></style>
+<style lang="css" scoped>
+
+</style>

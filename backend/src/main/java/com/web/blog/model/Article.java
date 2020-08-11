@@ -6,36 +6,38 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@Builder
 @Getter
 @Setter
-@ToString
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long articleid;
 
-    @JsonIgnore
-    private long userid;
-    private long catid;
+//    private long userid;
+//    private long catid;
     private String title;
     private String content;
     private String image;
+    
+    @JsonManagedReference
+    @ManyToOne
+    @JoinColumn(name = "mid")
+    private Member member;
+    
+    @ManyToOne
+    @JoinColumn(name ="catid")
+    private Cat cat;
+    
+    
 }

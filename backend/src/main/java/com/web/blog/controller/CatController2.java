@@ -1,0 +1,288 @@
+//package com.web.blog.controller;
+//
+//import java.io.IOException;
+//import java.util.ArrayList;
+//import java.util.List;
+//import java.util.Optional;
+//
+//import com.web.blog.dao.CatDao;
+//import com.web.blog.model.Cat;
+//import com.web.blog.model.response.BasicResponse;
+//import com.web.blog.model.response.CatInfoResponse;
+//import com.web.blog.utill.amazon.AmazonClient;
+//
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.http.HttpStatus;
+//import org.springframework.http.ResponseEntity;
+//import org.springframework.web.bind.annotation.CrossOrigin;
+//import org.springframework.web.bind.annotation.GetMapping;
+//import org.springframework.web.bind.annotation.PathVariable;
+//import org.springframework.web.bind.annotation.PostMapping;
+//import org.springframework.web.bind.annotation.RequestMapping;
+//import org.springframework.web.bind.annotation.RequestParam;
+//import org.springframework.web.bind.annotation.RestController;
+//import org.springframework.web.multipart.MultipartFile;
+//
+//import io.swagger.annotations.ApiOperation;
+//import io.swagger.annotations.ApiResponse;
+//import io.swagger.annotations.ApiResponses;
+//
+//@ApiResponses(value = { @ApiResponse(code = 401, message = "Unauthorized", response = BasicResponse.class),
+//		@ApiResponse(code = 403, message = "Forbidden", response = BasicResponse.class),
+//		@ApiResponse(code = 404, message = "Not Found", response = BasicResponse.class),
+//		@ApiResponse(code = 500, message = "Failure", response = BasicResponse.class) })
+//
+//@CrossOrigin(origins = { "http://localhost:3000" })
+//@RequestMapping("/cat")
+//@RestController
+//public class CatController2 {
+//
+//	@Autowired
+//	private CatDao catDao;
+//
+//	@Autowired
+//	private AmazonClient amazonClient;
+//
+//	@PostMapping("/update")
+//	@ApiOperation(value = "고양이 상세정보 수정")
+//	public Object update(@RequestParam("catid") long catid, @RequestParam("attr") String attr, @RequestParam("breed") String breed, @RequestParam("conditions") String conditions) {
+//		ResponseEntity response = null;
+//		final CatInfoResponse result = new CatInfoResponse();
+//		Cat cat = catDao.getCatByCatid(catid).get();
+//
+//		// 고양이 상세정보 수정 부분 코드작성
+//		cat.setBreed(breed);
+//		cat.setAttr(attr);
+//		cat.setConditions(conditions);
+//		catDao.save(cat);
+//		
+//		Optional<Cat> catOpt = catDao.getCatByCatid(catid);
+//		result.status = true;
+//		result.data = "success";
+//		result.nickName = catOpt.get().getNickname();
+//		result.age = catOpt.get().getAge();
+//		result.breed = catOpt.get().getBreed();
+//		result.location = catOpt.get().getLocation();
+//		result.attr = catOpt.get().getAttr();
+//		result.conditions = catOpt.get().getConditions();
+//		result.lat = catOpt.get().getLat();
+//		result.lng = catOpt.get().getLng();
+//		response = new ResponseEntity<>(result, HttpStatus.OK);
+//
+//		return response;
+//	}
+//
+//	@GetMapping("/detail/{catid}")
+//	@ApiOperation(value = "고양이 상세정보")
+//	public Object detail(@PathVariable("catid") int catid) {
+//
+//		Optional<Cat> catOpt = catDao.getCatByCatid(catid);
+//
+//		ResponseEntity response = null;
+//
+//		if (catOpt.isPresent()) {
+//			final CatInfoResponse result = new CatInfoResponse();
+//			result.status = true;
+//			result.data = "success";
+//			result.nickName = catOpt.get().getNickname();
+//			result.age = catOpt.get().getAge();
+//			result.breed = catOpt.get().getBreed();
+//			result.location = catOpt.get().getLocation();
+//			result.attr = catOpt.get().getAttr();
+//			result.conditions = catOpt.get().getConditions();
+//			result.lat = catOpt.get().getLat();
+//			result.lng = catOpt.get().getLng();
+//			result.image = catOpt.get().getImage();
+//			System.out.println(result);
+//
+//			response = new ResponseEntity<>(result, HttpStatus.OK);
+//
+//		} else {
+//			response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//		}
+//
+//		return response;
+//	}
+//
+//	@PostMapping("/catList")
+//	@ApiOperation(value = "고양이 전체 조회")
+//	public Object detail(@RequestParam("location") String location){
+//		ResponseEntity response = null;
+//		List<Cat> catOpt = catDao.findCatByLocation(location);
+//
+//		if (!catOpt.isEmpty()) {
+//			final List<CatInfoResponse> results = new ArrayList<CatInfoResponse>();
+//
+//			for (Cat cat : catOpt) {
+//				CatInfoResponse result = new CatInfoResponse();
+//				result.status = true;
+//				result.data = "success";
+//				result.nickName = cat.getNickname();
+//				result.age = cat.getAge();
+//				result.breed = cat.getBreed();
+//				result.location = cat.getLocation();
+//				result.attr = cat.getAttr();
+//				result.conditions = cat.getConditions();
+//				result.lat = cat.getLat();
+//				result.lng = cat.getLng();
+//				result.catid = cat.getCatid();
+//				result.image = cat.getImage();
+//				results.add(result);
+//			}
+//
+//			response = new ResponseEntity<>(results, HttpStatus.OK);
+//		} else {
+//			response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//		}
+//
+//		return response;
+//	}
+//
+//	@PostMapping("/regist")
+//	@ApiOperation(value = "가입하기")
+//	public Object signup(@RequestParam("image") MultipartFile image, @RequestParam("nickname") String nickname,
+//			@RequestParam("lat") String lat, @RequestParam("lng") String lng, @RequestParam("imgpath") String imgpath,
+//			@RequestParam("breed") String breed,
+//			@RequestParam("location") String location) throws IOException {
+//		final BasicResponse result = new BasicResponse();
+//		// 중복처리 필수
+//		Cat cat = null;
+//		// 등록된 고양이 처리 (나중에 함)
+//		// cat = catDao.getCatByNickname(request.getNickname());
+//		// if (user != null) {
+//		// result.status = false;
+//		// result.data = "nickname";
+//		// return new ResponseEntity<>(result, HttpStatus.OK);
+//		// }
+//
+//		
+//		String path = this.amazonClient.uploadFile(image, catDao.getMaxCatId()+1, "profile/cat/");
+//
+//		// 회원가입단을 생성해 보세요.
+//		cat = Cat.builder().nickname(nickname).breed(breed).image(imgpath).lat(lat).lng(lng).age(0).attr("")
+//				.conditions("").location(location).food("").family("").neutered("").hospital("").image(path).build();
+//		catDao.save(cat);
+//		result.status = true;
+//		result.data = "success";
+//
+//		return new ResponseEntity<>(result, HttpStatus.OK);
+//	}
+//
+//	@PostMapping("/follow/{catid}")
+//	@ApiOperation(value = "고양이 팔로우 정보")
+//	public Object follow(@PathVariable("catid") int catid) {
+//		System.out.println("catID:");
+//		System.out.println(catid);
+//		Optional<Cat> catOpt = catDao.getCatByCatid(catid);
+//
+//		ResponseEntity response = null;
+//
+//		if (catOpt.isPresent()) {
+//			final CatInfoResponse result = new CatInfoResponse();
+//			result.status = true;
+//			result.data = "success";
+//			result.nickName = catOpt.get().getNickname();
+//			result.age = catOpt.get().getAge();
+//			result.breed = catOpt.get().getBreed();
+//			result.location = catOpt.get().getLocation();
+//			result.attr = catOpt.get().getAttr();
+//			result.conditions = catOpt.get().getConditions();
+//			result.lat = catOpt.get().getLat();
+//			result.lng = catOpt.get().getLng();
+//			result.image = catOpt.get().getImage();
+//			
+//			System.out.println(result);
+//
+//			response = new ResponseEntity<>(result, HttpStatus.OK);
+//
+//		} else {
+//			response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//		}
+//
+//		return response;
+//	}
+//
+//	@PostMapping("/search")
+//	@ApiOperation(value = "고양이 이름으로 검색")
+//	public Object searchName(@RequestParam(required = true) final String nickname,
+//	@RequestParam(required = true) final String location) {
+//		System.out.println("nickname : " + nickname);
+//		System.out.println("location : " + location);
+//
+//		List<Cat> catOpt = catDao.findCatByLocationAndNicknameContaining(location, nickname);
+//
+//		ResponseEntity response = null;
+//
+//		if (!catOpt.isEmpty()) {	
+//			final List<CatInfoResponse> results = new ArrayList<CatInfoResponse>();
+//
+//			for(Cat cat : catOpt) {
+//				CatInfoResponse result = new CatInfoResponse();
+//				result.status = true;
+//				result.data = "success";
+//				result.age = cat.getAge();
+//				result.attr = cat.getAttr();
+//				result.breed = cat.getBreed();
+//				result.catid = cat.getCatid();
+//				result.conditions = cat.getConditions();
+//				result.family = cat.getFamily();
+//				result.food = cat.getFood();
+//				result.hospital = cat.getHospital();
+//				result.image = cat.getImage();
+//				result.lat = cat.getLat();
+//				result.lng = cat.getLng();
+//				result.location = cat.getLocation();
+//				result.neutered = cat.getNeutered();
+//				result.nickName = cat.getNickname();
+//				results.add(result);
+//			}
+//
+//			response = new ResponseEntity<>(results, HttpStatus.OK);
+//		} else {
+//			response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//		}
+//		return response;
+//	}
+//
+//	@PostMapping("/searchImage")
+//	@ApiOperation(value = "고양이 사진으로 검색")
+//	public Object searchImage(@RequestParam(required = true) final String breed,
+//	@RequestParam(required = true) final String location) {
+//		System.out.println("breed : " + breed);
+//		System.out.println("location : " + location);
+//
+//		List<Cat> catOpt = catDao.findCatByLocationAndBreed(location, breed);
+//
+//		ResponseEntity response = null;
+//
+//		if (!catOpt.isEmpty()) {	
+//			final List<CatInfoResponse> results = new ArrayList<CatInfoResponse>();
+//
+//			for(Cat cat : catOpt) {
+//				CatInfoResponse result = new CatInfoResponse();
+//				result.status = true;
+//				result.data = "success";
+//				result.age = cat.getAge();
+//				result.attr = cat.getAttr();
+//				result.breed = cat.getBreed();
+//				result.catid = cat.getCatid();
+//				result.conditions = cat.getConditions();
+//				result.family = cat.getFamily();
+//				result.food = cat.getFood();
+//				result.hospital = cat.getHospital();
+//				result.image = cat.getImage();
+//				result.lat = cat.getLat();
+//				result.lng = cat.getLng();
+//				result.location = cat.getLocation();
+//				result.neutered = cat.getNeutered();
+//				result.nickName = cat.getNickname();
+//				results.add(result);
+//			}
+//
+//			response = new ResponseEntity<>(results, HttpStatus.OK);
+//		} else {
+//			response = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//		}
+//		return response;
+//	}
+//}
