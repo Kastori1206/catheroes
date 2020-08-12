@@ -139,5 +139,10 @@ public class ArticleServiceImpl implements ArticleService {
 	public List<Article> findArticleByCatid(long catid) {
 		return articleDao.findByCatCatid(catid);
 	}
+
+	@Override
+	public List<Article> findNewArticle(long mid, long count) {
+		return articleDao.newArticle(mid, count);
+	}
 	
 }

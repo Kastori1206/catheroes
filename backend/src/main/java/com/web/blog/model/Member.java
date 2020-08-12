@@ -38,6 +38,7 @@ public class Member {
     private String nickname;
     private String auth;
     private String image;
+    private int news;
     @Column(insertable = false, updatable = false)
     private LocalDateTime create_date;
 

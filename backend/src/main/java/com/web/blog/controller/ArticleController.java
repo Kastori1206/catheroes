@@ -73,7 +73,9 @@ public class ArticleController {
 		ObjectMapper objectMapper = new ObjectMapper();		
 		ArticleRequest articleRequest = objectMapper.convertValue(request,ArticleRequest.class);
 		articleRequest.setFile(file);
-		System.out.println(articleRequest.toString());
+		// System.out.println(articleRequest.getCatid());
+
+		// System.out.println(articleRequest.toString());
 		return ResponseEntity.ok().body(articleService.saveArticle(articleRequest));
 	}
 	@PutMapping("/article/{articleid}")
@@ -115,5 +117,11 @@ public class ArticleController {
 	@ApiOperation(value = "고양이 번호로 게시글 조회")
 	public ResponseEntity<List<Article>> getCatArticle(@PathVariable long catid){
 		return ResponseEntity.ok().body(articleService.findArticleByCatid(catid));
+	}
+
+	@GetMapping("/article/newArticle")
+	@ApiOperation(value = "새로운 게시글 알림")
+	public ResponseEntity<List<Article>> getNewArticle(@RequestParam long mid, @RequestParam long count) {
+		return ResponseEntity.ok().body(articleService.findNewArticle(mid, count));
 	}
 }

@@ -13,33 +13,52 @@
         </router-link>
       </div>
 
-      <div id="inputs">
-        <!-- <i class="fas fa-camera" @click="searchImage"></i> -->
-        <!-- <md-field class="md-form-group" slot="inputs"> -->
-        <label for="ttest">
-          <i class="fas fa-camera"></i>
-        </label>
-        <md-input
-          id="ttest"
-          ref="imageInput"
-          type="file"
-          style="display:none;"
-          @change="onChangeImages"
-        ></md-input>
-        <!-- </md-field> -->
-        <!-- <md-field> -->
-        <!-- <label>Only images</label>
-        <md-file @change="onChangeImages" accept="image/*" />
-        </md-field>-->
-        <div class="md-layout">
+      <div id="inputs" v-if="showSearchbar" style="margin-bottom: 15px;">
+        <div
+          id="camera"
+          style="margin-top:15px; margin-left:20px; display:inline-block; float:right;"
+        >
+          <label for="searchImage">
+            <i class="fas fa-camera"></i>
+          </label>
+          <md-input
+            id="searchImage"
+            ref="imageInput"
+            type="file"
+            style="display:none;"
+            @change="onChangeImages"
+          ></md-input>
+        </div>
+        <div style="display:inline-block; float:left" class="md-layout">
           <md-field class="md-form-group">
-            <i class="fas fa-search"></i>
-            <md-input @keydown.enter="searchName" v-model="search" placeholder="Search Cat's Name"></md-input>
+            <i style="margin-top:10px;" class="fas fa-search"></i>
+            <md-input
+              @keydown.enter="searchName"
+              v-model="search"
+              placeholder="Search Cat's Name"
+              style="font-color: #000000 !important;"
+            ></md-input>
           </md-field>
         </div>
       </div>
 
       <div class="md-toolbar-section-end">
+        <div v-if="isLoggedIn">
+          <div
+            class="md-just-icon md-toolbar-toggle"
+            style="background-color: transparent !important"
+          >
+            <md-badge :md-content="memberinfo.news" style="margin-top: -7px;">
+              <!-- <md-icon>notifications</md-icon> -->
+              <div @click="newsfeed(memberinfo.news)">
+                <i class="fas fa-bell" style="margin-top: 10px; margin-right: 10px"></i>
+              </div>
+            </md-badge>
+          </div>
+        </div>
+        <!-- </div>
+
+        <div class="md-toolbar-section-end">-->
         <md-button
           class="md-just-icon md-simple md-toolbar-toggle"
           :class="{ toggled: toggledClass }"
@@ -79,12 +98,6 @@
                   <p>PROFILE</p>
                 </router-link>
               </md-list-item>
-
-              <!-- <md-list-item>
-                <router-link to="/detail">
-                  <p>DETAIL</p>
-                </router-link>
-              </md-list-item>-->
 
               <md-list-item>
                 <router-link to="/create">
@@ -157,15 +170,25 @@ export default {
   },
   data() {
     return {
+      showSearchbar: true,
       image: null,
       extraNavClasses: "",
       toggledClass: false,
       search: "",
       imageInput: "",
-      center: this.dong
+      center: this.dong,
+      memberinfo: {
+        email: null,
+        nickname: null,
+        mid: null,
+        image: null,
+        news: null
+      },
     };
   },
-  computed: {},
+  created() {
+    
+  },
   methods: {
     onChangeImages(e) {
       // console.log(e.target.files);
@@ -206,6 +229,7 @@ export default {
       }
     },
     toggleNavbarMobile() {
+      this.showSearchbar = !this.showSearchbar;
       this.NavbarStore.showNavbar = !this.NavbarStore.showNavbar;
       this.toggledClass = !this.toggledClass;
       this.bodyClick();
@@ -232,7 +256,7 @@ export default {
       console.log("로그아웃요청보냈다고했다");
       this.$emit("submit-logout");
     },
-    searchName() {      
+    searchName() {
       axios
         .get(
           `${process.env.VUE_APP_SPRING_API_SERVER_URL}cat/search?nickname=${this.search}&location=${this.centerdong}`
@@ -261,10 +285,47 @@ export default {
           this.$router.push("/search");
         })
         .catch(error => {});
+    },
+    newsCount() {
+      console.log("유저정보받아오라고했다");
+      const token = this.$cookies.get("auth-token");
+      axios
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "member/info", null, {
+          headers: { Authorization: `${token}` }
+        })
+        .then(res => {
+          console.log("user정보 출력");
+          console.log(res.data);
+          this.memberinfo.email = res.data.email;
+          this.memberinfo.nickname = res.data.nickname;
+          this.memberinfo.mid = res.data.mid;
+          this.memberinfo.image = res.data.image;
+          this.memberinfo.news = res.data.news;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    newsfeed(count) {
+      alert(count);
+      
+      axios
+        .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "article/newArticle?mid="+this.memberinfo.mid+"&count="+count)        
+        .then(res => {
+          console.log(res.data)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+      // 내가 팔로우한 고양이들의 게시글을
+      // count 만큼 (대신 내가 쓴거 뺴고)
+      // 불러온다.
+      
     }
   },
   mounted() {
     document.addEventListener("scroll", this.scrollListener);
+    this.newsCount();
   },
   beforeDestroy() {
     document.removeEventListener("scroll", this.scrollListener);

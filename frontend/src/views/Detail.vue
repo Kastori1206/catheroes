@@ -386,7 +386,8 @@ export default {
         email: null,
         nickname: null,
         mid: null,
-        image: null
+        image: null,
+        news: null
       },
       catinfo: {
         nickname: null,
@@ -516,7 +517,7 @@ export default {
           }
         })
         .then(res => {
-          console.log(res);
+          // console.log(res);
           alert("등록이 완료되었습니다.");
           this.posts.unshift({
             title: this.title,
@@ -538,6 +539,10 @@ export default {
           this.image = null;
           this.imgpreview = null;
           this.postCreateModalHide();
+
+          // 게시글 등록이 완료되었음
+          // 해당 고양이 id 로 follow 조회해서 팔로우중인 모든 member 찾아서 news ++
+          this.Newsfeed(this.catinfo.catid, this.memberinfo.mid);
         })
         .catch(error => {
           this.error = error;
@@ -731,7 +736,22 @@ export default {
       this.posts[index].isclick
         ? (this.posts[index].isclick = false)
         : (this.posts[index].isclick = true);
-    }
+    },
+    // 뉴스피드
+    Newsfeed(cid, mid) {
+      const formData = new FormData();
+      formData.append('cid', cid);
+      formData.append('mid',mid)
+      axios
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "member/newsfeed", formData)
+        .then(res => {
+            console.log(res);         
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+
   },
   computed: {
     headerStyle() {
@@ -750,6 +770,7 @@ export default {
     this.retrieveMemberInfo();
     this.retrieveCatInfo();
     this.CatFollow();
+    // this.Newsfeed(38);
     this.CatPost($state);
     // this.followCheck();
   }

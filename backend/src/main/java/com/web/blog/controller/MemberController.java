@@ -115,6 +115,12 @@ public class MemberController {
 	public ResponseEntity<Boolean> isEmail(@RequestParam("email") String email){
 		return ResponseEntity.ok().body(memberService.isEmail(email));
 	}
+
+	@PostMapping("/member/newsfeed")
+	@ApiOperation(value = "게시글 뉴스피드")
+	public ResponseEntity<String> updateNewsfeed(@RequestParam("cid") Long cid, @RequestParam("mid") Long mid) throws Exception{// Data를 리턴해주는 컨트롤러
+		return ResponseEntity.ok().body(memberService.updateNewsfeedById(cid, mid));
+	}
 	
 	
 }

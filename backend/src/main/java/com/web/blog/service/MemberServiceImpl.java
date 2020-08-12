@@ -154,7 +154,6 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public boolean isNickName(String nickname) {
 		Optional<Member> memberDb = memberDao.findMemberByNickname(nickname);
-		System.out.println(memberDb.get().getNickname());
 		if(memberDb.isPresent()) {
 			return true;
 		}else {			
@@ -201,5 +200,23 @@ public class MemberServiceImpl implements MemberService{
 			throw new ResourceNotFoundException("Record not found with mid : " + mid);		
 		}		
 		return path;
-	}	
+	}
+
+	@Override
+	public String updateNewsfeedById(Long cid, Long mid) throws Exception {
+		// Optional<Member> memberDb = memberDao.findMemberByMid(mid);
+		// String data = "";
+		// if(memberDb.isPresent()) {
+		// 	try {
+				memberDao.updateNews(cid, mid);
+		// 		data = "success";
+		// 	} catch (Exception e) {
+		// 		// TODO Auto-generated catch block
+		// 		e.printStackTrace();
+		// 	}			
+		// }else {			
+		// 	throw new ResourceNotFoundException("Record not found with mid : " + mid);		
+		// }		
+		return null;
+	}
 }

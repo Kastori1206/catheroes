@@ -28,5 +28,7 @@ public interface MemberService {
 	String Login(String email, String password);
 	//이미지 업데이트
 	String updateImageById(MultipartFile image, Long mid) throws Exception;
+	//뉴스피드 업데이트
+	String updateNewsfeedById(Long cid, Long mid) throws Exception;
 
 }
