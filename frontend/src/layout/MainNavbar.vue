@@ -1,25 +1,22 @@
 <template>
   <div>
-    <modal v-if="alarmModal" @close="alarmModalHide">
-      <template slot="header">
-        <h4 class="modal-title">회원 탈퇴</h4>
+    <modal v-if="snapshotModal" @close="snapshotModalHide">
+      <!-- <template slot="header">
+        <h4 class="modal-title">프로필 사진촬영 가이드</h4>
         <md-button
           class="md-simple md-just-icon md-round modal-default-button"
-          @click="alarmModalHide"
+          @click="snapshotModalHide"
         >
           <md-icon>clear</md-icon>
         </md-button>
-      </template>
+      </template> -->
 
-      <template slot="body">
-        <p>개인정보의 보호를 위해 "회원탈퇴"를 입력 해 주세요.</p>
-        <md-field>
-          <md-input placeholder></md-input>
-        </md-field>
+      <template slot="body" style="padding-top:0">
+        <img src="@/assets/img/snapshot_guide.png">
       </template>
 
       <template slot="footer">
-        <md-button class="md-danger md-simple" @click="alarmModalHide">탈퇴하기</md-button>
+        <md-button class="md-danger md-simple" @click="snapshotModalHide">확인했습니다.</md-button>
       </template>
     </modal>  
     <md-toolbar
@@ -41,10 +38,11 @@
           <div
             id="camera"
             style="margin-top:15px; margin-left:20px; display:inline-block; float:right;"
+            @click="snapshotModal = true"
           >
-            <label for="searchImage">
+            <!-- <label for="searchImage"> -->
               <i class="fas fa-camera"></i>
-            </label>
+            <!-- </label> -->
             <md-input
               id="searchImage"
               ref="imageInput"
@@ -67,7 +65,7 @@
         </div>
 
         <div class="md-toolbar-section-end">
-          <md-menu md-size="big" md-direction="top-start" :md-active.sync="toggleCard">
+          <md-menu md-size="big" md-direction="top-start">
             <div v-if="isLoggedIn">
               <div class="md-just-icon md-alarm-toggle md-icon-button" style="background-color: transparent !important" md-menu-trigger>
                 <md-badge :md-content="memberinfo.news" style="margin-top: -7px;">
@@ -122,7 +120,8 @@
                 <!-- Here you can add your items from the section-start of your toolbar -->
               </mobile-menu>
               
-              <md-list @click="toggleNavbarWeb()">
+              <md-list @click="toggleNavbarWeb
+              ()">
                 <md-list-item v-if="!isLoggedIn">
                   <router-link to="/login">
                     <p>LOGIN</p>
@@ -222,7 +221,7 @@ export default {
   data() {
     return {
       isFirst: true,
-      alarmModal: false,
+      snapshotModal: false,
       showSearchbar: true,
       image: null,
       extraNavClasses: "",
@@ -392,8 +391,10 @@ export default {
       
     },
     // 알람모달 숨기기
-    alarmModalHide() {
-      this.alarmModal = false;
+    snapshotModalHide() {
+      console.log("");
+      this.snapshotModal = false;
+      document.getElementById("searchImage").click();
     },
     // 알람 카운트 초기화
     clearAlarmCount() {
