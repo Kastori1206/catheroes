@@ -8,24 +8,33 @@
           >
             <login-card header-color="green">
               <h4 slot="title" class="card-title">Join</h4>
-              <md-field class="md-form-group" slot="inputs">
+              <md-field class="md-form-group" slot="inputs" :class="NmessageClass">
                 <md-icon>face</md-icon>
                 <label>Nickname...</label>
-                <md-input v-model="nickName" id="nickName" ref="nickName" type="text"></md-input>
+                <md-input
+                  v-model="nickName"
+                  id="nickName"
+                  ref="nickName"
+                  type="text"
+                  @blur="isNickname"
+                ></md-input>
+                <span
+                  class="md-helper-text"
+                  style="visibility: visible;"
+                  v-show="useNickname == '가능'"
+                >사용가능한닉네임</span>
+                <span class="md-error" style="bottom:-10px">닉네임중복임</span>
               </md-field>
-              <md-field class="md-form-group" slot="inputs">
+              <md-field class="md-form-group" slot="inputs" :class="EmessageClass">
                 <md-icon>email</md-icon>
                 <label>Email...</label>
-                <md-input
-                  v-model="email"
-                  id="email"
-                  ref="email"
-                  type="email"
-                  v-on:keyup="verifyEmail"
-                ></md-input>
-                <span :class="{active : passwordConfirmType==='text'}">
-                  <i id="email_compare" ref="email_compare">불일치</i>
-                </span>
+                <md-input v-model="email" id="email" ref="email" type="email" @blur="verifyEmail"></md-input>
+                <span
+                  class="md-helper-text"
+                  style="visibility: visible;"
+                  v-show="useEmail == '가능'"
+                >사용가능한이메일</span>
+                <span class="md-error" style="bottom:-10px">{{ useEmail }}</span>
               </md-field>
               <md-field class="md-form-group" slot="inputs">
                 <md-icon>lock_outline</md-icon>
@@ -92,7 +101,9 @@ export default {
       passwordConfirm: "",
       isTerm: true,
       passwordType: "password",
-      passwordConfirmType: "password"
+      passwordConfirmType: "password",
+      useNickname: "",
+      useEmail: ""
     };
   },
   props: {
@@ -106,6 +117,28 @@ export default {
       return {
         backgroundImage: `url(${this.header})`
       };
+    },
+    EmessageClass() {
+      if (this.useEmail == "이메일중복" || this.useEmail == "잘못된형식") {
+        return {
+          "md-invalid": true
+        };
+      } else {
+        return {
+          "md-invalid": false
+        };
+      }
+    },
+    NmessageClass() {
+      if (this.useNickname == "중복") {
+        return {
+          "md-invalid": true
+        };
+      } else {
+        return {
+          "md-invalid": false
+        };
+      }
     }
   },
   methods: {
@@ -115,8 +148,11 @@ export default {
       let msg = "";
       err &&
         !this.nickName &&
-        ((msg = "닉네임을 입력해주세요."), (err = false));
-      err && !this.email && ((msg = "이메일을 입력해주세요."), (err = false));
+        ((msg = "닉네임을 입력해주세요.") && !isNickname, (err = false));
+
+      err &&
+        !this.email &&
+        ((msg = "이메일을 입력해주세요.") && !isEmail, (err = false));
       err &&
         document.getElementById("email_compare").innerHTML == "불일치" &&
         ((msg = "이메일을 확인해주세요."), (err = false));
@@ -136,27 +172,69 @@ export default {
       if (!err) alert(msg);
       else this.createHandler();
     },
+    isNickname() {
+      if (this.nickName) {
+        const request = new FormData();
+        request.append("nickname", this.nickName);
+        axios
+          .post(
+            process.env.VUE_APP_SPRING_API_SERVER_URL + "member/nickname/",
+            request
+          )
+          .then(response => {
+            // alert(response.data);
+            if (response.data === true) {
+              // alert("중복입니다.");
+              this.useNickname = "중복";
+            } else {
+              // alert("사용할수있습니다.");
+              this.useNickname = "가능";
+            }
+          })
+          .catch(error => {
+            this.error = error;
+            console.log(error);
+            // this.moveList();
+          });
+      }
+    },
+    isEmail() {
+      if (this.email) {
+        const request = new FormData();
+        request.append("email", this.email);
+        axios
+          .post(
+            process.env.VUE_APP_SPRING_API_SERVER_URL + "member/email/",
+            request
+          )
+          .then(response => {
+            if (response.data === true) {
+              this.useEmail = "이메일중복";
+              // alert("이메일 중복입니다.");
+            } else {
+              this.useEmail = "가능";
+              // alert("사용할수있습니다.");
+            }
+          })
+          .catch(error => {
+            this.error = error;
+            console.log(error);
+            // this.moveList();
+          });
+      }
+    },
     createHandler() {
       // alert('123');
       // this.moveList();
       axios
-        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "account/signup", {
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "member/", {
           email: this.email,
           nickname: this.nickName,
           password: this.password
         })
         .then(response => {
-          console.log(response);
-          if (response.data.data === "success") {
-            alert("등록이 완료되었습니다.");
-            this.moveList();
-          } else {
-            if (response.data.data === "email") {
-              alert("email이 중복입니다.");
-            } else if (response.data.data === "nickname") {
-              alert("nickname이 중복입니다.");
-            }
-          }
+          alert("등록이 완료되었습니다.");
+          this.moveList();
         })
         .catch(error => {
           this.error = error;
@@ -191,9 +269,9 @@ export default {
       var regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
       var result = document.getElementById("email_compare");
       if (emailVal.match(regExp) != null) {
-        result.innerText = "일치";
+        this.isEmail();
       } else {
-        result.innerText = "불일치";
+        this.useEmail = "잘못된형식";
       }
     },
     onSuccess(res) {
@@ -207,4 +285,13 @@ export default {
 };
 </script>
 
-<style lang="css"></style>
+<style lang="css">
+.md-field .md-error {
+  left: unset !important;
+}
+.md-field .md-count,
+.md-field .md-error,
+.md-field .md-helper-text {
+  right: 0px;
+}
+</style>

@@ -5,8 +5,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.web.blog.model.Cat;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
 public class CatRequest{
@@ -16,11 +14,15 @@ public class CatRequest{
 	private String breed;
 	private String attr;
 	private String conditions;
+
 	private String lat;
 	private String lng;
 	private String location;
 	private String nickname;
+
+
 	//고양이 사진
-	 private MultipartFile file;    
+	// private MultipartFile file;  
+	private MultipartFile file;      
 	
 }

@@ -15,7 +15,7 @@
                   />
                 </div>
                 <div class="name">
-                  <h3 class="title">이름(별명): {{ this.catinfo.nickname }}</h3>
+                  <h3 class="title">{{this.catinfo.nickname}}</h3>
                   <md-button
                     v-if="isFollow"
                     @click="follow()"
@@ -97,6 +97,7 @@
                         name="conditions"
                         id="conditions"
                         placeholder="오늘의 건강 상태 선택하기"
+                        @click="isUpdated = true"
                       >
                         <md-option value="1">&#x1F63C; 기운 넘쳐요</md-option>
                         <md-option value="2">&#x1F63A; 튼튼해요</md-option>
@@ -245,20 +246,24 @@
 
                       <md-card-content>{{post.content}}</md-card-content>
                       <!-- 댓글 더 보기 -->
-                      <button v-if="!post.isclick" @click="commentTest(index); test2(index)">댓글 보기</button>
-                      <button v-if="post.isclick" @click="commentTest(index); test2(index)">댓글 닫기</button>
+                      <md-button v-if="!post.isclick" @click="commentTest(index); test2(index)" style="width:9vw; height:4vh; background-color:#F6BB43 !important; font-size:9px;" class="md-icon-button">
+                              댓글보기
+                      </md-button>
+                      <md-button v-if="post.isclick" @click="commentTest(index); test2(index)" style="width:9vw; height:4vh; background-color:#F6BB43 !important; font-size:9px;" class="md-icon-button">
+                              댓글닫기
+                      </md-button>
                       <div v-if="post.isclick">
                         <div
                           v-for="(comment, index2) in comments[index]"
                           :key="index2 + '_comments'"
                         >
-                          <md-card-content>{{comment.comment}} - 글쓴사람 : {{comment.writer}}</md-card-content>
+                          <md-card-content style="padding:0"><strong>{{comment.writer}}</strong> {{comment.comment}}</md-card-content>
                         </div>
                         <div>
-                          <textarea v-model="comment"></textarea>
-                          <button
-                            @click="saveComment(post.articleid, comment, memberinfo.nickname, index)"
-                          >등록</button>
+                          <textarea style="width:35vw" v-model="comment"></textarea>
+                          <md-button @click="saveComment(post.articleid, comment, memberinfo.nickname, index)" style="margin: 7px 5px; background-color:#F6BB43 !important" class="md-icon-button">
+                            등록
+                          </md-button>
                         </div>
                       </div>
                     </md-card>
@@ -382,7 +387,8 @@ export default {
         email: null,
         nickname: null,
         mid: null,
-        image: null
+        image: null,
+        news: null
       },
       catinfo: {
         nickname: null,
@@ -447,6 +453,7 @@ export default {
           this.catinfo.breed = res.data.breed;
           this.catinfo.attr = res.data.attr;
           this.catinfo.conditions = res.data.conditions;
+          this.isUpdated = false;
           alert("수정이 완료되었습니다 :)");
         })
         .catch(error => {
@@ -512,7 +519,7 @@ export default {
           }
         })
         .then(res => {
-          console.log(res);
+          // console.log(res);
           alert("등록이 완료되었습니다.");
           this.posts.unshift({
             title: this.title,
@@ -534,6 +541,10 @@ export default {
           this.image = null;
           this.imgpreview = null;
           this.postCreateModalHide();
+
+          // 게시글 등록이 완료되었음
+          // 해당 고양이 id 로 follow 조회해서 팔로우중인 모든 member 찾아서 news ++
+          this.Newsfeed(this.catinfo.catid, this.memberinfo.mid);
         })
         .catch(error => {
           this.error = error;
@@ -727,7 +738,22 @@ export default {
       this.posts[index].isclick
         ? (this.posts[index].isclick = false)
         : (this.posts[index].isclick = true);
-    }
+    },
+    // 뉴스피드
+    Newsfeed(cid, mid) {
+      const formData = new FormData();
+      formData.append('cid', cid);
+      formData.append('mid',mid)
+      axios
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "member/newsfeed", formData)
+        .then(res => {
+            console.log(res);         
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+
   },
   computed: {
     headerStyle() {
@@ -746,6 +772,7 @@ export default {
     this.retrieveMemberInfo();
     this.retrieveCatInfo();
     this.CatFollow();
+    // this.Newsfeed(38);
     this.CatPost($state);
     // this.followCheck();
   }

@@ -30,4 +30,6 @@ public interface ArticleService {
 	Comment saveComment(CommentRequest commentRequest);
 	//코멘트 삭제
 	void deleteComment(long commentid);
+	//새로운 게시글 알림
+	List<Article> findNewArticle(long mid, long count);
 }

@@ -20,8 +20,15 @@ public interface MemberDao extends JpaRepository<Member, String> {
     
     @Transactional
     @Modifying
-    @Query(value=" UPDATE user "
+    @Query(value=" UPDATE member "
     		   + " SET image = :image "
-    		   + " WHERE uid = :mid ", nativeQuery = true)
+    		   + " WHERE mid = :mid ", nativeQuery = true)
     void updateImage(@Param("mid")Long mid,@Param("image") String image) throws Exception;
+
+    @Transactional
+    @Modifying
+    @Query(value=" UPDATE member "
+    		   + " SET news = news+1 "
+    		   + " WHERE mid IN (SELECT mid FROM follow WHERE catid = :cid and mid != :mid);", nativeQuery = true)
+    void updateNews(@Param("cid")Long cid, @Param("mid")Long mid) throws Exception;
 }

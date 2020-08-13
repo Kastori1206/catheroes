@@ -48,6 +48,7 @@ public class MemberServiceImpl implements MemberService{
 		Optional<Member> memberDb =  memberDao.findMemberByMid(mid);
 		
 		if(memberDb.isPresent()) {
+			memberDb.get().setNickname(memberDb.get().getNickname().split("_")[0]);
 			return memberDb.get();
 		}else {
 			throw new ResourceNotFoundException("Record not found with mid : " + mid);			
@@ -61,8 +62,7 @@ public class MemberServiceImpl implements MemberService{
 		if(memberDb.isPresent()) {
 			Member memberUpdate = memberDb.get();
 			memberUpdate.setNickname(member.getNickname());
-			memberUpdate.setPassword(member.getPassword());
-			memberUpdate.setImage(member.getImage());				
+			memberUpdate.setPassword(member.getPassword());			
 
 			memberDao.save(memberUpdate);
 			return memberUpdate;
@@ -84,6 +84,7 @@ public class MemberServiceImpl implements MemberService{
 
 	@Override
 	public Member saveMember(Member member) {
+		member.setImage("/profile/user/default.jpg");
 		return memberDao.save(member);
 	}
 
@@ -123,7 +124,7 @@ public class MemberServiceImpl implements MemberService{
 
 		Member kakaoUser = Member.builder()				
 				.nickname(kakaoProfile.getProperties().getNickname() + "_" + kakaoProfile.getId())
-				.email(kakaoProfile.getKakao_account().getEmail()).auth("kakao").image("defaule.jpg").build();
+				.email(kakaoProfile.getKakao_account().getEmail()).auth("kakao").image("static/profile/user/default.jpg").build();
 
 		// 가입자 혹은 비가입자 체크 해서 처리
 		Optional<Member> originUser = memberDao.findMemberByEmail(kakaoUser.getEmail());
@@ -131,8 +132,8 @@ public class MemberServiceImpl implements MemberService{
 		if (!originUser.isPresent()) {
 			System.out.println("기존 회원이 아니기에 자동 회원가입을 진행합니다.");
 			memberDao.save(kakaoUser);
-			Optional<Member> member = memberDao.findMemberByEmail(kakaoUser.getEmail());
-			String token = jwtService.create("member", member, "member");
+			Optional<Member> memberDb = memberDao.findMemberByEmail(kakaoUser.getEmail());
+			String token = jwtService.create("member", memberDb.get(), "member");
 			System.out.println(token);
 			return token;
 		
@@ -141,21 +142,33 @@ public class MemberServiceImpl implements MemberService{
 				throw new ResourceNotFoundException("이미 가입되어 있습니다. : "+ originUser.get().getEmail());
 			} else if("kakao".equals(originUser.get().getAuth())){				
 				// 로그인 처리
-				Optional<Member> member = memberDao.findMemberByEmail(kakaoUser.getEmail());
-				String token = jwtService.create("member", member, "member");
+				Optional<Member> memberDb = memberDao.findMemberByEmail(kakaoUser.getEmail());
+				String token = jwtService.create("member", memberDb.get(), "member");
 				return token;				
 			}
 		}
 		return null;		
 	}
 
+	//닉네임이 있으면 true 없으면 false
 	@Override
-	public Member isNickName(String nickname) {
+	public boolean isNickName(String nickname) {
 		Optional<Member> memberDb = memberDao.findMemberByNickname(nickname);
 		if(memberDb.isPresent()) {
-			return memberDb.get();
+			return true;
 		}else {			
-			throw new ResourceNotFoundException("Record not found with nickname : "+nickname);
+			return false;
+		}
+	}
+	
+	//이메일이 있으면 true 없으면 false
+	@Override
+	public boolean isEmail(String email) {
+		Optional<Member> memberDb = memberDao.findMemberByEmail(email);		
+		if(memberDb.isPresent()) {
+			return true;
+		}else {			
+			return false;
 		}
 	}
 
@@ -170,18 +183,55 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public void updateImageById(MultipartFile image,Long mid) throws Exception {
+	public String updateImageById(MultipartFile image,Long mid) throws Exception {
 		Optional<Member> memberDb = memberDao.findMemberByMid(mid);
+		String path=null;
 		if(memberDb.isPresent()) {
 			try {
-				String path = this.amazonClient.uploadFile(image, mid, "profile/user/");
-				memberDao.updateImage(mid, path);						
+				path = this.amazonClient.uploadFile(image, mid, "profile/user/");
+				memberDao.updateImage(mid, path);		
+				System.out.println("############");
+				System.out.println(path);								
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}			
-		}else {
+		}else {			
 			throw new ResourceNotFoundException("Record not found with mid : " + mid);		
 		}		
-	}	
+		return path;
+	}
+
+	@Override
+	public String updateNewsfeedById(Long cid, Long mid) throws Exception {
+		// Optional<Member> memberDb = memberDao.findMemberByMid(mid);
+		// String data = "";
+		// if(memberDb.isPresent()) {
+		// 	try {
+				memberDao.updateNews(cid, mid);
+		// 		data = "success";
+		// 	} catch (Exception e) {
+		// 		// TODO Auto-generated catch block
+		// 		e.printStackTrace();
+		// 	}			
+		// }else {			
+		// 	throw new ResourceNotFoundException("Record not found with mid : " + mid);		
+		// }		
+		return null;
+	}
+
+	@Override
+	public Member clearAlarm(Member member) {
+		Optional<Member> memberDb = memberDao.findMemberByMid(member.getMid());
+		
+		if(memberDb.isPresent()) {
+			Member memberUpdate = memberDb.get();
+			memberUpdate.setNews(member.getNews());
+			
+			memberDao.save(memberUpdate);
+			return memberUpdate;
+		}else {
+			throw new ResourceNotFoundException("Record not found with mid : "+member.getMid());
+		}
+	}
 }

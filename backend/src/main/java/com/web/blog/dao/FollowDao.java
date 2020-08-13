@@ -19,4 +19,5 @@ public interface FollowDao extends JpaRepository<Follow, String> {
     //팔로우 삭제
     @Transactional
     void deleteByCatCatidAndMemberMid(long catid, long mid);
+
 }

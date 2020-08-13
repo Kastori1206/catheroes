@@ -21,10 +21,16 @@ public interface MemberService {
 	//카카오 로그인
 	String KakaoLogin(OAuthTokenResponse oauthToken);
 	//닉네임 중복검사
-	Member isNickName(String nickname);
+	boolean isNickName(String nickname);
+	//이메일 중복검사
+	boolean isEmail(String email);
 	//로그인
 	String Login(String email, String password);
 	//이미지 업데이트
-	void updateImageById(MultipartFile image, Long mid) throws Exception;
+	String updateImageById(MultipartFile image, Long mid) throws Exception;
+	//뉴스피드 업데이트
+	String updateNewsfeedById(Long cid, Long mid) throws Exception;
+	//푸쉬알림 카운트 초기화
+	Member clearAlarm(Member member);
 
 }

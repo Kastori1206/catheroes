@@ -144,7 +144,7 @@ export default {
       this.closeMarker();     
 
       axios
-        .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "/cat/"+ dong)
+        .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "cat/"+ dong)
         .then(res => {
           console.log(res.data)
           var index = 0;

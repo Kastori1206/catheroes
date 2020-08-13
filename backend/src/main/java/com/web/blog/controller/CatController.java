@@ -78,7 +78,8 @@ public class CatController {
 		CatRequest catRequest = objectMapper.convertValue(request, CatRequest.class);
 		catRequest.setFile(file);
 		return ResponseEntity.ok().body(catService.saveCat(catRequest));
-	}	
+	}
+
 
 	@GetMapping("/cat/follow/{catid}")
 	@ApiOperation(value = "고양이 팔로우 정보")
@@ -93,9 +94,11 @@ public class CatController {
 
 	}
 
+
 	@PostMapping("/cat/searchImage")
 	@ApiOperation(value = "고양이 사진으로 검색")
 	public ResponseEntity<List<Cat>> searchImage(@RequestParam(value="breed") String breed, @RequestParam(value="location") String location) {
 		return ResponseEntity.ok().body(catService.findCatByBreed(breed, location));
 	}
+
 }

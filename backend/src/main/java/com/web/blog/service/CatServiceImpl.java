@@ -4,22 +4,16 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.amazonaws.services.opsworkscm.model.ResourceNotFoundException;
 import com.web.blog.dao.CatDao;
 import com.web.blog.dao.FollowDao;
-import com.web.blog.dao.MemberDao;
-import com.web.blog.model.Article;
 import com.web.blog.model.Cat;
-import com.web.blog.model.Comment;
 import com.web.blog.model.Follow;
-import com.web.blog.model.Member;
 import com.web.blog.model.request.CatRequest;
 import com.web.blog.utill.amazon.AmazonClient;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CatServiceImpl implements CatService {
@@ -60,7 +54,6 @@ public class CatServiceImpl implements CatService {
 
 	@Override
 	public Cat saveCat(CatRequest catRequest) {
-		
 		Cat cat = new Cat();
 		System.out.println(catRequest.toString());
 		try {
@@ -80,8 +73,10 @@ public class CatServiceImpl implements CatService {
 		return catDao.save(cat);
 	}
 
+
 	@Override
 	public void deleteByCatId(long catid) {
+		
 		Optional<Cat> catDb = catDao.findCatByCatid(catid);
 
 		if(catDb.isPresent()) {
@@ -89,10 +84,12 @@ public class CatServiceImpl implements CatService {
 		}else {
 			throw new ResourceNotFoundException("Record not found with catid : " + catid);			
 		}
+
 	}
 
 	@Override
 	public Cat updateCat(CatRequest catRequest) {
+		// Cat cat = new Cat();
 		Cat cat = catDao.findCatByCatid(catRequest.getCatid()).get();
 		cat.setCatid(catRequest.getCatid());
 		cat.setAttr(catRequest.getAttr());

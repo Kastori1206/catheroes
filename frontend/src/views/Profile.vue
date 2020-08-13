@@ -9,9 +9,9 @@
               <div class="profile">
                 <div class="avatar">
                   <img
-                    :src="userinfo.image"
+                    :src="memberinfo.image"
                     alt="Circle Image"
-                    class="img-raised rounded-circle img-fluid"
+                    class="img-raised rounded-circle img-flmid"
                     @click="classicModal = true"
                   />
                 </div>
@@ -41,7 +41,7 @@
                 </modal>
 
                 <div class="name">
-                  <h3 class="title">닉네임: {{ this.userinfo.nickname }}</h3>
+                  <h3 class="title">닉네임: {{ memberinfo.nickname }}</h3>
                 </div>
               </div>
             </div>
@@ -65,7 +65,7 @@
                           <img style="margin-bottom:0; float:left" :src=follow.image alt="People">
                         </md-avatar>
 
-                        <span style="position:relative" class="md-list-item-text">{{ follow.nickName }}</span>
+                        <span style="position:relative" class="md-list-item-text">{{ follow.nickname }}</span>
 
                         <md-button style="background-color:#4B89DC !important" class="md-icon-button">
                           팔로우
@@ -84,11 +84,11 @@
                     <md-card style="width: 50vw;">
                       <md-card-header>
                         <md-avatar style="margin-left: 10px;">
-                          <img :src="userinfo.image" style="margin-bottom: 0px;" />
+                          <img :src="memberinfo.image" style="margin-bottom: 0px;" />
                         </md-avatar>
 
                         <div class="md-title">{{ post.title }}</div>
-                        <div class="md-subhead">{{ userinfo.nickname }}</div>
+                        <div class="md-subhead">{{ memberinfo.nickname }}</div>
                       </md-card-header>
 
                       <md-card-media>
@@ -123,7 +123,7 @@
                           <md-icon>face</md-icon>
                           <label>Nickname...</label>
                           <md-input
-                            v-model="userinfo.nickname"
+                            v-model="memberinfo.nickname"
                             id="nickName"
                             ref="nickName"
                             type="text"
@@ -133,10 +133,11 @@
                           <md-icon>email</md-icon>
                           <label>Email...</label>
                           <md-input
-                            v-model="userinfo.email"
+                            v-model="memberinfo.email"
                             id="email"
                             ref="email"
                             type="email"
+                            readonly="true"
                             v-on:keyup="verifyEmail"
                           ></md-input>
                           <span :class="{ active: passwordConfirmType === 'text' }">
@@ -273,10 +274,10 @@ export default {
       passwordType: "password",
       passwordConfirmType: "password",
 
-      userinfo: {
+      memberinfo: {
         email: null,
         nickname: null,
-        uid: null,
+        mid: null,
         password: null,
         image: null
       }
@@ -300,11 +301,11 @@ export default {
       } else {
         const request = new FormData();
         request.append("image", this.file);
-        request.append("userId", this.userinfo.uid);
+        request.append("mid", this.memberinfo.mid);
 
         axios
           .post(
-            process.env.VUE_APP_SPRING_API_SERVER_URL + "profile/image",
+            process.env.VUE_APP_SPRING_API_SERVER_URL + "member/image",
             request,
             {
               headers: {
@@ -314,7 +315,7 @@ export default {
           )
           .then(res => {
             console.log(res.data)
-            this.userinfo.image = process.env.VUE_APP_IMAGE_SERVER + res.data;
+            this.memberinfo.image = process.env.VUE_APP_IMAGE_SERVER + res.data;
             this.classicModalHide();
           })
           .catch(err => {
@@ -344,14 +345,9 @@ export default {
       else this.deleteHandler();
     },
     deleteHandler() {
-      // console.log("유저정보 지우라 했다");
-      const formData = new FormData();
-      formData.append("email", this.userinfo.email);
       axios
-        .post(
-          process.env.VUE_APP_SPRING_API_SERVER_URL + "account/delete",
-          formData
-        )
+        .delete(
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "member/" + this.memberinfo.mid)
         .then(res => {
           alert("회원탈퇴가 완료되었습니다.");
           // console.log(res);
@@ -371,10 +367,10 @@ export default {
       let err = true;
       let msg = "";
       err &&
-        !this.userinfo.nickname &&
+        !this.memberinfo.nickname &&
         ((msg = "닉네임을 입력해주세요."), (err = false));
       err &&
-        !this.userinfo.email &&
+        !this.memberinfo.email &&
         ((msg = "이메일을 입력해주세요."), (err = false));
       err &&
         document.getElementById("email_compare").innerHTML == "불일치" &&
@@ -394,20 +390,20 @@ export default {
       else this.updateHandler();
     },
     updateHandler() {
+      const request = new FormData();
+      request.append("mid", this.memberinfo.mid);
+      request.append("email", this.memberinfo.email);
+      request.append("nickname", this.memberinfo.nickname);
+      request.append("password", this.password);
       axios
-        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "account/update", {
-          uid: this.userinfo.uid,
-          email: this.userinfo.email,
-          nickname: this.userinfo.nickname,
-          password: this.password
-        })
+        .put(process.env.VUE_APP_SPRING_API_SERVER_URL + "member", request)
         .then(res => {
           // console.log(res);
-          this.userinfo.email = res.data.email;
-          this.userinfo.nickname = res.data.nickName;
-          this.userinfo.uid = res.data.uid;
-          this.userinfo.password = res.data.password;
-          this.userinfo.image = res.data.image;
+          this.memberinfo.email = res.data.email;
+          this.memberinfo.nickname = res.data.nickName;
+          this.memberinfo.mid = res.data.mid;
+          this.memberinfo.password = res.data.password;
+          this.memberinfo.image = res.data.image;
           alert("수정이 완료되었습니다.");
           this.userUpdateModalHide();
         })
@@ -424,84 +420,62 @@ export default {
       this.userUpdateModal = false;
     },
     //유저 정보 확인
-    retrieveUserInfo() {
+    retrievememberinfo() {
       // console.log("유저정보받아오라고했다");
       const token = this.$cookies.get("auth-token");
+      // console.log(token)
       axios
         .post(
-          process.env.VUE_APP_SPRING_API_SERVER_URL + "account/info/",
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "member/info",
           null,
           {
             headers: { Authorization: `${token}` }
           }
         )
-        .then(res => {
-          // console.log("user정보 출력");
-          // console.log(res.data);
-          this.userinfo.email = res.data.email;
-          this.userinfo.nickname = res.data.nickName;
-          this.userinfo.uid = res.data.uid;
-          this.userinfo.password = res.data.password;
-          this.userinfo.image =
-            process.env.VUE_APP_IMAGE_SERVER + res.data.image;
+        .then(res => {     
+          console.log(res)
+          this.memberinfo.email = res.data.email;
+          this.memberinfo.nickname = res.data.nickname;
+          this.memberinfo.mid = res.data.mid;
+          this.memberinfo.password = res.data.password;
+          this.memberinfo.image =
+          process.env.VUE_APP_IMAGE_SERVER + res.data.image;     
+          this.UserFollow();
+          this.UserPost();
         })
         .catch(error => {
           console.log(error);
         });
     },
-    UserFollow() {
-      // console.log("해당 유저의 팔로우한 고양이를 받아오라고했다");
-      // const number = 1;
-      const userid = this.userinfo.uid;
-      // console.log("uid 는 : " + userid);
-      const formData = new FormData();
-      formData.append("userid", userid);
+    //해당 유저의 팔로우한 고양이
+    UserFollow() {            
       axios
-        .post(
-          process.env.VUE_APP_SPRING_API_SERVER_URL + "follow/findCatByUserId",
-          formData
+        .get(
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "follow/member/"+this.memberinfo.mid,          
         )
         .then(res => {
-          // console.log(res.data.length);
-          for (var i = 0; i < res.data.length; i++) {
-            // console.log("follow catid = " + res.data[i].catid);
-            axios
-              .get(
-                process.env.VUE_APP_SPRING_API_SERVER_URL +
-                  "cat/detail/" +
-                  res.data[i].catid
-              )
-              .then(res => {
-                // console.log(res.data);
-                ////
-                res.data.image = process.env.VUE_APP_IMAGE_SERVER + res.data.image
-                this.follows.push(res.data);
-                ////
-              })
-              .catch(error => {
-                console.log(error);
-              });
+          console.log(res.data);
+          for (var i = 0; i < res.data.length; i++) {           
+              res.data[i].cat.image = process.env.VUE_APP_IMAGE_SERVER + res.data[i].cat.image
+              this.follows.push(res.data[i].cat);             
           }
-          // console.log(this.items);
         })
         .catch(error => {
           console.log(error);
         });
     },
-    UserPost() {
-      // console.log("유저포스트받아오라고했다");
-      const userid = this.userinfo.uid;
-      const formData = new FormData();
-      formData.append("userid", userid);
+    //유저 포스트 정보
+    UserPost() {   
+      console.log("포스트")
       axios
-        .post(
-          process.env.VUE_APP_SPRING_API_SERVER_URL + "article/findByUserId",
-          formData
+        .get(
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "article/member/"+this.memberinfo.mid
         )
         .then(res => {
+          console.log(res.data);
           for (var i = 0; i < res.data.length; i++) {
             // console.log(res.data[i]);
-            res.data[i].image = process.env.VUE_APP_IMAGE_SERVER + res.data[i].image
+            res.data[i].image = process.env.VUE_APP_IMAGE_SERVER + res.data[i].image;
             this.posts.push(res.data[i]);
           }
         })
@@ -527,7 +501,7 @@ export default {
       }
     },
     verifyEmail() {
-      var emailVal = this.userinfo.email;
+      var emailVal = this.memberinfo.email;
       var regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
       var result = document.getElementById("email_compare");
       if (emailVal.match(regExp) != null) {
@@ -545,11 +519,8 @@ export default {
     }
   },
   created() {
-    this.retrieveUserInfo();
-    // this.UserFollow();
-    setTimeout(this.UserFollow, 100);
-    setTimeout(this.UserPost, 100);
-  }
+    this.retrievememberinfo();  
+  }, 
 };
 </script>
 
