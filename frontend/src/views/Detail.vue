@@ -15,7 +15,7 @@
                   />
                 </div>
                 <div class="name">
-                  <h3 class="title">이름(별명): {{ this.catinfo.nickname }}</h3>
+                  <h3 class="title">{{this.catinfo.nickname}}</h3>
                   <md-button
                     v-if="isFollow"
                     @click="follow()"
@@ -97,6 +97,7 @@
                         name="conditions"
                         id="conditions"
                         placeholder="오늘의 건강 상태 선택하기"
+                        @click="isUpdated = true"
                       >
                         <md-option value="1">&#x1F63C; 기운 넘쳐요</md-option>
                         <md-option value="2">&#x1F63A; 튼튼해요</md-option>
@@ -452,6 +453,7 @@ export default {
           this.catinfo.breed = res.data.breed;
           this.catinfo.attr = res.data.attr;
           this.catinfo.conditions = res.data.conditions;
+          this.isUpdated = false;
           alert("수정이 완료되었습니다 :)");
         })
         .catch(error => {

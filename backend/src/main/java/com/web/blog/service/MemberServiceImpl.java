@@ -219,4 +219,19 @@ public class MemberServiceImpl implements MemberService{
 		// }		
 		return null;
 	}
+
+	@Override
+	public Member clearAlarm(Member member) {
+		Optional<Member> memberDb = memberDao.findMemberByMid(member.getMid());
+		
+		if(memberDb.isPresent()) {
+			Member memberUpdate = memberDb.get();
+			memberUpdate.setNews(member.getNews());
+			
+			memberDao.save(memberUpdate);
+			return memberUpdate;
+		}else {
+			throw new ResourceNotFoundException("Record not found with mid : "+member.getMid());
+		}
+	}
 }

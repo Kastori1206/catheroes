@@ -30,5 +30,7 @@ public interface MemberService {
 	String updateImageById(MultipartFile image, Long mid) throws Exception;
 	//뉴스피드 업데이트
 	String updateNewsfeedById(Long cid, Long mid) throws Exception;
+	//푸쉬알림 카운트 초기화
+	Member clearAlarm(Member member);
 
 }

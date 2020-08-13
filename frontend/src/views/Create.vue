@@ -24,7 +24,15 @@
                   <i class="fas fa-paw"></i>
                 </md-icon>
                 <label>길냥이 종류</label>
-                <md-input v-model="breed" id="breed" ref="breed">{{this.breed}}</md-input>
+                <md-select v-model="breed" name="breed" id="breed" style="margin: 0px 0px 0px 12px">
+                  <md-option value="삼색이">삼색이</md-option>
+                  <md-option value="고등어태비">고등어태비</md-option>
+                  <md-option value="치즈태비">치즈태비</md-option>
+                  <md-option value="검은고양이">검은고양이</md-option>
+                  <md-option value="흰고양이">흰고양이</md-option>
+                  <md-option value="턱시도">턱시도</md-option>
+                  <md-option value="잘모르겠습니다">잘모르겠습니다</md-option>
+                </md-select>
                 <span class="md-helper-text">예상 종류를 입력해주세요</span>
               </md-field>
 
@@ -151,6 +159,7 @@ export default {
       let msg = "";
       err && !this.nickname && ((msg = "이름을 입력해주세요."), (err = false));
       err && !this.breed && ((msg = "품종을 입력해주세요."), (err = false));
+      err && !this.lat && ((msg = "위치정보를 입력해주세요."), (err = false));
       // err && !this.image && ((msg = '비밀번호를 입력해주세요.'), (err = false));
       // err && !this. && ((msg = '비밀번호를 입력해주세요.'), (err = false));
 

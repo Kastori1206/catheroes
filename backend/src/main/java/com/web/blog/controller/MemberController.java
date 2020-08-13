@@ -122,5 +122,12 @@ public class MemberController {
 		return ResponseEntity.ok().body(memberService.updateNewsfeedById(cid, mid));
 	}
 	
-	
+	@PutMapping("/member/clear")
+	@ApiOperation(value = "푸쉬알림 카운트 초기화")
+	public ResponseEntity<Member> clearAlarm(@RequestParam Map<String,String> request) {
+		ObjectMapper objectMapper = new ObjectMapper();	
+		Member member = objectMapper.convertValue(request, Member.class);
+		
+		return ResponseEntity.ok().body(memberService.clearAlarm(member));
+	}
 }

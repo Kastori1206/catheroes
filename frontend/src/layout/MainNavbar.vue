@@ -1,130 +1,180 @@
 <template>
-  <md-toolbar
-    id="toolbar"
-    md-elevation="0"
-    class="md-transparent md-absolute"
-    :class="extraNavClasses"
-    :color-on-scroll="colorOnScroll"
-  >
-    <div class="md-toolbar-row md-collapse-lateral">
-      <div class="md-toolbar-section-start">
-        <router-link to="/">
-          <h3 class="md-title">길냥이히어로즈</h3>
-        </router-link>
-      </div>
-
-      <div id="inputs" v-if="showSearchbar" style="margin-bottom: 15px;">
-        <div
-          id="camera"
-          style="margin-top:15px; margin-left:20px; display:inline-block; float:right;"
-        >
-          <label for="searchImage">
-            <i class="fas fa-camera"></i>
-          </label>
-          <md-input
-            id="searchImage"
-            ref="imageInput"
-            type="file"
-            style="display:none;"
-            @change="onChangeImages"
-          ></md-input>
-        </div>
-        <div style="display:inline-block; float:left" class="md-layout">
-          <md-field class="md-form-group">
-            <i style="margin-top:10px;" class="fas fa-search"></i>
-            <md-input
-              @keydown.enter="searchName"
-              v-model="search"
-              placeholder="Search Cat's Name"
-              style="font-color: #000000 !important;"
-            ></md-input>
-          </md-field>
-        </div>
-      </div>
-
-      <div class="md-toolbar-section-end">
-        <div v-if="isLoggedIn">
-          <div
-            class="md-just-icon md-toolbar-toggle"
-            style="background-color: transparent !important"
-          >
-            <md-badge :md-content="memberinfo.news" style="margin-top: -7px;">
-              <!-- <md-icon>notifications</md-icon> -->
-              <div @click="newsfeed(memberinfo.news)">
-                <i class="fas fa-bell" style="margin-top: 10px; margin-right: 10px"></i>
-              </div>
-            </md-badge>
-          </div>
-        </div>
-        <!-- </div>
-
-        <div class="md-toolbar-section-end">-->
+  <div>
+    <modal v-if="alarmModal" @close="alarmModalHide">
+      <template slot="header">
+        <h4 class="modal-title">회원 탈퇴</h4>
         <md-button
-          class="md-just-icon md-simple md-toolbar-toggle"
-          :class="{ toggled: toggledClass }"
-          @click="toggleNavbarMobile()"
+          class="md-simple md-just-icon md-round modal-default-button"
+          @click="alarmModalHide"
         >
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
+          <md-icon>clear</md-icon>
         </md-button>
+      </template>
 
-        <div class="md-collapse">
-          <div class="md-collapse-wrapper">
-            <mobile-menu nav-mobile-section-start="false">
-              <!-- Here you can add your items from the section-start of your toolbar -->
-            </mobile-menu>
-            <md-list @click="toggleNavbarMobile()">
-              <md-list-item v-if="!isLoggedIn">
-                <router-link to="/login">
-                  <p>LOGIN</p>
-                </router-link>
-              </md-list-item>
+      <template slot="body">
+        <p>개인정보의 보호를 위해 "회원탈퇴"를 입력 해 주세요.</p>
+        <md-field>
+          <md-input placeholder></md-input>
+        </md-field>
+      </template>
 
-              <md-list-item v-if="!isLoggedIn">
-                <router-link to="/join">
-                  <p>JOIN</p>
-                </router-link>
-              </md-list-item>
+      <template slot="footer">
+        <md-button class="md-danger md-simple" @click="alarmModalHide">탈퇴하기</md-button>
+      </template>
+    </modal>  
+    <md-toolbar
+      id="toolbar"
+      md-elevation="0"
+      class="md-transparent md-absolute"
+      :class="extraNavClasses"
+      :color-on-scroll="colorOnScroll"
+    >
+      <div class="md-toolbar-row md-collapse-lateral">
+        <div class="md-toolbar-section-start">
+          <router-link to="/">
+            <h3 class="md-title">길냥이히어로즈</h3>
+          </router-link>
+          
+        </div>
 
-              <md-list-item v-if="isLoggedIn" @click="logout">
-                <router-link to="/">
-                  <p>LOGOUT</p>
-                </router-link>
-              </md-list-item>
+        <div id="inputs" v-if="showSearchbar" style="margin-bottom: 15px;">
+          <div
+            id="camera"
+            style="margin-top:15px; margin-left:20px; display:inline-block; float:right;"
+          >
+            <label for="searchImage">
+              <i class="fas fa-camera"></i>
+            </label>
+            <md-input
+              id="searchImage"
+              ref="imageInput"
+              type="file"
+              style="display:none;"
+              @change="onChangeImages"
+            ></md-input>
+          </div>
+          <div style="display:inline-block; float:left" class="md-layout">
+            <md-field class="md-form-group">
+              <i style="margin-top:10px;" class="fas fa-search"></i>
+              <md-input
+                @keydown.enter="searchName"
+                v-model="search"
+                placeholder="Search Name..."
+                style="width: 114px"
+              ></md-input>
+            </md-field>
+          </div>
+        </div>
 
-              <md-list-item v-if="isLoggedIn">
-                <router-link to="/profile">
-                  <p>PROFILE</p>
-                </router-link>
-              </md-list-item>
+        <div class="md-toolbar-section-end">
+          <md-menu md-size="big" md-direction="top-start" :md-active.sync="toggleCard">
+            <div v-if="isLoggedIn">
+              <div class="md-just-icon md-alarm-toggle md-icon-button" style="background-color: transparent !important" md-menu-trigger>
+                <md-badge :md-content="memberinfo.news" style="margin-top: -7px;">
+                  <div @click="newsfeed(memberinfo.news)">
+                    <i class="fas fa-bell" style="margin-top: 10px; margin-right: 10px"></i>
+                  </div>
+                </md-badge>
+              </div>
+            </div>
+            <md-menu-content style="margin-top:76px; margin-right:30px">
+              <div v-if="articleinfo">
+                <div class="author-title" style="margin-left:10px; margin-bottom:10px; font-size:1rem"><strong>&#x23F0;알림보기</strong></div>
+                <md-divider class="md-inset"></md-divider>
+                <div v-for="(article, index) in articleinfo" :key="'index_' + index">
+                  <div class="author-card">
+                    <md-avatar class="md-large">
+                      <img :src="article.image" :alt="'Member_' + index">
+                    </md-avatar>
 
-              <md-list-item>
-                <router-link to="/create">
-                  <p>CREATE</p>
-                </router-link>
-              </md-list-item>
+                    <div v-if="index%3==0" class="author-card-info">
+                      <span><strong>{{article.member.nickname}}</strong>님이 <strong>{{article.cat.nickname}}</strong>와<br>놀고있어요&#x1F638;</span>
+                    </div>
+                    <div v-if="index%3==1" class="author-card-info">
+                      <span><strong>{{article.member.nickname}}</strong>님이 <strong>{{article.cat.nickname}}</strong>와<br>쌓은 소소한 일상&#x1F63B;</span>
+                    </div>
+                    <div v-if="index%3==2" class="author-card-info">
+                      <span><strong>{{article.member.nickname}}</strong>님이 <strong>{{article.cat.nickname}}</strong>랑<br>함께하는 중입니다!</span>
+                    </div>
+                  </div>
+                  <md-divider class="md-inset"></md-divider>
+                </div>
+              </div>
+            </md-menu-content>
+          </md-menu>
 
-              <md-list-item>
-                <router-link to="/news">
-                  <p>NEWS</p>
-                </router-link>
-              </md-list-item>
+          <!-- </div>
 
-              <md-list-item>
-                <router-link to="/funding">
-                  <p>FUNDING</p>
-                </router-link>
-              </md-list-item>
-            </md-list>
+          <div class="md-toolbar-section-end">-->
+          <md-button
+            class="md-just-icon md-simple md-toolbar-toggle"
+            :class="{ toggled: toggledClass }"
+            @click="toggleNavbarMobile()"
+          >
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </md-button>
+
+          <div class="md-collapse">
+            <div class="md-collapse-wrapper">
+              <mobile-menu nav-mobile-section-start="false">
+                <!-- Here you can add your items from the section-start of your toolbar -->
+              </mobile-menu>
+              
+              <md-list @click="toggleNavbarWeb()">
+                <md-list-item v-if="!isLoggedIn">
+                  <router-link to="/login">
+                    <p>LOGIN</p>
+                  </router-link>
+                </md-list-item>
+
+                <md-list-item v-if="!isLoggedIn">
+                  <router-link to="/join">
+                    <p>JOIN</p>
+                  </router-link>
+                </md-list-item>
+
+                <md-list-item v-if="isLoggedIn" @click="logout">
+                  <router-link to="/">
+                    <p>LOGOUT</p>
+                  </router-link>
+                </md-list-item>
+
+                <md-list-item v-if="isLoggedIn">
+                  <router-link to="/profile">
+                    <p>PROFILE</p>
+                  </router-link>
+                </md-list-item>
+
+                <md-list-item>
+                  <router-link to="/create">
+                    <p>CREATE</p>
+                  </router-link>
+                </md-list-item>
+
+                <md-list-item>
+                  <router-link to="/news">
+                    <p>NEWS</p>
+                  </router-link>
+                </md-list-item>
+
+                <md-list-item>
+                  <router-link to="/funding">
+                    <p>FUNDING</p>
+                  </router-link>
+                </md-list-item>
+              </md-list>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </md-toolbar>
+    </md-toolbar>
+  </div>
 </template>
 
 <script>
+
 let resizeTimeout;
 function resizeThrottler(actualResizeHandler) {
   // ignore resize events as long as an actualResizeHandler execution is in the queue
@@ -137,12 +187,13 @@ function resizeThrottler(actualResizeHandler) {
     }, 66);
   }
 }
-
+import { Modal } from "@/components";
 import MobileMenu from "@/layout/MobileMenu";
 import axios from "axios";
 
 export default {
   components: {
+    Modal,
     MobileMenu
   },
   props: {
@@ -170,6 +221,8 @@ export default {
   },
   data() {
     return {
+      isFirst: true,
+      alarmModal: false,
       showSearchbar: true,
       image: null,
       extraNavClasses: "",
@@ -184,6 +237,7 @@ export default {
         image: null,
         news: null
       },
+      articleinfo: [],
     };
   },
   created() {
@@ -230,6 +284,12 @@ export default {
     },
     toggleNavbarMobile() {
       this.showSearchbar = !this.showSearchbar;
+      this.NavbarStore.showNavbar = !this.NavbarStore.showNavbar;
+      this.toggledClass = !this.toggledClass;
+      this.bodyClick();
+    },
+    toggleNavbarWeb() {
+      this.showSearchbar = true;
       this.NavbarStore.showNavbar = !this.NavbarStore.showNavbar;
       this.toggledClass = !this.toggledClass;
       this.bodyClick();
@@ -306,25 +366,57 @@ export default {
           console.log(error);
         });
     },
+    // 알림정보 불러옴
     newsfeed(count) {
-      alert(count);
+      if(this.isFirst) {
+        axios
+          .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "article/newArticle?mid="+this.memberinfo.mid+"&count="+count)        
+          .then(res => {
+            console.log(res.data);
+            for(var i=0; i<res.data.length; i++) {
+              res.data[i].image = process.env.VUE_APP_IMAGE_SERVER + res.data[i].image;
+            }
+            this.articleinfo = res.data;
+            this.clearAlarmCount();
+          })
+          .catch(err => {
+            console.log(err)
+          })
+          .finally(() => {
+            this.isFirst = false;
+          })
+        // 내가 팔로우한 고양이들의 게시글을
+        // count 만큼 (대신 내가 쓴거 뺴고)
+        // 불러온다.
+      }
+      
+    },
+    // 알람모달 숨기기
+    alarmModalHide() {
+      this.alarmModal = false;
+    },
+    // 알람 카운트 초기화
+    clearAlarmCount() {
+      const request = new FormData();
+      request.append("news", 0);
+      request.append("mid", this.memberinfo.mid);
       
       axios
-        .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "article/newArticle?mid="+this.memberinfo.mid+"&count="+count)        
+        .put(process.env.VUE_APP_SPRING_API_SERVER_URL + "member/clear", request)
         .then(res => {
-          console.log(res.data)
+          this.memberinfo.news = 0;
         })
-        .catch(err => {
-          console.log(err)
+        .catch(error => {
+          this.error = error;
+          console.log(error);
         })
-      // 내가 팔로우한 고양이들의 게시글을
-      // count 만큼 (대신 내가 쓴거 뺴고)
-      // 불러온다.
-      
-    }
+        .finally(() => {});
+    },
   },
   mounted() {
     document.addEventListener("scroll", this.scrollListener);
+  },
+  updated() {
     this.newsCount();
   },
   beforeDestroy() {
@@ -332,3 +424,37 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.md-menu{
+    margin-top: 14px;
+  }
+
+  .author-card {
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+
+    .md-avatar {
+      margin-right: 16px;
+    }
+
+    .author-card-info {
+      display: flex;
+      flex-flow: column;
+      flex: 1;
+    }
+
+    span {
+      font-size: 16px;
+    }
+
+    .author-card-links {
+      display: flex;
+
+      a + a {
+        margin-left: 8px;
+      }
+    }
+  }
+</style> 

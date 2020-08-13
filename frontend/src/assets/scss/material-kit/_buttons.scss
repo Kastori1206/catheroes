@@ -21,6 +21,10 @@
       padding: 12px 30px;
     }
 
+    &:not(.md-just-icon):not(.md-btn-fab):not(.md-icon-button):not(.md-alarm-toggle) .md-ripple{
+      padding: 12px 30px;
+    }
+
     &:not(.md-just-icon) .md-button-content i:not(.md-tab-icon){
       font-size: 1.1rem !important;
       height: 17px;

@@ -99,6 +99,13 @@
     }
   }
 
+  .md-input{
+    @include material-placeholder{
+      font-size: 14px;
+      color: #ffffff !important;
+    };
+    -webkit-text-fill-color: #ffffff !important;
+  }
 
   // default color for dropdown
   @include dropdown-colors($brand-success);
@@ -106,6 +113,14 @@
 
   &.md-white {
     @include toolbar-colors($white-color, $navbar-color);
+
+    .md-input{
+      @include material-placeholder{
+        font-size: 14px;
+        color: #000000 !important;
+      };
+      -webkit-text-fill-color: #000000 !important;
+    }
 
     .md-list-item .md-button.md-simple {
       &,
@@ -194,7 +209,8 @@
     width: unset;
   }
 
-  .md-toolbar-toggle .md-button-content{
+  .md-toolbar-toggle .md-button-content,
+  .md-alarm-toggle .md-button-content {
     display: block;
     align-items: unset;
   }
@@ -237,7 +253,7 @@
     letter-spacing: normal;
   }
 
-  .md-toolbar-toggle {
+  .md-toolbar-toggle, .md-alarm-toggle {
     width: 40px;
 
     .icon-bar {
@@ -388,7 +404,8 @@
     margin: 0
   }
 
-  .md-button.md-button-link:not(.md-just-icon):not(.md-btn-fab):not(.md-icon-button):not(.md-toolbar-toggle) .md-ripple{
+  .md-button.md-button-link:not(.md-just-icon):not(.md-btn-fab):not(.md-icon-button):not(.md-toolbar-toggle) .md-ripple,
+  .md-button.md-button-link:not(.md-just-icon):not(.md-btn-fab):not(.md-icon-button):not(.md-alarm-toggle) .md-ripple{
     padding: 12px 15px;
     min-height: 48px;
 
