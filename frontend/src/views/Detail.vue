@@ -80,7 +80,7 @@
                       <br />
                       <input type="radio" id="six" value="검은고양이" v-model="catinfo.breed" />
                       <label for="six">검은고양이</label>
-                      <br />                      
+                      <br />
                     </template>
 
                     <template slot="footer">
@@ -97,6 +97,7 @@
                         name="conditions"
                         id="conditions"
                         placeholder="오늘의 건강 상태 선택하기"
+                        @click="isUpdated = true"
                       >
                         <md-option value="1">&#x1F63C; 기운 넘쳐요</md-option>
                         <md-option value="2">&#x1F63A; 튼튼해요</md-option>
@@ -245,24 +246,35 @@
 
                       <md-card-content>{{post.content}}</md-card-content>
                       <!-- 댓글 더 보기 -->
-                      <md-button v-if="!post.isclick" @click="commentTest(index); test2(index)" style="width:9vw; height:4vh; background-color:#F6BB43 !important; font-size:9px;" class="md-icon-button">
-                              댓글보기
-                      </md-button>
-                      <md-button v-if="post.isclick" @click="commentTest(index); test2(index)" style="width:9vw; height:4vh; background-color:#F6BB43 !important; font-size:9px;" class="md-icon-button">
-                              댓글닫기
-                      </md-button>
+                      <md-button
+                        v-if="!post.isclick"
+                        @click="commentTest(index); test2(index)"
+                        style="width:9vw; height:4vh; background-color:#F6BB43 !important; font-size:9px;"
+                        class="md-icon-button"
+                      >댓글보기</md-button>
+                      <md-button
+                        v-if="post.isclick"
+                        @click="commentTest(index); test2(index)"
+                        style="width:9vw; height:4vh; background-color:#F6BB43 !important; font-size:9px;"
+                        class="md-icon-button"
+                      >댓글닫기</md-button>
                       <div v-if="post.isclick">
                         <div
                           v-for="(comment, index2) in comments[index]"
                           :key="index2 + '_comments'"
                         >
-                          <md-card-content style="padding:0"><strong>{{comment.writer}}</strong> {{comment.comment}}</md-card-content>
+                          <md-card-content style="padding:0">
+                            <strong>{{comment.writer}}</strong>
+                            {{comment.comment}}
+                          </md-card-content>
                         </div>
                         <div>
                           <textarea style="width:35vw" v-model="comment"></textarea>
-                          <md-button @click="saveComment(post.articleid, comment, memberinfo.nickname, index)" style="margin: 7px 5px; background-color:#F6BB43 !important" class="md-icon-button">
-                            등록
-                          </md-button>
+                          <md-button
+                            @click="saveComment(post.articleid, comment, memberinfo.nickname, index)"
+                            style="margin: 7px 5px; background-color:#F6BB43 !important"
+                            class="md-icon-button"
+                          >등록</md-button>
                         </div>
                       </div>
                     </md-card>
@@ -296,22 +308,30 @@
                   <div class="features text-center">
                     <div class="md-layout">
                       <!-- start print follow list -->
-                        <md-list class="md-follow-list" v-if="items.length" style="padding:0">
-                          <div v-for="(member, index) in items" :key="index + '_items'">
+                      <md-list class="md-follow-list" v-if="items.length" style="padding:0">
+                        <div v-for="(member, index) in items" :key="index + '_items'">
                           <md-list-item>
                             <md-avatar>
-                              <img style="margin-bottom:0; float:left" :src=member.member.image alt="People">
+                              <img
+                                style="margin-bottom:0; float:left"
+                                :src="member.member.image"
+                                alt="People"
+                              />
                             </md-avatar>
 
-                            <span style="position:relative" class="md-list-item-text">{{member.member.nickname}}</span>
+                            <span
+                              style="position:relative"
+                              class="md-list-item-text"
+                            >{{member.member.nickname}}</span>
 
-                            <md-button style="background-color:#4B89DC !important" class="md-icon-button">
-                              팔로우
-                            </md-button>
+                            <md-button
+                              style="background-color:#4B89DC !important"
+                              class="md-icon-button"
+                            >팔로우</md-button>
                           </md-list-item>
                           <md-divider class="md-inset"></md-divider>
-                          </div>
-                        </md-list>
+                        </div>
+                      </md-list>
                       <!-- end print follow list -->
                     </div>
                   </div>
@@ -365,23 +385,6 @@ export default {
       writers: [],
       comments: [],
       comment: "",
-      tabPane1: [],
-      tabPane2: [
-        { image: require("@/assets/img/bg.jpg") },
-        { image: require("@/assets/img/bg2.jpg") },
-        { image: require("@/assets/img/bg3.jpg") },
-        { image: require("@/assets/img/bg7.jpg") },
-        { image: require("@/assets/img/profile_city.jpg") },
-        { image: require("@/assets/img/profile_city.jpg") },
-        { image: require("@/assets/img/profile_city.jpg") }
-      ],
-      tabPane3: [
-        { image: require("@/assets/img/examples/mariya-georgieva.jpg") },
-        { image: require("@/assets/img/examples/studio-3.jpg") },
-        { image: require("@/assets/img/examples/clem-onojeghuo.jpg") },
-        { image: require("@/assets/img/examples/olu-eletu.jpg") },
-        { image: require("@/assets/img/examples/studio-1.jpg") }
-      ],
       memberinfo: {
         email: null,
         nickname: null,
@@ -412,10 +415,10 @@ export default {
       type: String,
       default: require("@/assets/img/profile_city.jpg")
     },
-    img: {
-      type: String,
-      default: require("@/assets/img/vue-mk-header.jpg")
-    },
+    // img: {
+    //   type: String,
+    //   default: require("@/assets/img/vue-mk-header.jpg")
+    // },
     isLoggedIn: Boolean
   },
   methods: {
@@ -452,6 +455,7 @@ export default {
           this.catinfo.breed = res.data.breed;
           this.catinfo.attr = res.data.attr;
           this.catinfo.conditions = res.data.conditions;
+          this.isUpdated = false;
           alert("수정이 완료되었습니다 :)");
         })
         .catch(error => {
@@ -719,7 +723,6 @@ export default {
       formData.append("catid", catid);
       formData.append("mid", mid);
 
-
       axios
         .post(
           process.env.VUE_APP_SPRING_API_SERVER_URL + "follow/check",
@@ -740,18 +743,20 @@ export default {
     // 뉴스피드
     Newsfeed(cid, mid) {
       const formData = new FormData();
-      formData.append('cid', cid);
-      formData.append('mid',mid)
+      formData.append("cid", cid);
+      formData.append("mid", mid);
       axios
-        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "member/newsfeed", formData)
+        .post(
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "member/newsfeed",
+          formData
+        )
         .then(res => {
-            console.log(res);         
+          console.log(res);
         })
         .catch(error => {
           console.log(error);
         });
-    },
-
+    }
   },
   computed: {
     headerStyle() {
@@ -885,9 +890,8 @@ export default {
     max-width: 100%;
     display: inline-block;
     vertical-align: top;
-    border: 1px solid rgba(#000, .12);
+    border: 1px solid rgba(#000, 0.12);
   }
-
 }
 </style>
 

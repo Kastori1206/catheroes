@@ -74,7 +74,7 @@
             <mobile-menu nav-mobile-section-start="false">
               <!-- Here you can add your items from the section-start of your toolbar -->
             </mobile-menu>
-            <md-list @click="toggleNavbarMobile()">
+            <md-list>
               <md-list-item v-if="!isLoggedIn">
                 <router-link to="/login">
                   <p>LOGIN</p>
@@ -183,12 +183,10 @@ export default {
         mid: null,
         image: null,
         news: null
-      },
+      }
     };
   },
-  created() {
-    
-  },
+  created() {},
   methods: {
     onChangeImages(e) {
       // console.log(e.target.files);
@@ -308,19 +306,24 @@ export default {
     },
     newsfeed(count) {
       alert(count);
-      
+
       axios
-        .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "article/newArticle?mid="+this.memberinfo.mid+"&count="+count)        
+        .get(
+          process.env.VUE_APP_SPRING_API_SERVER_URL +
+            "article/newArticle?mid=" +
+            this.memberinfo.mid +
+            "&count=" +
+            count
+        )
         .then(res => {
-          console.log(res.data)
+          console.log(res.data);
         })
         .catch(err => {
-          console.log(err)
-        })
+          console.log(err);
+        });
       // 내가 팔로우한 고양이들의 게시글을
       // count 만큼 (대신 내가 쓴거 뺴고)
       // 불러온다.
-      
     }
   },
   mounted() {

@@ -24,13 +24,22 @@
                   <i class="fas fa-paw"></i>
                 </md-icon>
                 <label>길냥이 종류</label>
-                <md-input v-model="breed" id="breed" ref="breed">{{this.breed}}</md-input>
+                <md-select v-model="breed" name="breed" id="breed" style="margin: 0px 0px 0px 12px">
+                  <md-option value="삼색이">삼색이</md-option>
+                  <md-option value="고등어태비">고등어태비</md-option>
+                  <md-option value="치즈태비">치즈태비</md-option>
+                  <md-option value="검은고양이">검은고양이</md-option>
+                  <md-option value="흰고양이">흰고양이</md-option>
+                  <md-option value="턱시도">턱시도</md-option>
+                  <md-option value="잘모르겠습니다">잘모르겠습니다</md-option>
+                </md-select>
+                <!-- <md-input v-model="breed" id="breed" ref="breed">{{this.breed}}</md-input> -->
                 <span class="md-helper-text">예상 종류를 입력해주세요</span>
               </md-field>
 
               <md-field slot="inputs">
                 <label for>이미지입력</label>
-                <md-file accept="image/*" @change="onChangeImages"  />
+                <md-file accept="image/*" @change="onChangeImages" />
               </md-field>
 
               <md-field slot="inputs" v-if="imgpreview">
@@ -46,24 +55,30 @@
                   <modal v-if="classicModal" @close="classicModalHide">
                     <template slot="header">
                       <h4 class="modal-title">{{nickname}}이 사는 곳은?</h4>
-                      <md-button class="md-simple md-just-icon md-round modal-default-button" @click="classicModalHide">
-										<md-icon>clear</md-icon>
+                      <md-button
+                        class="md-simple md-just-icon md-round modal-default-button"
+                        @click="classicModalHide"
+                      >
+                        <md-icon>clear</md-icon>
                       </md-button>
                     </template>
 
                     <template slot="body">
                       <div class="section section-map" style="padding:0px">
                         <div class="container" style="margin: auto;">
-                          <Map2 :classicModal="classicModal" :iscreate="iscreate" @send-data="getdata" @send-dong="getdong"></Map2>
+                          <Map2
+                            :classicModal="classicModal"
+                            :iscreate="iscreate"
+                            @send-data="getdata"
+                            @send-dong="getdong"
+                          ></Map2>
                         </div>
                       </div>
                     </template>
                   </modal>
                 </div>
               </div>
-              <md-button @click="checkCat" slot="footer" class="md-simple md-success md-lg">
-                길냥이 등록!
-              </md-button>
+              <md-button @click="checkCat" slot="footer" class="md-simple md-success md-lg">길냥이 등록!</md-button>
             </login-card>
           </div>
         </div>
@@ -151,6 +166,7 @@ export default {
       let msg = "";
       err && !this.nickname && ((msg = "이름을 입력해주세요."), (err = false));
       err && !this.breed && ((msg = "품종을 입력해주세요."), (err = false));
+      err && !this.lat && ((msg = "위치정보를 입력해주세요."), (err = false));
       // err && !this.image && ((msg = '비밀번호를 입력해주세요.'), (err = false));
       // err && !this. && ((msg = '비밀번호를 입력해주세요.'), (err = false));
 
@@ -168,15 +184,11 @@ export default {
       request.append("breed", this.breed);
 
       axios
-        .post(
-          process.env.VUE_APP_SPRING_API_SERVER_URL + "cat",
-          request,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data"
-            }
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "cat", request, {
+          headers: {
+            "Content-Type": "multipart/form-data"
           }
-        )
+        })
         .then(response => {
           console.log(response);
           alert("등록이 완료되었습니다.");
@@ -196,5 +208,4 @@ export default {
 </script>
 
 <style lang="css" scoped>
-
 </style>
