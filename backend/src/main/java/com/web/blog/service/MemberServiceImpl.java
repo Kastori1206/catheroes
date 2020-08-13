@@ -10,6 +10,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -20,6 +21,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.blog.dao.MemberDao;
+import com.web.blog.exception.PasswordWrongException;
 import com.web.blog.model.Member;
 import com.web.blog.model.request.KakaoProfileRequest;
 import com.web.blog.model.response.OAuthTokenResponse;
@@ -37,6 +39,9 @@ public class MemberServiceImpl implements MemberService{
 	
 	@Autowired
 	private JwtService jwtService;
+	
+	@Autowired
+	PasswordEncoder passwordEncoder;
 	
 	@Override
 	public List<Member> findAll() {
@@ -62,7 +67,7 @@ public class MemberServiceImpl implements MemberService{
 		if(memberDb.isPresent()) {
 			Member memberUpdate = memberDb.get();
 			memberUpdate.setNickname(member.getNickname());
-			memberUpdate.setPassword(member.getPassword());			
+			memberUpdate.setPassword(passwordEncoder.encode(member.getPassword()));			
 
 			memberDao.save(memberUpdate);
 			return memberUpdate;
@@ -83,12 +88,15 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
+	@Transactional
 	public Member saveMember(Member member) {
+		String encodePassword = passwordEncoder.encode(member.getPassword());
+		
+		member.setPassword(encodePassword);
 		member.setImage("/profile/user/default.jpg");
 		return memberDao.save(member);
 	}
 
-	//구현해야함
 	@Override
 	public String KakaoLogin(OAuthTokenResponse oauthToken) {		
 		RestTemplate rt = new RestTemplate();
@@ -174,9 +182,14 @@ public class MemberServiceImpl implements MemberService{
 
 	@Override
 	public String Login(String email, String password) {
-		Optional<Member> memberDb = memberDao.findMemberByEmailAndPassword(email, password);
-		if(memberDb.isPresent()) {			
-			return jwtService.create("member", memberDb.get(), "member");
+		Optional<Member> memberDb = memberDao.findMemberByEmail(email);
+		if(memberDb.isPresent()) {	
+			if(passwordEncoder.matches(password, memberDb.get().getPassword())){
+				return jwtService.create("member", memberDb.get(), "member");				
+			}else {
+				throw new PasswordWrongException();				
+			}
+
 		}else {
 			throw new ResourceNotFoundException("Record not equals email,password : "+email);
 		}
