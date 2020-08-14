@@ -19,27 +19,27 @@ import org.springframework.stereotype.Service;
 public class CatServiceImpl implements CatService {
 	@Autowired
 	private CatDao catDao;
-	
+
 	@Autowired
 	private FollowDao followDao;
-	
+
 	@Autowired
 	private AmazonClient amazonClient;
-		
+
 	@Override
-	public List<Cat> findCatByLocation(String location) {		
+	public List<Cat> findCatByLocation(String location) {
 		return catDao.findCatByLocation(location);
 	}
 
 	@Override
 	public Cat findCatByCatId(long catid) {
 		Optional<Cat> catDb = catDao.findCatByCatid(catid);
-		
-		if(catDb.isPresent()) {
+
+		if (catDb.isPresent()) {
 			return catDb.get();
-		}else {
+		} else {
 			throw new ResourceNotFoundException("Record not found with catid : " + catid);
-		}	
+		}
 	}
 
 	@Override
@@ -57,8 +57,8 @@ public class CatServiceImpl implements CatService {
 		Cat cat = new Cat();
 		System.out.println(catRequest.toString());
 		try {
-			String path = this.amazonClient.uploadFile(catRequest.getFile(), catDao.getMaxCatId()+1, "profile/cat/");
-			
+			String path = this.amazonClient.uploadFile(catRequest.getFile(), catDao.getMaxCatId() + 1, "profile/cat/");
+
 			cat.setNickname(catRequest.getNickname());
 			cat.setBreed(catRequest.getBreed());
 			cat.setLocation(catRequest.getLocation());
@@ -73,16 +73,15 @@ public class CatServiceImpl implements CatService {
 		return catDao.save(cat);
 	}
 
-
 	@Override
 	public void deleteByCatId(long catid) {
-		
+
 		Optional<Cat> catDb = catDao.findCatByCatid(catid);
 
-		if(catDb.isPresent()) {
+		if (catDb.isPresent()) {
 			catDao.delete(catDb.get());
-		}else {
-			throw new ResourceNotFoundException("Record not found with catid : " + catid);			
+		} else {
+			throw new ResourceNotFoundException("Record not found with catid : " + catid);
 		}
 
 	}
@@ -94,12 +93,13 @@ public class CatServiceImpl implements CatService {
 		cat.setCatid(catRequest.getCatid());
 		cat.setAttr(catRequest.getAttr());
 		cat.setBreed(catRequest.getBreed());
-		cat.setConditions(catRequest.getConditions());		
+		cat.setConditions(catRequest.getConditions());
+		cat.setFood(catRequest.getFood());
 		return catDao.save(cat);
 	}
 
 	@Override
-	public List<Follow> findFollowByCatid(long catid) {		
+	public List<Follow> findFollowByCatid(long catid) {
 		return followDao.findByCatCatid(catid);
 	}
 
