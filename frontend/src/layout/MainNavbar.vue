@@ -146,11 +146,11 @@
                   </router-link>
                 </md-list-item>
 
-                <md-list-item>
+                <!-- <md-list-item>
                   <router-link to="/create">
                     <p>CREATE</p>
                   </router-link>
-                </md-list-item>
+                </md-list-item> -->
 
                 <md-list-item>
                   <router-link to="/news">
@@ -244,7 +244,7 @@ export default {
   },
   methods: {
     onChangeImages(e) {
-      // console.log(e.target.files);
+      console.log(e.target.files);
       const file = e.target.files[0];
       this.image = file;
       const fd = new FormData();
@@ -312,7 +312,7 @@ export default {
       resizeThrottler(this.handleScroll);
     },
     logout() {
-      console.log("로그아웃요청보냈다고했다");
+      // console.log("로그아웃요청보냈다고했다");
       this.$emit("submit-logout");
     },
     searchName() {
@@ -321,7 +321,7 @@ export default {
           `${process.env.VUE_APP_SPRING_API_SERVER_URL}cat/search?nickname=${this.search}&location=${this.centerdong}`
         )
         .then(res => {
-          console.log(res);
+          // console.log(res);
           this.$emit("submit-search-data", res);
           this.$router.push("/search");
         })
@@ -339,22 +339,22 @@ export default {
           formData
         )
         .then(res => {
-          console.log(res);
+          // console.log(res);
           this.$emit("submit-search-data", res);
           this.$router.push("/search");
         })
         .catch(error => {});
     },
     newsCount() {
-      console.log("유저정보받아오라고했다");
+      // console.log("유저정보받아오라고했다");
       const token = this.$cookies.get("auth-token");
       axios
         .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "member/info", null, {
           headers: { Authorization: `${token}` }
         })
         .then(res => {
-          console.log("user정보 출력");
-          console.log(res.data);
+          // console.log("user정보 출력");
+          // console.log(res.data);
           this.memberinfo.email = res.data.email;
           this.memberinfo.nickname = res.data.nickname;
           this.memberinfo.mid = res.data.mid;
@@ -371,7 +371,7 @@ export default {
         axios
           .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "article/newArticle?mid="+this.memberinfo.mid+"&count="+count)        
           .then(res => {
-            console.log(res.data);
+            // console.log(res.data);
             for(var i=0; i<res.data.length; i++) {
               res.data[i].image = process.env.VUE_APP_IMAGE_SERVER + res.data[i].image;
             }
@@ -392,7 +392,6 @@ export default {
     },
     // 알람모달 숨기기
     snapshotModalHide() {
-      console.log("");
       this.snapshotModal = false;
       document.getElementById("searchImage").click();
     },

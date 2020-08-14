@@ -25,36 +25,37 @@ export default {
       this.centerdong = dong;
     },
     login(loginData) {
-      console.log("로그인요청받았다요청받았다요청받았다요청받았다");
+      // console.log("로그인요청받았다요청받았다요청받았다요청받았다");
       const formData = new FormData();
       formData.append("email", loginData.email);
       formData.append("password", loginData.password);
       axios
         .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "member/login/", formData)
         .then(res => {
-          console.log(res);
+          // console.log(res);
           if(res.data.data ==  "fail") {
             alert("존재하지 않는 계정입니다. 아이디와 비밀번호를 다시 확인해주세요")
           } else{
             this.$cookies.set("auth-token", res.data); //토큰 날라오는거 설정해줘야함!!
             this.isLoggedIn = true;
             this.$router.push("/");
+            alert("로그인 되었습니다.")
           }
         })
         .catch(err => console.log(err));
     },
     logout() {
       Kakao.Auth.logout(function(data) {
-        alert(data);
+        alert("로그아웃 되었습니다.");
         console.log(Kakao.Auth.getAccessToken());
       });
-      console.log("로그아웃요청받았다");
+      // console.log("로그아웃요청받았다");
       this.$cookies.remove("auth-token");
       this.isLoggedIn = false;
     },
     kakaoLogin(res) {
-      console.log("앱에서 보내는거");
-      console.log(res);
+      // console.log("앱에서 보내는거");
+      // console.log(res);
       axios
         .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "auth/kakao/Login", {
           access_token: res.access_token,
@@ -65,11 +66,11 @@ export default {
           token_type: res.token_type
         })
         .then(res1 => {
-          console.log(res1);
-          // alert(res1.data);
+          // console.log(res1);
           this.$cookies.set("auth-token", res1.data); //토큰 날라오는거 설정해줘야함!!
           this.isLoggedIn = true;
           this.$router.push("/");
+          alert("로그인 되었습니다.");
         })
         .catch(error => {
           console.log(error);

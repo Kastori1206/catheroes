@@ -60,7 +60,8 @@
                   <!-- start print follow list -->
                     <md-list class="md-follow-list" v-if="follows.length" style="padding:0">
                       <div v-for="(follow, index) in follows" :key="index + '_items'">
-                      <md-list-item>
+
+                      <md-list-item @click="gocat(follow)"> 
                         <md-avatar>
                           <img style="margin-bottom:0; float:left" :src=follow.image alt="People">
                         </md-avatar>
@@ -314,7 +315,7 @@ export default {
             }
           )
           .then(res => {
-            console.log(res.data)
+            // console.log(res.data)
             this.memberinfo.image = process.env.VUE_APP_IMAGE_SERVER + res.data;
             this.classicModalHide();
           })
@@ -433,7 +434,7 @@ export default {
           }
         )
         .then(res => {     
-          console.log(res)
+          // console.log(res)
           this.memberinfo.email = res.data.email;
           this.memberinfo.nickname = res.data.nickname;
           this.memberinfo.mid = res.data.mid;
@@ -454,7 +455,7 @@ export default {
           process.env.VUE_APP_SPRING_API_SERVER_URL + "follow/member/"+this.memberinfo.mid,          
         )
         .then(res => {
-          console.log(res.data);
+          // console.log(res.data);
           for (var i = 0; i < res.data.length; i++) {           
               res.data[i].cat.image = process.env.VUE_APP_IMAGE_SERVER + res.data[i].cat.image
               this.follows.push(res.data[i].cat);             
@@ -466,13 +467,13 @@ export default {
     },
     //유저 포스트 정보
     UserPost() {   
-      console.log("포스트")
+      // console.log("포스트")
       axios
         .get(
           process.env.VUE_APP_SPRING_API_SERVER_URL + "article/member/"+this.memberinfo.mid
         )
         .then(res => {
-          console.log(res.data);
+          // console.log(res.data);
           for (var i = 0; i < res.data.length; i++) {
             // console.log(res.data[i]);
             res.data[i].image = process.env.VUE_APP_IMAGE_SERVER + res.data[i].image;
@@ -509,6 +510,11 @@ export default {
       } else {
         result.innerText = "불일치";
       }
+    },
+    gocat(data){
+      // console.log("이동")
+      // console.log(data);
+      this.$router.push("/detail/" + data.catid);
     }
   },
   computed: {
