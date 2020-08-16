@@ -7,8 +7,8 @@ import com.web.blog.model.Cat;
 import lombok.Data;
 
 @Data
-public class CatRequest{
-	//고양이 정보
+public class CatRequest {
+	// 고양이 정보
 	// private Cat cat;
 	private long catid;
 	private String breed;
@@ -20,9 +20,9 @@ public class CatRequest{
 	private String location;
 	private String nickname;
 
+	private String food;
+	// 고양이 사진
+	// private MultipartFile file;
+	private MultipartFile file;
 
-	//고양이 사진
-	// private MultipartFile file;  
-	private MultipartFile file;      
-	
 }
