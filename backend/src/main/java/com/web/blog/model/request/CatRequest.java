@@ -14,6 +14,7 @@ public class CatRequest {
 	private String breed;
 	private String attr;
 	private String conditions;
+	private String neutered;
 
 	private String lat;
 	private String lng;

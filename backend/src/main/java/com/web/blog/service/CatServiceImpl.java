@@ -95,6 +95,7 @@ public class CatServiceImpl implements CatService {
 		cat.setBreed(catRequest.getBreed());
 		cat.setConditions(catRequest.getConditions());
 		cat.setFood(catRequest.getFood());
+		cat.setNeutered(catRequest.getNeutered());
 		return catDao.save(cat);
 	}
 

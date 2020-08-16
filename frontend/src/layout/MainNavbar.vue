@@ -1,15 +1,6 @@
 <template>
   <div>
     <modal v-if="snapshotModal" @close="snapshotModalHide">
-      <!-- <template slot="header">
-        <h4 class="modal-title">프로필 사진촬영 가이드</h4>
-        <md-button
-          class="md-simple md-just-icon md-round modal-default-button"
-          @click="snapshotModalHide"
-        >
-          <md-icon>clear</md-icon>
-        </md-button>
-      </template> -->
 
       <template slot="body" style="padding-top:0">
         <img src="@/assets/img/snapshot_guide.png">
@@ -80,7 +71,7 @@
                 <div class="author-title" style="margin-left:10px; margin-bottom:10px; font-size:1rem"><strong>&#x23F0;알림보기</strong></div>
                 <md-divider class="md-inset"></md-divider>
                 <div v-for="(article, index) in articleinfo" :key="'index_' + index">
-                  <div class="author-card">
+                  <div class="author-card" @click="gocat(article)">
                     <md-avatar class="md-large">
                       <img :src="article.image" :alt="'Member_' + index">
                     </md-avatar>
@@ -412,6 +403,12 @@ export default {
         })
         .finally(() => {});
     },
+    gocat(data){
+      // console.log(data);
+      this.$router.push("/detail/" + data.cat.catid).catch(error => {
+        this.$router.go("/detail/" + data.cat.catid)
+      });
+    }
   },
   mounted() {
     document.addEventListener("scroll", this.scrollListener);
