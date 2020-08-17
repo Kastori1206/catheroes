@@ -121,7 +121,7 @@ public class ArticleController {
 
 	@GetMapping("/article/newArticle")
 	@ApiOperation(value = "새로운 게시글 알림")
-	public ResponseEntity<List<Article>> getNewArticle(@RequestParam long mid, @RequestParam long count) {
-		return ResponseEntity.ok().body(articleService.findNewArticle(mid, count));
+	public ResponseEntity<List<Article>> getNewArticle(@RequestParam long mid) {
+		return ResponseEntity.ok().body(articleService.findNewArticle(mid));
 	}
 }

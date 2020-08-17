@@ -71,7 +71,23 @@
                 <div class="author-title" style="margin-left:10px; margin-bottom:10px; font-size:1rem"><strong>&#x23F0;알림보기</strong></div>
                 <md-divider class="md-inset"></md-divider>
                 <div v-for="(article, index) in articleinfo" :key="'index_' + index">
-                  <div class="author-card" @click="gocat(article)">
+                  <div v-if="index < memberinfo.news" class="author-card" @click="gocat(article)" style="background-color: #ffffcc">
+                    <md-avatar class="md-large">
+                      <img :src="article.image" :alt="'Member_' + index">
+                    </md-avatar>
+
+                    <div v-if="index%3==0" class="author-card-info">
+                      <span><strong>{{article.member.nickname}}</strong>님이 <strong>{{article.cat.nickname}}</strong>와<br>놀고있어요&#x1F638;</span>
+                    </div>
+                    <div v-if="index%3==1" class="author-card-info">
+                      <span><strong>{{article.member.nickname}}</strong>님이 <strong>{{article.cat.nickname}}</strong>와<br>쌓은 소소한 일상&#x1F63B;</span>
+                    </div>
+                    <div v-if="index%3==2" class="author-card-info">
+                      <span><strong>{{article.member.nickname}}</strong>님이 <strong>{{article.cat.nickname}}</strong>랑<br>함께하는 중입니다!</span>
+                    </div>
+                  </div>
+
+                  <div v-if="index >= memberinfo.news" class="author-card" @click="gocat(article)">
                     <md-avatar class="md-large">
                       <img :src="article.image" :alt="'Member_' + index">
                     </md-avatar>
@@ -360,14 +376,14 @@ export default {
     newsfeed(count) {
       if(this.isFirst) {
         axios
-          .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "article/newArticle?mid="+this.memberinfo.mid+"&count="+count)        
+          .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "article/newArticle?mid="+this.memberinfo.mid)        
           .then(res => {
             // console.log(res.data);
             for(var i=0; i<res.data.length; i++) {
               res.data[i].image = process.env.VUE_APP_IMAGE_SERVER + res.data[i].image;
             }
             this.articleinfo = res.data;
-            this.clearAlarmCount();
+            // this.clearAlarmCount();
           })
           .catch(err => {
             console.log(err)
@@ -405,6 +421,7 @@ export default {
     },
     gocat(data){
       // console.log(data);
+      this.clearAlarmCount();
       this.$router.push("/detail/" + data.cat.catid).catch(error => {
         this.$router.go("/detail/" + data.cat.catid)
       });
