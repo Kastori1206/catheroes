@@ -28,8 +28,8 @@
         @maptypeid_changed="onMapEvent('maptypeid_changed', $event)"
         style="height: 60vh; margin: auto;"
       ></vue-daum-map>
-
-      <h4 style="float: left; margin-top: 17px">&#x1F43E; 시</h4>
+      <div class="description text-center" style="display:inline">
+      <!-- <h4 style="margin-top: 17px">&#x1F43E; 시</h4> -->
       <div class="md-layout-item" style="width:180px; margin:0 auto;">
         <md-field>
           <md-select name="sido" id="sido" placeholder="시" v-model="sido">
@@ -53,7 +53,7 @@
           </md-select>
         </md-field>
       </div>
-      <h4 style="float: left; margin-top: 17px">&#x1F43E; 구</h4>
+      <!-- <h4 style="margin-top: 17px">&#x1F43E; 구</h4> -->
       <div class="md-layout-item" style="width:180px; margin:0 auto;">
         <md-field>
           <md-select name="gugun" id="gugun" placeholder="구" v-model="gugun" @click="setsido()">
@@ -65,7 +65,7 @@
           </md-select>
         </md-field>
       </div>
-      <h4 style="float: left; margin-top: 17px">&#x1F43E; 동</h4>
+      <!-- <h4 style="margin-top: 17px">&#x1F43E; 동</h4> -->
       <div class="md-layout-item" style="width:180px; margin:0 auto;">
         <md-field>
           <md-select name="dong" id="dong" placeholder="동" v-model="dong" @click="setgugun()">
@@ -79,6 +79,7 @@
         class="md-success md-block"
         @click="setCenterByDong"
       >검색</md-button>
+      </div>
     </div>
   </div>
 </template>

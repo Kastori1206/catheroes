@@ -51,8 +51,12 @@
                   v-show="useEmail == '가능'"
                   >사용가능한이메일</span
                 >
-                <md-button v-if="useEmail == '가능'" @click="emailAuth"
-                  >이메일 인증</md-button
+                <md-button 
+                  v-if="useEmail == '가능'" 
+                  @click="emailAuth"
+                  style="background-color:#4CAF50 !important; min-width:65px;"
+                  class="md-icon-button"
+                >이메일 인증</md-button
                 >
                 <span class="md-error" style="bottom:-10px">{{
                   useEmail
@@ -68,7 +72,11 @@
                 <md-icon>email</md-icon>
                 <label>인증번호...</label>
                 <md-input v-model="emailcode"></md-input>
-                <md-button @click="emailConfirm">인증번호 확인</md-button>
+                <md-button 
+                  @click="emailConfirm"
+                  style="background-color:#4CAF50 !important; min-width:65px;"
+                  class="md-icon-button"
+                >인증번호 확인</md-button>
               </md-field>
 
               <md-field class="md-form-group" slot="inputs">
@@ -198,6 +206,7 @@ export default {
         })
         .then((response) => {
           if (response.data != null) {
+            alert("인증번호가 발송되었습니다 !")
             this.authcode = response.data;
             this.emailCodeConfirm = false;
           }
