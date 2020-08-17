@@ -29,31 +29,56 @@
         style="height: 60vh; margin: auto;"
       ></vue-daum-map>
 
-      <table>
-        <colgroup>
-          <col width="60" />
-          <col />
-        </colgroup>
-        <tr>
-          <th>레벨</th>
-          <td>
-            <input type="range" min="1" max="14" v-model.number="level" />
-            {{level}}
-          </td>
-        </tr>
-        <tr>
-          <th>경도</th>
-          <td>
-            <input type="number" v-model.number="center.lat" step="0.0001" />
-          </td>
-        </tr>
-        <tr>
-          <th>위도</th>
-          <td>
-            <input type="number" v-model.number="center.lng" step="0.0001" />
-          </td>
-        </tr>
-      </table>
+      <h4 style="float: left; margin-top: 17px">&#x1F43E; 시</h4>
+      <div class="md-layout-item" style="width:180px; margin:0 auto;">
+        <md-field>
+          <md-select name="sido" id="sido" placeholder="시" v-model="sido">
+            <md-option value="서울특별시">서울특별시</md-option>
+            <md-option value="부산광역시">부산광역시</md-option>
+            <md-option value="대구광역시">대구광역시</md-option>
+            <md-option value="인천광역시">인천광역시</md-option>
+            <md-option value="광주광역시">광주광역시</md-option>
+            <md-option value="대전광역시">대전광역시</md-option>
+            <md-option value="울산광역시">울산광역시</md-option>
+            <md-option value="세종특별자치사">세종특별자치사</md-option>
+            <md-option value="경기도">경기도</md-option>
+            <md-option value="강원도">강원도</md-option>
+            <md-option value="충청북도">충청북도</md-option>
+            <md-option value="충청남도">충청남도</md-option>
+            <md-option value="전라북도">전라북도</md-option>
+            <md-option value="전라남도">전라남도</md-option>
+            <md-option value="경상북도">경상북도</md-option>
+            <md-option value="경상남도">경상남도</md-option>
+            <md-option value="제주특별자치도">제주특별자치도</md-option>
+          </md-select>
+        </md-field>
+      </div>
+      <h4 style="float: left; margin-top: 17px">&#x1F43E; 구</h4>
+      <div class="md-layout-item" style="width:180px; margin:0 auto;">
+        <md-field>
+          <md-select name="gugun" id="gugun" placeholder="구" v-model="gugun" @click="setsido()">
+            <md-option
+              v-for="(gugun, index) in guguns"
+              :key="'gugun_'+index"
+              :value="gugun"
+            >{{gugun}}</md-option>
+          </md-select>
+        </md-field>
+      </div>
+      <h4 style="float: left; margin-top: 17px">&#x1F43E; 동</h4>
+      <div class="md-layout-item" style="width:180px; margin:0 auto;">
+        <md-field>
+          <md-select name="dong" id="dong" placeholder="동" v-model="dong" @click="setgugun()">
+            <md-option v-for="(dong, index) in dongs" :key="'dong_'+index" :value="dong">{{dong}}</md-option>
+          </md-select>
+        </md-field>
+      </div>
+      <md-button
+        v-if="isUpdated"
+        style="width:60px; margin:0 auto;"
+        class="md-success md-block"
+        @click="setCenterByDong"
+      >검색</md-button>
     </div>
   </div>
 </template>
@@ -83,6 +108,12 @@ export default {
     mymarker: [],
     geocoder: null,
     centerDong: null,
+    sido: null,
+    gugun: null,
+    dong: null,
+    guguns: [],
+    dongs: [],
+    isUpdated: false,
     Catinfo: {
       nickname: null,
       age: null,
@@ -226,7 +257,7 @@ export default {
       var close = document.getElementById("close");
       close.addEventListener("click", () => {
         this.closeOverlay();
-      })
+      });
 
       this.myoverlay.push(overlay);
     },
@@ -269,9 +300,77 @@ export default {
         // console.log("@@@1")
         this.$emit("submit-dong", this.centerDong);
       }
-    }
+    },
     //////////
-  }
+    setCenterByDong() {
+      var geocoder = new kakao.maps.services.Geocoder();
+
+      // const lat = 37;
+      // const lng = 128;
+
+      // this.center.lat = lat;
+      // this.center.lng = lng;
+
+      var callback = (result, status) => {
+        if (status === kakao.maps.services.Status.OK) {
+
+          const lat = result[0].y;
+          const lng = result[0].x;
+          this.center.lat = lat;
+          this.center.lng = lng;
+        }
+      };
+
+      const addr = this.gugun + " " +  this.dong;
+
+      geocoder.addressSearch(addr, callback);
+    },
+    setsido() {
+      // console.log("시도셋팅")
+      // console.log(this.sido);
+      const request = new FormData();
+      request.append("sidoname", this.sido);
+
+      axios
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "gugun", request)
+        .then(res => {
+          this.guguns = [];
+          for (var i = 0; i < res.data.length; i++) {
+            // console.log(res.data[i].gugun);
+            this.guguns.push(res.data[i].gugun);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    setgugun() {
+      // console.log("시도셋팅")
+      // console.log(this.sido);
+      const request = new FormData();
+      request.append("sidoname", this.sido);
+      request.append("gugun", this.gugun);
+
+      axios
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "dong", request)
+        .then(res => {
+          // console.log(res)
+          this.dongs = [];
+          for (var i = 0; i < res.data.length; i++) {
+            // console.log(res.data[i]);
+            this.dongs.push(res.data[i].dong);
+            this.isUpdated = true;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  },
+  updated() {
+    // this.setsido();
+  },
+  mounted() {}
 };
 </script>
 

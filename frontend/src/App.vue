@@ -96,3 +96,10 @@ export default {
   }
 };
 </script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poor+Story&display=swap');
+*:not(img):not(.md-list):not(.nav-tabs):not(.md-theme-default):not(.fas):not(.fa-search):not(.far):not(.fa-heart) {
+font-family: 'Poor Story', cursive !important;
+}
+</style>

@@ -38,6 +38,7 @@ export default new Router({
           console.log("로그인되어있다고했다");
           next();
         } else {
+          alert("로그인을 해주세요.")
           console.log("로그인안되어있다고 했다");
           next("/");
         }
