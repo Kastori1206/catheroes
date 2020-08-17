@@ -8,7 +8,7 @@ import Join from "./views/Join.vue";
 import News from "./views/News.vue";
 import Create from "./views/Create.vue";
 import Search from "./views/Search.vue";
-import Funding from "./views/Funding.vue";
+import Donate from "./views/Donate.vue";
 import MainNavbar from "./layout/MainNavbar.vue";
 import MainFooter from "./layout/MainFooter.vue";
 
@@ -123,9 +123,9 @@ export default new Router({
       },
     },
     {
-      path: "/funding",
-      name: "funding",
-      components: { default: Funding, header: MainNavbar, footer: MainFooter },
+      path: "/donate",
+      name: "donate",
+      components: { default: Donate, header: MainNavbar, footer: MainFooter },
       props: {
         header: { colorOnScroll: 1 },
         footer: { backgroundColor: "black" },

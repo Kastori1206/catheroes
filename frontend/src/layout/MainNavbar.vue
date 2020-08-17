@@ -159,8 +159,8 @@
                 </md-list-item>
 
                 <md-list-item>
-                  <router-link to="/funding">
-                    <p>FUNDING</p>
+                  <router-link to="/donate">
+                    <p>DONATE</p>
                   </router-link>
                 </md-list-item>
               </md-list>
