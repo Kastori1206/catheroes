@@ -141,8 +141,8 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
-	public List<Article> findNewArticle(long mid, long count) {
-		return articleDao.newArticle(mid, count);
+	public List<Article> findNewArticle(long mid) {
+		return articleDao.newArticle(mid);
 	}
 	
 }

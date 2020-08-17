@@ -74,6 +74,7 @@ export default new Router({
           next();
         } else {
           console.log("로그인안되어있다고 했다");
+          alert("로그인을 해주세요.")
           next("/");
         }
       },
@@ -92,6 +93,7 @@ export default new Router({
           next();
         } else {
           console.log("로그인안되어있다고 했다");
+          alert("로그인을 해주세요.")
           next("/");
         }
       },
@@ -109,6 +111,7 @@ export default new Router({
           next();
         } else {
           console.log("로그인안되어있다고 했다");
+          alert("로그인을 해주세요.")
           next("/");
         }
       },
@@ -136,6 +139,7 @@ export default new Router({
           next();
         } else {
           console.log("로그인안되어있다고 했다");
+          alert("로그인을 해주세요.")
           next("/");
         }
       },

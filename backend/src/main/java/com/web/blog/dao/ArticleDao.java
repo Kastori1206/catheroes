@@ -27,7 +27,7 @@ public interface ArticleDao extends JpaRepository<Article, String> {
     		   + " FROM article "
                + " WHERE catid IN (SELECT catid FROM follow WHERE mid = :mid) AND mid != :mid "
                + " ORDER BY articleid DESC "
-               + " LIMIT :count", nativeQuery = true)
-    List<Article> newArticle(@Param("mid")Long mid, @Param("count")Long count);
+               + " LIMIT 10", nativeQuery = true)
+    List<Article> newArticle(@Param("mid")Long mid);
 
 }

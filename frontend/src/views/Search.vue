@@ -34,6 +34,10 @@
                   </md-card-header>
                 </div>
               </div>
+              <div style="height: 60px line-height: 60px">
+                <div style="vertical-align: middle;">찾으시는 고양이가 아직 등록되지 않았나요?</div>
+                <md-button class="md-success" style="margin: 0 30%;" @click="create">고양이 등록!</md-button>
+              </div>
             </div>
           </div>
         </div>
@@ -70,6 +74,9 @@ export default {
   methods: {
     toDetail(catid) {
       this.$router.push(`/detail/${catid}`);
+    },
+    create() {
+      this.$router.push(`/create`);
     }
   },
   created() {}

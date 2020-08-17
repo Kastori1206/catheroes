@@ -98,7 +98,7 @@ export default {
   }),
   props: {
     iscreate: Boolean
-  },  
+  },
   methods: {
     senddata() {
       this.$emit("send-data", this.center);
@@ -119,11 +119,11 @@ export default {
 
       // 주소-좌표 변환 객체를 생성합니다
       this.geocoder = new kakao.maps.services.Geocoder();
-      
+
       this.searchAddrFromCoords(map.getCenter(), this.displayCenterInfo);
 
       kakao.maps.event.addListener(map, "tilesloaded", () => {
-        this.searchAddrFromCoords(map.getCenter(),this. displayCenterInfo);
+        this.searchAddrFromCoords(map.getCenter(), this.displayCenterInfo);
         // console.log(this.centerDong);
         this.loadMarker(this.centerDong);
       });
@@ -136,21 +136,21 @@ export default {
       var boundsStr = bounds.toString();
 
       this.mapObject = map;
-
-      
     },
     loadMarker(dong) {
       // console.log('고양이정보받아오라고했다')
-      this.closeMarker();     
+      this.closeMarker();
 
       axios
-        .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "cat/"+ dong)
+        .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "cat/" + dong)
         .then(res => {
-          console.log(res.data)
+          console.log(res.data);
           var index = 0;
-          res.data.forEach(e => {     
+          res.data.forEach(e => {
             var imageSrc =
-                "https://catheroes.s3.ap-northeast-2.amazonaws.com/static/marker/"+res.data[index++].breed+".png", // 마커이미지의 주소입니다
+                "https://catheroes.s3.ap-northeast-2.amazonaws.com/static/marker/" +
+                res.data[index++].breed +
+                ".png", // 마커이미지의 주소입니다
               imageSize = new kakao.maps.Size(50, 50), // 마커이미지의 크기입니다
               imageOption = { offset: new kakao.maps.Point(27, 69) }; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
 
@@ -174,6 +174,7 @@ export default {
             marker.setMap(this.mymap);
 
             kakao.maps.event.addListener(marker, "click", () => {
+              this.closeOverlay();
               this.createOverlay(e);
             });
           });
@@ -182,16 +183,26 @@ export default {
           console.log(error);
         });
     },
+    closeOverlay() {
+      // console.dir(this.myoverlay);
+      this.myoverlay.forEach(element => {
+        element.setMap(null);
+      });
+      // this.myoverlay.setMap(null);
+    },
     createOverlay(data) {
       var content =
         '<div class="wrap">' +
         '    <div class="info2">' +
         '        <div class="title2">' +
         "길냥이 정보" +
+        '<div id="close" class="close" onclick="closeOverlay" title="닫기"></div>' +
         "        </div>" +
         '        <div class="body2">' +
         '            <div class="img">' +
-        '                <img src="https://catheroes.s3.ap-northeast-2.amazonaws.com/' + data.image + '" width="73" height="70">' +
+        '                <img src="https://catheroes.s3.ap-northeast-2.amazonaws.com/' +
+        data.image +
+        '" width="73" height="70">' +
         "           </div>" +
         '            <div class="desc">' +
         '                <div class="ellipsis">' +
@@ -212,16 +223,12 @@ export default {
         map: this.mymap,
         position: new kakao.maps.LatLng(data.lat, data.lng)
       });
-      // this.myoverlay.setMap(null);
-      // console.dir(this.myoverlay);
+      var close = document.getElementById("close");
+      close.addEventListener("click", () => {
+        this.closeOverlay();
+      })
+
       this.myoverlay.push(overlay);
-    },
-    closeOverlay() {
-      // console.dir(this.myoverlay);
-      this.myoverlay.forEach(element => {
-        element.setMap(null);
-      });
-      // this.myoverlay.setMap(null);
     },
     closeMarker() {
       // console.dir(this.myoverlay);
@@ -236,7 +243,11 @@ export default {
     ////////
     searchAddrFromCoords(coords, callback) {
       // 좌표로 행정동 주소 정보를 요청합니다
-      this.geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), callback);
+      this.geocoder.coord2RegionCode(
+        coords.getLng(),
+        coords.getLat(),
+        callback
+      );
     },
     searchDetailAddrFromCoords(coords, callback) {
       // 좌표로 법정동 상세 주소 정보를 요청합니다
@@ -256,7 +267,7 @@ export default {
           }
         }
         // console.log("@@@1")
-        this.$emit('submit-dong', this.centerDong)
+        this.$emit("submit-dong", this.centerDong);
       }
     }
     //////////

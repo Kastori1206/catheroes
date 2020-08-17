@@ -1,15 +1,6 @@
 <template>
   <div>
     <modal v-if="snapshotModal" @close="snapshotModalHide">
-      <!-- <template slot="header">
-        <h4 class="modal-title">프로필 사진촬영 가이드</h4>
-        <md-button
-          class="md-simple md-just-icon md-round modal-default-button"
-          @click="snapshotModalHide"
-        >
-          <md-icon>clear</md-icon>
-        </md-button>
-      </template> -->
 
       <template slot="body" style="padding-top:0">
         <img src="@/assets/img/snapshot_guide.png">
@@ -80,7 +71,23 @@
                 <div class="author-title" style="margin-left:10px; margin-bottom:10px; font-size:1rem"><strong>&#x23F0;알림보기</strong></div>
                 <md-divider class="md-inset"></md-divider>
                 <div v-for="(article, index) in articleinfo" :key="'index_' + index">
-                  <div class="author-card">
+                  <div v-if="index < memberinfo.news" class="author-card" @click="gocat(article)" style="background-color: #ffffcc">
+                    <md-avatar class="md-large">
+                      <img :src="article.image" :alt="'Member_' + index">
+                    </md-avatar>
+
+                    <div v-if="index%3==0" class="author-card-info">
+                      <span><strong>{{article.member.nickname}}</strong>님이 <strong>{{article.cat.nickname}}</strong>와<br>놀고있어요&#x1F638;</span>
+                    </div>
+                    <div v-if="index%3==1" class="author-card-info">
+                      <span><strong>{{article.member.nickname}}</strong>님이 <strong>{{article.cat.nickname}}</strong>와<br>쌓은 소소한 일상&#x1F63B;</span>
+                    </div>
+                    <div v-if="index%3==2" class="author-card-info">
+                      <span><strong>{{article.member.nickname}}</strong>님이 <strong>{{article.cat.nickname}}</strong>랑<br>함께하는 중입니다!</span>
+                    </div>
+                  </div>
+
+                  <div v-if="index >= memberinfo.news" class="author-card" @click="gocat(article)">
                     <md-avatar class="md-large">
                       <img :src="article.image" :alt="'Member_' + index">
                     </md-avatar>
@@ -146,11 +153,11 @@
                   </router-link>
                 </md-list-item>
 
-                <md-list-item>
+                <!-- <md-list-item>
                   <router-link to="/create">
                     <p>CREATE</p>
                   </router-link>
-                </md-list-item>
+                </md-list-item> -->
 
                 <md-list-item>
                   <router-link to="/news">
@@ -244,7 +251,7 @@ export default {
   },
   methods: {
     onChangeImages(e) {
-      // console.log(e.target.files);
+      console.log(e.target.files);
       const file = e.target.files[0];
       this.image = file;
       const fd = new FormData();
@@ -312,7 +319,7 @@ export default {
       resizeThrottler(this.handleScroll);
     },
     logout() {
-      console.log("로그아웃요청보냈다고했다");
+      // console.log("로그아웃요청보냈다고했다");
       this.$emit("submit-logout");
     },
     searchName() {
@@ -321,7 +328,7 @@ export default {
           `${process.env.VUE_APP_SPRING_API_SERVER_URL}cat/search?nickname=${this.search}&location=${this.centerdong}`
         )
         .then(res => {
-          console.log(res);
+          // console.log(res);
           this.$emit("submit-search-data", res);
           this.$router.push("/search");
         })
@@ -339,22 +346,22 @@ export default {
           formData
         )
         .then(res => {
-          console.log(res);
+          // console.log(res);
           this.$emit("submit-search-data", res);
           this.$router.push("/search");
         })
         .catch(error => {});
     },
     newsCount() {
-      console.log("유저정보받아오라고했다");
+      // console.log("유저정보받아오라고했다");
       const token = this.$cookies.get("auth-token");
       axios
         .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "member/info", null, {
           headers: { Authorization: `${token}` }
         })
         .then(res => {
-          console.log("user정보 출력");
-          console.log(res.data);
+          // console.log("user정보 출력");
+          // console.log(res.data);
           this.memberinfo.email = res.data.email;
           this.memberinfo.nickname = res.data.nickname;
           this.memberinfo.mid = res.data.mid;
@@ -369,14 +376,14 @@ export default {
     newsfeed(count) {
       if(this.isFirst) {
         axios
-          .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "article/newArticle?mid="+this.memberinfo.mid+"&count="+count)        
+          .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "article/newArticle?mid="+this.memberinfo.mid)        
           .then(res => {
-            console.log(res.data);
+            // console.log(res.data);
             for(var i=0; i<res.data.length; i++) {
               res.data[i].image = process.env.VUE_APP_IMAGE_SERVER + res.data[i].image;
             }
             this.articleinfo = res.data;
-            this.clearAlarmCount();
+            // this.clearAlarmCount();
           })
           .catch(err => {
             console.log(err)
@@ -392,7 +399,6 @@ export default {
     },
     // 알람모달 숨기기
     snapshotModalHide() {
-      console.log("");
       this.snapshotModal = false;
       document.getElementById("searchImage").click();
     },
@@ -413,6 +419,13 @@ export default {
         })
         .finally(() => {});
     },
+    gocat(data){
+      // console.log(data);
+      this.clearAlarmCount();
+      this.$router.push("/detail/" + data.cat.catid).catch(error => {
+        this.$router.go("/detail/" + data.cat.catid)
+      });
+    }
   },
   mounted() {
     document.addEventListener("scroll", this.scrollListener);

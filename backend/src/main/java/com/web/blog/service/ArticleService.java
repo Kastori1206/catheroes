@@ -31,5 +31,5 @@ public interface ArticleService {
 	//코멘트 삭제
 	void deleteComment(long commentid);
 	//새로운 게시글 알림
-	List<Article> findNewArticle(long mid, long count);
+	List<Article> findNewArticle(long mid);
 }

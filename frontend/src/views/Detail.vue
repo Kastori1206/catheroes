@@ -80,13 +80,58 @@
                       <br />
                       <input type="radio" id="six" value="검은고양이" v-model="catinfo.breed" />
                       <label for="six">검은고양이</label>
-                      <br />                      
+                      <br />
                     </template>
 
                     <template slot="footer">
                       <md-button class="md-danger md-simple" @click="breedUpdateModalHide">닫기</md-button>
                     </template>
                   </modal>
+
+                  
+
+                  <h4>&#128008; 성별</h4>
+                  <div
+                    class="button"
+                    id="gender"
+                    @click="genderUpdateModal = true"
+                  >{{this.catinfo.neutered}}</div>
+                  <modal v-if="genderUpdateModal" @close="genderUpdateModalHide">
+                    <template slot="header">
+                      <h4 class="modal-title">성별을 선택하세요.</h4>
+                      <md-button
+                        class="md-simple md-just-icon md-round modal-default-button"
+                        @click="genderUpdateModalHide"
+                      >
+                        <md-icon>clear</md-icon>
+                      </md-button>
+                    </template>
+
+                    <template slot="body">
+                      <input type="radio" id="one" value="몰라요" v-model="catinfo.neutered" />
+                      <label for="one">몰라요</label>
+                      <br />
+                      <input type="radio" id="two" value="수컷(중성화 O)" v-model="catinfo.neutered" />
+                      <label for="two">수컷(중성화 O)</label>
+                      <br />
+                      <input type="radio" id="three" value="암컷(중성화 O)" v-model="catinfo.neutered" />
+                      <label for="three">암컷(중성화 O)</label>
+                      <br />
+                       <input type="radio" id="four" value="수컷(중성화 X)" v-model="catinfo.neutered" />
+                      <label for="four">수컷(중성화 X)</label>
+                      <br />
+                      <input type="radio" id="five" value="암컷(중성화 X)" v-model="catinfo.neutered" />
+                      <label for="five">암컷(중성화 X)</label>
+                      <br />
+                    </template>
+
+                    <template slot="footer">
+                      <md-button class="md-danger md-simple" @click="genderUpdateModalHide">닫기</md-button>
+                    </template>
+                  </modal>
+
+
+
                   <h4>&#x1F43E; 사는곳</h4>
                   <div class="button" id="location">{{this.catinfo.location}}</div>
                   <h4>&#x1F48A; 오늘 {{this.catinfo.nickname}}의 건강상태</h4>
@@ -108,6 +153,9 @@
                       </md-select>
                     </md-field>
                   </div>
+                  <h4>&#x1F372; {{this.catinfo.nickname }} 밥먹은 시간</h4>
+                  <div class="button" id="attr" @click="getTime">{{ this.catinfo.food}}</div>
+
                   <h4>&#x1F4AC; {{this.catinfo.nickname}} 고양이를 소개해요!</h4>
                   <div
                     class="button"
@@ -246,24 +294,35 @@
 
                       <md-card-content>{{post.content}}</md-card-content>
                       <!-- 댓글 더 보기 -->
-                      <md-button v-if="!post.isclick" @click="commentTest(index); test2(index)" style="width:9vw; height:4vh; background-color:#F6BB43 !important; font-size:9px;" class="md-icon-button">
-                              댓글보기
-                      </md-button>
-                      <md-button v-if="post.isclick" @click="commentTest(index); test2(index)" style="width:9vw; height:4vh; background-color:#F6BB43 !important; font-size:9px;" class="md-icon-button">
-                              댓글닫기
-                      </md-button>
+                      <md-button
+                        v-if="!post.isclick"
+                        @click="commentTest(index); test2(index)"
+                        style="width:9vw; height:4vh; background-color:#F6BB43 !important; font-size:9px;"
+                        class="md-icon-button"
+                      >댓글보기</md-button>
+                      <md-button
+                        v-if="post.isclick"
+                        @click="commentTest(index); test2(index)"
+                        style="width:9vw; height:4vh; background-color:#F6BB43 !important; font-size:9px;"
+                        class="md-icon-button"
+                      >댓글닫기</md-button>
                       <div v-if="post.isclick">
                         <div
                           v-for="(comment, index2) in comments[index]"
                           :key="index2 + '_comments'"
                         >
-                          <md-card-content style="padding:0"><strong>{{comment.writer}}</strong> {{comment.comment}}</md-card-content>
+                          <md-card-content style="padding:0">
+                            <strong>{{comment.writer}}</strong>
+                            {{comment.comment}}
+                          </md-card-content>
                         </div>
                         <div>
                           <textarea style="width:35vw" v-model="comment"></textarea>
-                          <md-button @click="saveComment(post.articleid, comment, memberinfo.nickname, index)" style="margin: 7px 5px; background-color:#F6BB43 !important" class="md-icon-button">
-                            등록
-                          </md-button>
+                          <md-button
+                            @click="saveComment(post.articleid, comment, memberinfo.nickname, index)"
+                            style="margin: 7px 5px; background-color:#F6BB43 !important"
+                            class="md-icon-button"
+                          >등록</md-button>
                         </div>
                       </div>
                     </md-card>
@@ -297,22 +356,30 @@
                   <div class="features text-center">
                     <div class="md-layout">
                       <!-- start print follow list -->
-                        <md-list class="md-follow-list" v-if="items.length" style="padding:0">
-                          <div v-for="(member, index) in items" :key="index + '_items'">
+                      <md-list class="md-follow-list" v-if="items.length" style="padding:0">
+                        <div v-for="(member, index) in items" :key="index + '_items'">
                           <md-list-item>
                             <md-avatar>
-                              <img style="margin-bottom:0; float:left" :src=member.member.image alt="People">
+                              <img
+                                style="margin-bottom:0; float:left"
+                                :src="member.member.image"
+                                alt="People"
+                              />
                             </md-avatar>
 
-                            <span style="position:relative" class="md-list-item-text">{{member.member.nickname}}</span>
+                            <span
+                              style="position:relative"
+                              class="md-list-item-text"
+                            >{{member.member.nickname}}</span>
 
-                            <md-button style="background-color:#4B89DC !important" class="md-icon-button">
-                              팔로우
-                            </md-button>
+                            <md-button
+                              style="background-color:#4B89DC !important"
+                              class="md-icon-button"
+                            >팔로우</md-button>
                           </md-list-item>
                           <md-divider class="md-inset"></md-divider>
-                          </div>
-                        </md-list>
+                        </div>
+                      </md-list>
                       <!-- end print follow list -->
                     </div>
                   </div>
@@ -353,6 +420,7 @@ export default {
       isUpdated: false,
       attrUpdateModal: false,
       breedUpdateModal: false,
+      genderUpdateModal: false,
       title: "",
       content: "",
       image: null,
@@ -399,6 +467,7 @@ export default {
         food: null,
         hospital: null,
         family: null,
+        gender: null,
         neutered: null,
         conditions: null,
         image: null,
@@ -420,6 +489,16 @@ export default {
     isLoggedIn: Boolean
   },
   methods: {
+    getTime() {
+      const nowtime = new Date();
+      const month = nowtime.getMonth();
+      const date = nowtime.getDate();
+      const hour = nowtime.getHours();
+      const minute = nowtime.getMinutes();
+      this.catinfo.food =
+        month + "월" + date + "일 " + hour + "시" + minute + "분";
+      this.isUpdated = true;
+    },
     //삭제 창 닫기
     deleteConfirmModalHide() {
       this.deleteConfirmModal = false;
@@ -445,7 +524,10 @@ export default {
       request.append("breed", this.catinfo.breed);
       request.append("attr", this.catinfo.attr);
       request.append("conditions", this.catinfo.conditions);
-
+      request.append("food", this.catinfo.food);
+      request.append("neutered", this.catinfo.neutered);
+      // request.append("neutered", this.catinfo.neutered);
+      console.log(this.catinfo);
       axios
         .patch(process.env.VUE_APP_SPRING_API_SERVER_URL + "cat", request)
         .then(res => {
@@ -453,8 +535,10 @@ export default {
           this.catinfo.breed = res.data.breed;
           this.catinfo.attr = res.data.attr;
           this.catinfo.conditions = res.data.conditions;
+          this.catinfo.food = res.data.food;
+          this.catinfo.neutered = res.data.neutered;
           this.isUpdated = false;
-          alert("수정이 완료되었습니다 :)");
+          alert("저장되었습니다. \n주변을 꺠끗하게 정리해주세요 :)");
         })
         .catch(error => {
           console.log(error);
@@ -468,6 +552,11 @@ export default {
     // 품종 선택창 닫기
     breedUpdateModalHide() {
       this.breedUpdateModal = false;
+      this.isUpdated = true;
+    },
+    // 품종 선택창 닫기
+    genderUpdateModalHide() {
+      this.genderUpdateModal = false;
       this.isUpdated = true;
     },
     // 파일 업로드 이미지 변경
@@ -606,6 +695,8 @@ export default {
           this.catinfo.location = res.data.location;
           this.catinfo.attr = res.data.attr;
           this.catinfo.conditions = res.data.conditions;
+          this.catinfo.neutered = res.data.neutered;
+          this.catinfo.food = res.data.food;
           this.catinfo.lat = res.data.lat;
           this.catinfo.lng = res.data.lng;
           this.catinfo.catid = this.$route.params.catid;
@@ -721,7 +812,6 @@ export default {
       formData.append("catid", catid);
       formData.append("mid", mid);
 
-
       axios
         .post(
           process.env.VUE_APP_SPRING_API_SERVER_URL + "follow/check",
@@ -742,18 +832,20 @@ export default {
     // 뉴스피드
     Newsfeed(cid, mid) {
       const formData = new FormData();
-      formData.append('cid', cid);
-      formData.append('mid',mid)
+      formData.append("cid", cid);
+      formData.append("mid", mid);
       axios
-        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "member/newsfeed", formData)
+        .post(
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "member/newsfeed",
+          formData
+        )
         .then(res => {
-            console.log(res);         
+          console.log(res);
         })
         .catch(error => {
           console.log(error);
         });
-    },
-
+    }
   },
   computed: {
     headerStyle() {
@@ -887,9 +979,8 @@ export default {
     max-width: 100%;
     display: inline-block;
     vertical-align: top;
-    border: 1px solid rgba(#000, .12);
+    border: 1px solid rgba(#000, 0.12);
   }
-
 }
 </style>
 
