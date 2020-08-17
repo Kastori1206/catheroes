@@ -18,26 +18,32 @@ import router from "./router";
 
 import MaterialKit from "./plugins/material-kit";
 
-import VueCookies from 'vue-cookies'
-Vue.use(VueCookies)
+import VueCookies from "vue-cookies";
+import VueSession from "vue-session";
+
+var sessionOptions = {
+  persist: true,
+};
+Vue.use(VueSession, sessionOptions);
+Vue.use(VueCookies);
 
 Vue.config.productionTip = false;
 
 Vue.use(MaterialKit);
 
 const NavbarStore = {
-  showNavbar: false
+  showNavbar: false,
 };
 
 Vue.mixin({
   data() {
     return {
-      NavbarStore
+      NavbarStore,
     };
-  }
+  },
 });
 
 new Vue({
   router,
-  render: h => h(App)
+  render: (h) => h(App),
 }).$mount("#app");

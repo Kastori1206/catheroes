@@ -93,7 +93,7 @@ public class MemberServiceImpl implements MemberService{
 		String encodePassword = passwordEncoder.encode(member.getPassword());
 		
 		member.setPassword(encodePassword);
-		member.setImage("/profile/user/default.jpg");
+		member.setImage("static/profile/user/default.jpg");
 		return memberDao.save(member);
 	}
 

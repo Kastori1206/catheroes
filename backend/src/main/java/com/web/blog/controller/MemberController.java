@@ -1,7 +1,13 @@
+
+
 package com.web.blog.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.blog.model.Member;
 import com.web.blog.model.response.BasicResponse;
 import com.web.blog.model.response.OAuthTokenResponse;
+import com.web.blog.service.MailService;
 import com.web.blog.service.MemberService;
 import com.web.blog.utill.jwt.JwtService;
 
@@ -45,6 +52,9 @@ public class MemberController {
 	@Autowired
 	private JwtService jwtService;
 
+	@Autowired
+	private MailService mailService;
+	
 	@GetMapping("/member/")
 	@ApiOperation(value = "회원 전체 조회")
 	public ResponseEntity<List<Member>> getAllMember(){
@@ -129,5 +139,11 @@ public class MemberController {
 		Member member = objectMapper.convertValue(request, Member.class);
 		
 		return ResponseEntity.ok().body(memberService.clearAlarm(member));
+	}
+	
+	@GetMapping("/member/email")
+	@ApiOperation(value = "이메일 인증 전송")
+	public ResponseEntity<String> createEmailCheck(@RequestParam String userEmail){
+		return ResponseEntity.ok().body(mailService.send(userEmail));		
 	}
 }
