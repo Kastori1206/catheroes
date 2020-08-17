@@ -81,9 +81,9 @@
               <template slot="tab-pane-2">
                 <!-- -->
                 <div v-for="(post, index) in posts" :key="index + '_posts'">
-                  <div class="md-layout">
-                    <md-card style="width: 50vw;">
-                      <md-card-header>
+                  <div class="md-layout" style="max-width:500px; margin: 0 auto">
+                    <md-card>
+                      <md-card-header style="margin: 0">
                         <md-avatar style="margin-left: 10px;">
                           <img :src="memberinfo.image" style="margin-bottom: 0px;" />
                         </md-avatar>

@@ -8,8 +8,7 @@
             class="md-layout-item md-size-66 md-small-size-100 md-xsmall-size-100 md-medium-size-66 mx-auto"
           >
             <login-card header-color="green">
-              <h4 slot="title" class="card-title">길냥이 정보 입력</h4>
-              <p slot="description" class="description">무슨말을해야하나</p>
+              <h2 slot="title" class="card-title" style="font-family: 'Do Hyeon', sans-serif;">길냥이 정보 입력</h2>
 
               <md-field class="md-form-group" slot="inputs">
                 <md-icon style="z-index:-1;">

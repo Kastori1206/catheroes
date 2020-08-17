@@ -240,16 +240,17 @@
                 </div>
                 <!-- -->
                 <div v-for="(post, index) in posts" :key="index + '_posts'">
-                  <div class="md-layout">
-                    <md-card style="width: 50vw;">
-                      <md-card-header>
+                  <div class="md-layout" style="max-width:500px; margin: 0 auto">
+                    <md-card>
+                      <md-card-header style="margin:0">
                         <md-avatar style="margin-left: 10px;">
                           <img :src="post.member.image" style="margin-bottom: 0px;" />
                         </md-avatar>
                         <!-- start closeBtn -->
                         <md-button
                           class="md-simple md-just-icon md-round modal-default-button"
-                          @click="deleteConfirmModal = true"
+                          v-if="post.member.nickname==memberinfo.nickname"
+                          @click="callDeleteConfirmModal(post, index)"
                         >
                           <md-icon>clear</md-icon>
                         </md-button>
@@ -259,9 +260,10 @@
                           :id="'modal_'+index"
                           v-if="deleteConfirmModal"
                           @close="deleteConfirmModalHide"
+                          :data="postModalData"
                         >
                           <template slot="header">
-                            <h4 class="modal-title">포스트 삭제 {{ index }}</h4>
+                            <h4 class="modal-title">포스트 삭제</h4>
                             <md-button
                               class="md-simple md-just-icon md-round modal-default-button"
                               @click="deleteConfirmModalHide"
@@ -278,7 +280,7 @@
                             <md-button
                               style="margin: 0 auto"
                               class="md-danger md-simple"
-                              @click="deletePost(posts[index].articleid, index)"
+                              @click="deletePost(postModalData.articleid, postModalData.index)"
                             >삭제</md-button>
                           </template>
                         </modal>
@@ -297,30 +299,36 @@
                       <md-button
                         v-if="!post.isclick"
                         @click="commentTest(index); test2(index)"
-                        style="width:9vw; height:4vh; background-color:#F6BB43 !important; font-size:9px;"
-                        class="md-icon-button"
+                        style="margin-left:5px; height:4vh; background-color:#4CAF50 !important; font-size:9px;"
+                        class="md-icon-button md-layout-item md-size-20"
                       >댓글보기</md-button>
                       <md-button
                         v-if="post.isclick"
                         @click="commentTest(index); test2(index)"
-                        style="width:9vw; height:4vh; background-color:#F6BB43 !important; font-size:9px;"
-                        class="md-icon-button"
+                        style="margin-left:5px; height:4vh; background-color:#4CAF50 !important; font-size:9px;"
+                        class="md-icon-button md-layout-item md-size-20"
                       >댓글닫기</md-button>
                       <div v-if="post.isclick">
                         <div
                           v-for="(comment, index2) in comments[index]"
                           :key="index2 + '_comments'"
                         >
-                          <md-card-content style="padding:0">
+                          <md-card-content style="margin-left:5px; padding:0; display:inline-block">
                             <strong>{{comment.writer}}</strong>
                             {{comment.comment}}
                           </md-card-content>
+                          <md-button 
+                            v-if="comment.writer==memberinfo.nickname" 
+                            @click="deleteComment(comment.commentid, index, index2)"
+                            class="md-simple md-just-icon"
+                            style="margin: 0; margin-right:10px; height:20px; width:20px; min-width:20px; float:right"
+                          ><md-icon>clear</md-icon></md-button>
                         </div>
                         <div>
-                          <textarea style="width:35vw" v-model="comment"></textarea>
+                          <textarea class="md-layout-item md-size-80"  style="margin-left:5px;" v-model="comment" placeholder="댓글을 입력해주세요."></textarea>
                           <md-button
                             @click="saveComment(post.articleid, comment, memberinfo.nickname, index)"
-                            style="margin: 7px 5px; background-color:#F6BB43 !important"
+                            style="margin: 7px 0; margin-right:10px; background-color:#4CAF50 !important; float:right"
                             class="md-icon-button"
                           >등록</md-button>
                         </div>
@@ -415,6 +423,7 @@ export default {
   bodyClass: "profile-page",
   data() {
     return {
+      postModalData: null,
       limit: -1,
       deleteConfirmModal: false,
       isUpdated: false,
@@ -512,8 +521,12 @@ export default {
         )
         .then(res => {
           this.posts.splice(index, 1);
+          this.deleteConfirmModalHide();
         })
-        .catch(err => {});
+        .catch(err => {
+          this.posts.splice(index, 1);
+          this.deleteConfirmModalHide();
+        });
     },
     // 고양이 정보 수정 좀더 생각해보자
     updateCatinfo() {
@@ -611,6 +624,7 @@ export default {
           // console.log(res);
           alert("등록이 완료되었습니다.");
           this.posts.unshift({
+            articleid: res.data.articleid,
             title: this.title,
             content: this.content,
             image: process.env.VUE_APP_IMAGE_SERVER + res.data.image,
@@ -651,7 +665,8 @@ export default {
         })
         .then(res => {
           alert("댓글 등록이 완료되었습니다.");
-          this.comments[index].push({ articleid, comment, writer });
+          var commentid = res.data.commentid;
+          this.comments[index].push({ commentid, articleid, comment, writer });
         })
         .catch(err => {
           console.log(err);
@@ -660,6 +675,18 @@ export default {
           this.comment = "";
         });
     },
+    //댓글 삭제
+    deleteComment(commentid, index, index2) {
+      axios
+        .delete(process.env.VUE_APP_SPRING_API_SERVER_URL + "comment/" + commentid)
+        .then(res =>{
+          this.comments[index].splice(index2, 1);
+        })
+        .catch(err => {
+
+        })
+    },
+
     //유저정보 찾기
     retrieveMemberInfo() {
       console.log("유저정보받아오라고했다");
@@ -845,6 +872,12 @@ export default {
         .catch(error => {
           console.log(error);
         });
+    },
+    // 포스트 삭제 모달창 호출
+    callDeleteConfirmModal (post, index) {
+      this.postModalData = post;
+      this.postModalData.index = index;
+      this.deleteConfirmModal = true;
     }
   },
   computed: {
@@ -954,9 +987,9 @@ export default {
     margin-top: 3.213rem;
     padding-bottom: 50px;
 
-    img {
-      margin-bottom: 2.142rem;
-    }
+    // img {
+    //   margin-bottom: 2.142rem;
+    // }
   }
   .md-card-actions.text-center {
     display: flex;
@@ -983,4 +1016,3 @@ export default {
   }
 }
 </style>
-
