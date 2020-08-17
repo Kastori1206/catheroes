@@ -4,7 +4,7 @@
       <div class="container">
         <div class="md-layout">
           <div class="md-layout-item md-size-50 md-small-size-70 md-xsmall-size-100">
-            <h1 class="title">길냥이 펀딩</h1>
+            <h1 class="title">길냥이 후원</h1>
             <h4>도움이 필요한 길고양이에게 도움의 손길을 내밀어주세요.</h4>
           </div>
         </div>
@@ -15,28 +15,70 @@
         <div class="container">
           <div class="features text-center">
             <h2>전체보기</h2>
-              <!-- start funding elements -->
-                <md-card>
-                  <md-card-media >
-                    <img @click="onPayment" src="@/assets/img/funsam1.jpg" style="height:140px" alt="People">
-                  </md-card-media>
-                  <md-card-header style="margin:0; padding:0; background-color:#ffffff">
-                    <div class="md-title" style="font-size:14px">말랑이 중성화수술 비용 펀딩</div>
-                    <md-progress-bar md-mode="determinate" :md-value="amount" style="width:80%;margin:0 auto"></md-progress-bar>
-                    <div class="md-subhead">30% 58,300원</div>
-                  </md-card-header>
-                </md-card>
-                <md-card>
-                  <md-card-media @click="onPayment">
-                    <img @click="onPayment" src="@/assets/img/funsam2.jpg" style="height:140px" alt="People">
-                  </md-card-media>
-                  <md-card-header style="margin:0; padding:0; background-color:#ffffff">
-                    <div class="md-title" style="font-size:14px">김치 중성화수술 비용 펀딩</div>
-                    <md-progress-bar md-mode="determinate" :md-value="amount2" style="width:80%;margin:0 auto"></md-progress-bar>
-                    <div class="md-subhead">60% 106,500원</div>
-                  </md-card-header>
-                </md-card>
-              <!-- end funding elements -->
+              <!-- start donate elements -->
+                <!-- start modal page -->
+                <modal v-if="donateModal" @close="donateModal=false" :data="donateModalData">
+                  <template slot="header">
+                    <h4 class="modal-title">&#x1F63A;결제하기&#x1F63A;</h4>
+                    <md-button
+                      class="md-simple md-just-icon md-round modal-default-button"
+                      @click="donateModal=false"
+                    >
+                      <md-icon>clear</md-icon>
+                    </md-button>
+                  </template>
+
+                  <template slot="body" style="padding-top:0">
+                    <!-- paymentInfo.amount, buyer_tel 그외정보 자동출력-->
+                    <md-field>
+                      <md-input style="text-align:center; font-size:14px !important" v-model="memberinfo.nickname" placeholder="이름 입력"></md-input>
+                    </md-field>
+                    <md-field>
+                      <md-input style="text-align:center; font-size:14px !important" v-model="memberinfo.email" placeholder="이메일 입력"></md-input>
+                    </md-field>
+                    <md-field>
+                      <md-select
+                          v-model="paymentInfo.amount"
+                          name="amount"
+                          id="amount"
+                          placeholder="결제금액 선택"
+                          style="text-align-last:center; margin-left:24px;"
+                        >
+                          <md-option value="1000">&#x1F4B0; 1,000원</md-option>
+                          <md-option value="3000">&#x1F4B4; 3,000원</md-option>
+                          <md-option value="5000">&#x1F4B5; 5,000원</md-option>
+                          <md-option value="10000">&#x1F4B6; 10,000원</md-option>
+                          <md-option value="30000">&#x1F4B7; 30,000원</md-option>
+                          <md-option value="50000">&#x1F4B8; 50,000원</md-option>
+                      </md-select>
+                    </md-field>
+                    <md-field>
+                      <md-input style="text-align:center; font-size:14px !important" v-model="paymentInfo.buyer_tel" placeholder="전화번호 입력"></md-input>
+                    </md-field>
+                  </template>
+
+                  <template slot="footer">
+                    <md-button class="md-danger md-simple" @click="onPayment(donateModalData.did)">다 음</md-button>
+                  </template>
+                </modal>  
+                <!-- end modal page -->
+                <div v-if="donateInfo">
+                  <div v-for="(donate, index) in donateInfo" :key="'donate_' + index">
+                    <md-card>
+                      <md-card-media>
+                        <img @click="openDonateModal(donate)" :src="donate.cat.image" style="height:140px" alt="People">
+                      </md-card-media>
+                      <md-card-header style="margin:0; padding:0; background-color:#ffffff">
+                        <div class="md-title" style="font-size:14px">{{donate.cat.nickname}} {{donate.type}} 비용 후원</div>
+                        <md-progress-bar md-mode="determinate" :md-value="donate.percentage" style="width:80%;margin:0 auto"></md-progress-bar>
+                        <div class="md-subhead"><strong style="color:#8b00ff">{{donate.percentage}}%</strong> 달성 - {{donate.current}}원</div>
+                      </md-card-header>
+                    </md-card>
+                  </div>
+                </div>
+              <!-- end donate elements -->
+              <br><hr>
+              <h4>&#x1F47C;후원 문의&#x1F47C;<br>010-2837-8487</h4>
             </div>
           </div>
         </div>
@@ -45,8 +87,13 @@
 </template>
 
 <script>
+import { Modal } from "@/components";
 import axios from "axios";
+
 export default {
+  components: {
+    Modal,
+  },
   name: "Media",
   bodyClass: "landing-page",
   props: {
@@ -57,9 +104,21 @@ export default {
   },
   data() {
     return {
-      amount: 30,
-      amount2: 60,
-      items: []
+      donateModalData: null,
+      donateModal: false,
+      focusedDid: null,
+      donateInfo: [],
+      memberinfo: {
+        email: null,
+        nickname: null,
+        mid: null,
+        password: null,
+        image: null
+      },
+      paymentInfo: {
+        amount: 0, // 결제금액
+        buyer_tel: '', // 결제자 전화번호
+      },
     };
   },
   computed: {
@@ -70,7 +129,9 @@ export default {
     }
   },
   methods: {
-    onPayment() {
+    // 후원 결제
+    onPayment(did) {
+      // alert(did);
       /* 1. 가맹점 식별하기 */
       const { IMP } = window;
       IMP.init('imp80887593');
@@ -80,17 +141,16 @@ export default {
         pg: 'html5_inicis',                           // PG사
         pay_method: 'card',                           // 결제수단
         merchant_uid: `mid_${new Date().getTime()}`,   // 주문번호
-        amount: 1000,                                 // 결제금액
-        name: '아임포트 결제 데이터 분석',                  // 주문명
-        buyer_name: '홍길동',                           // 구매자 이름
-        buyer_tel: '01012341234',                     // 구매자 전화번호
-        buyer_email: 'example@example',               // 구매자 이메일
-        buyer_addr: '신사동 661-16',                    // 구매자 주소
-        buyer_postcode: '06018',                      // 구매자 우편번호
+        amount: this.paymentInfo.amount,                // 결제금액
+        name: '길냥이 펀딩:)',                           // 주문명
+        buyer_name: this.memberinfo.nickname,            // 결제자 이름
+        buyer_tel: this.paymentInfo.buyer_tel,          // 결제자 전화번호
+        buyer_email: this.memberinfo.email,            // 결제자 이메일
         // ...
       };
 
       /* 4. 결제 창 호출하기 */
+      this.focusedDid = did;
       IMP.request_pay(data, this.callback);
     },
     callback(response) {
@@ -99,17 +159,94 @@ export default {
         success,
         merchant_uid,
         error_msg,
+        paid_amount,
         // ...
       } = response;
 
       if (success) {
-        alert('결제 성공');
+        alert('결제가 완료되었습니다:)');
+        // alert(this.focusedDid);
+        // axios 호출하여 donate db 수정 및 프론트 갱신해주는 부분
+        const request = new FormData();
+        request.append('did', this.focusedDid);
+        request.append('amount', paid_amount)
+        // alert(paid_amount);
+        axios
+          .put(process.env.VUE_APP_SPRING_API_SERVER_URL + "donate", request)
+          .then(res => {
+            this.donateInfo = [];
+            for(var i=0; i<res.data.length; i++) {
+              res.data[i].cat.image = process.env.VUE_APP_IMAGE_SERVER + res.data[i].cat.image;
+            }
+            this.donateInfo = res.data;
+            this.donateModal = false;
+            this.$router.go("/funding");
+          })
+          .catch(err => {
+
+          })
+        /////////////////////////////////////////////////////////
       } else {
         alert(`결제 실패: ${error_msg}`);
       }
     },
+
+    //유저 정보 확인
+    retrievememberinfo() {
+      // console.log("유저정보받아오라고했다");
+      const token = this.$cookies.get("auth-token");
+      // console.log(token)
+      axios
+        .post(
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "member/info",
+          null,
+          {
+            headers: { Authorization: `${token}` }
+          }
+        )
+        .then(res => {     
+          console.log(res)
+          this.memberinfo.email = res.data.email;
+          this.memberinfo.nickname = res.data.nickname;
+          this.memberinfo.mid = res.data.mid;
+          this.memberinfo.password = res.data.password;
+          this.memberinfo.image =
+          process.env.VUE_APP_IMAGE_SERVER + res.data.image;     
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+
+    // 펀딩 정보 조회
+    retrieveDonateInfo() {
+        axios
+          .get(
+            process.env.VUE_APP_SPRING_API_SERVER_URL + "donate")
+          .then(res => {
+            console.log(res);
+            for(var i=0; i<res.data.length; i++) {
+              res.data[i].cat.image = process.env.VUE_APP_IMAGE_SERVER + res.data[i].cat.image;
+              res.data[i].percentage = Math.round(res.data[i].current * 100 / res.data[i].goal);
+            }
+            this.donateInfo = res.data;
+          })
+          .catch(err => {
+            console.log(err);
+          })
+    },
+    
+    openDonateModal (donate) {
+      // alert("openDonateModal 메서드 호출");
+      // console.log(donate);
+      this.donateModalData = donate;
+      this.donateModal = true;
+    }
   },
+
   created() {
+    this.retrievememberinfo();  
+    this.retrieveDonateInfo();
   }
 };
 
