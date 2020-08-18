@@ -13,7 +13,12 @@
                 <md-icon>email</md-icon>
                 <label>Email...</label>
                 <md-input v-model="email" id="email" ref="email" type="email" @blur="verifyEmail"></md-input>
-                <md-button v-if="useEmail == '이메일중복'" @click="emailAuth" style="background-color:#4CAF50 !important; min-width:65px;" class="md-icon-button">이메일 인증</md-button>
+                <md-button
+                  v-if="useEmail == '이메일중복'"
+                  @click="emailAuth"
+                  style="background-color:#4CAF50 !important; min-width:65px;"
+                  class="md-icon-button"
+                >이메일 인증</md-button>
               </md-field>
 
               <md-field
@@ -25,7 +30,11 @@
                 <md-icon>email</md-icon>
                 <label>인증번호...</label>
                 <md-input v-model="emailcode"></md-input>
-                <md-button @click="emailConfirm" style="background-color:#4CAF50 !important; min-width:65px;" class="md-icon-button">인증번호 확인</md-button>
+                <md-button
+                  @click="emailConfirm"
+                  style="background-color:#4CAF50 !important; min-width:65px;"
+                  class="md-icon-button"
+                >인증번호 확인</md-button>
               </md-field>
 
               <md-field class="md-form-group" slot="inputs" v-if="emailCodeConfirm">
@@ -144,11 +153,13 @@ export default {
         .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "member/email/", {
           params: {
             userEmail: this.email,
-            subject: "비밀번호 찾기 인증 코드 발급 안내 입니다."
+            subject:
+              "길냥이 히어로즈 비밀번호 찾기 인증 코드 발급 안내 입니다.",
+            text: "비밀번호 찾기 안내입니다."
           }
         })
         .then(response => {
-          alert("인증번호가 발송되었습니다 !")
+          alert("인증번호가 발송되었습니다 !");
           if (response.data != null) {
             this.authcode = response.data;
             this.emailCodeConfirm = false;
@@ -241,8 +252,8 @@ export default {
     createHandler() {
       axios
         .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "member/findemail", {
-            email: this.email,
-            password: this.password          
+          email: this.email,
+          password: this.password
         })
         .then(response => {
           alert("수정이 완료되었습니다.");

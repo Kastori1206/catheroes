@@ -8,11 +8,7 @@
           >
             <login-card header-color="green">
               <h4 slot="title" class="card-title">회원가입</h4>
-              <md-field
-                class="md-form-group"
-                slot="inputs"
-                :class="NmessageClass"
-              >
+              <md-field class="md-form-group" slot="inputs" :class="NmessageClass">
                 <md-icon>face</md-icon>
                 <label>Nickname...</label>
                 <md-input
@@ -26,41 +22,30 @@
                   class="md-helper-text"
                   style="visibility: visible;"
                   v-show="useNickname == '가능'"
-                  >사용가능한닉네임</span
-                >
+                >사용가능한닉네임</span>
                 <span class="md-error" style="bottom:-10px">닉네임중복임</span>
               </md-field>
 
-              <md-field
-                class="md-form-group"
-                slot="inputs"
-                :class="EmessageClass"
-              >
+              <md-field class="md-form-group" slot="inputs" :class="EmessageClass">
                 <md-icon>email</md-icon>
                 <label>Email...</label>
-                <md-input
-                  v-model="email"
-                  id="email"
-                  ref="email"
-                  type="email"
-                  @blur="verifyEmail"
-                ></md-input>
+                <md-input v-model="email" id="email" ref="email" type="email" @blur="verifyEmail"></md-input>
                 <span
                   class="md-helper-text"
                   style="visibility: visible;"
                   v-show="useEmail == '가능'"
-                  >사용가능한이메일</span
-                >
-                <md-button 
-                  v-if="useEmail == '가능'" 
+                >사용가능한이메일</span>
+                <md-button
+                  v-if="useEmail == '가능'"
                   @click="emailAuth"
                   style="background-color:#4CAF50 !important; min-width:65px;"
                   class="md-icon-button"
-                >이메일 인증</md-button
-                >
-                <span class="md-error" style="bottom:-10px">{{
+                >이메일 인증</md-button>
+                <span class="md-error" style="bottom:-10px">
+                  {{
                   useEmail
-                }}</span>
+                  }}
+                </span>
               </md-field>
 
               <md-field
@@ -72,7 +57,7 @@
                 <md-icon>email</md-icon>
                 <label>인증번호...</label>
                 <md-input v-model="emailcode"></md-input>
-                <md-button 
+                <md-button
                   @click="emailConfirm"
                   style="background-color:#4CAF50 !important; min-width:65px;"
                   class="md-icon-button"
@@ -89,13 +74,8 @@
                   :type="passwordType"
                   v-on:keyup="fn_compare_pwd"
                 ></md-input>
-                <span
-                  :class="{ active: passwordConfirmType === 'text' }"
-                  style="display:None"
-                >
-                  <i id="pwd_compare" ref="pwd_compare" class="fas fa-eye"
-                    >불일치</i
-                  >
+                <span :class="{ active: passwordConfirmType === 'text' }" style="display:None">
+                  <i id="pwd_compare" ref="pwd_compare" class="fas fa-eye">불일치</i>
                 </span>
               </md-field>
               <md-field class="md-form-group" slot="inputs">
@@ -108,10 +88,7 @@
                   :type="passwordConfirmType"
                   v-on:keyup="fn_compare_pwd"
                 ></md-input>
-                <span
-                  :class="{ active: passwordConfirmType === 'text' }"
-                  style="display:None"
-                >
+                <span :class="{ active: passwordConfirmType === 'text' }" style="display:None">
                   <i class="fas fa-eye"></i>
                 </span>
               </md-field>
@@ -140,7 +117,7 @@ import KakaoLogin from "vue-kakao-login";
 export default {
   components: {
     LoginCard,
-    KakaoLogin,
+    KakaoLogin
   },
   bodyClass: "login-page",
   data() {
@@ -157,43 +134,43 @@ export default {
       useEmail: "", //이메일 중복체크 확인 여부
       authcode: "", //백엔드에서 보낸 이메일 인증 코드
       emailcode: "", //사용자의 이메일 인증코드
-      emailCodeConfirm: false, //이메일 인증 확인 여부
+      emailCodeConfirm: false //이메일 인증 확인 여부
     };
   },
   props: {
     header: {
       type: String,
-      default: require("@/assets/img/profile_city-1.jpg"),
-    },
+      default: require("@/assets/img/profile_city-1.jpg")
+    }
   },
   computed: {
     headerStyle() {
       return {
-        backgroundImage: `url(${this.header})`,
+        backgroundImage: `url(${this.header})`
       };
     },
     EmessageClass() {
       if (this.useEmail == "이메일중복" || this.useEmail == "잘못된형식") {
         return {
-          "md-invalid": true,
+          "md-invalid": true
         };
       } else {
         return {
-          "md-invalid": false,
+          "md-invalid": false
         };
       }
     },
     NmessageClass() {
       if (this.useNickname == "중복") {
         return {
-          "md-invalid": true,
+          "md-invalid": true
         };
       } else {
         return {
-          "md-invalid": false,
+          "md-invalid": false
         };
       }
-    },
+    }
   },
   methods: {
     //이메일 인증메일 보내기
@@ -202,12 +179,13 @@ export default {
         .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "member/email/", {
           params: {
             userEmail: this.email,
-            subject: "회원가입 인증 코드 발급 안내 입니다."
-          },
+            subject: "길냥이 히어로즈 회원가입 인증 코드 발급 안내 입니다.",
+            text: "회원가입을 축하 합니다."
+          }
         })
-        .then((response) => {
+        .then(response => {
           if (response.data != null) {
-            alert("인증번호가 발송되었습니다 !")
+            alert("인증번호가 발송되었습니다 !");
             this.authcode = response.data;
             this.emailCodeConfirm = false;
           }
@@ -262,14 +240,14 @@ export default {
             process.env.VUE_APP_SPRING_API_SERVER_URL + "member/nickname/",
             request
           )
-          .then((response) => {
+          .then(response => {
             if (response.data === true) {
               this.useNickname = "중복";
             } else {
               this.useNickname = "가능";
             }
           })
-          .catch((error) => {
+          .catch(error => {
             this.error = error;
           });
       }
@@ -284,14 +262,14 @@ export default {
             process.env.VUE_APP_SPRING_API_SERVER_URL + "member/email/",
             request
           )
-          .then((response) => {
+          .then(response => {
             if (response.data === true) {
               this.useEmail = "이메일중복";
             } else {
               this.useEmail = "가능";
             }
           })
-          .catch((error) => {
+          .catch(error => {
             this.error = error;
           });
       }
@@ -302,13 +280,13 @@ export default {
         .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "member/", {
           email: this.email,
           nickname: this.nickName,
-          password: this.password,
+          password: this.password
         })
-        .then((response) => {
+        .then(response => {
           alert("등록이 완료되었습니다.");
           this.moveList();
         })
-        .catch((error) => {
+        .catch(error => {
           this.error = error;
         })
         .finally(() => {});
@@ -344,8 +322,8 @@ export default {
       } else {
         this.useEmail = "잘못된형식";
       }
-    },
-  },
+    }
+  }
 };
 </script>
 

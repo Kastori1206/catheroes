@@ -21,7 +21,7 @@ public class MailServiceImpl implements MailService {
 	}
 	
 	@Override
-	public String send(String subject, String to) {
+	public String send(String subject, String to,String text) {
 		MimeMessage message = javaMailSender.createMimeMessage();
 		
 		try {
@@ -41,7 +41,7 @@ public class MailServiceImpl implements MailService {
                .append("             <table width=\"605\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"text-align: left; font-family: '맑은 고딕','돋움';\">")  
                .append("                <tbody><tr><td style=\"color: #2daad1; font-size: 25px; text-align: left; width: 352px; word-spacing: -6px; vertical-align: top;\">") 
                .append("                   길냥이 히어로즈<br>\r\n")
-               .append(subject)
+               .append(text)
                .append("                   </td><td rowspan=\"3\"><img src=\"https://catheroes.s3.ap-northeast-2.amazonaws.com/static/profile/user/default.jpg\" loading=\"lazy\"></td></tr>") 
                .append("                <tr><td height=\"39\"><img src=\"http://neowiz.recruiter.co.kr/resources/css/cus/images/pattern/registerbar.png\" loading=\"lazy\"></td></tr>") 
                .append("                <tr><td style=\"font-size: 17px; vertical-align: bottom; height: 27px;\">안녕하세요? 길냥이 히어로즈 입니다.</td></tr>") 
