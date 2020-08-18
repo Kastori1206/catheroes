@@ -36,7 +36,7 @@
           </div>
           <div class="profile-tabs">
             <tabs
-              :tab-name="['Detail', 'Post', 'Follower']"
+              :tab-name="['상세정보', '게시글', '팔로워']"
               :tab-icon="['camera', 'palette', 'favorite']"
               plain
               nav-pills-icons
@@ -750,7 +750,8 @@ export default {
             ////
             this.items.push(res.data[i]);
             ////
-          }
+          }          
+          Array.from(new Set(this.items));
         })
         .catch(error => {
           console.log(error);

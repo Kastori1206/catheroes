@@ -143,7 +143,7 @@ public class MemberController {
 	
 	@GetMapping("/member/email")
 	@ApiOperation(value = "이메일 인증 전송")
-	public ResponseEntity<String> createEmailCheck(@RequestParam String userEmail){
-		return ResponseEntity.ok().body(mailService.send(userEmail));		
+	public ResponseEntity<String> createEmailCheck(@RequestParam String userEmail,@RequestParam String subject){
+		return ResponseEntity.ok().body(mailService.send(subject,userEmail));		
 	}
 }

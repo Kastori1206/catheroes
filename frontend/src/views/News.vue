@@ -17,7 +17,7 @@
             <div class="md-layout">
               <!-- test -->
               <div v-for="(news, index) in items" :key="index + '_items'">
-                <div class="md-card-new">
+                <div class="md-card-new" style="max-width:900px">
                   <md-card-header>
                     <md-card-media style="margin-right:10px; margin-bottom:5px">
                       <img style="border: 1px solid #808080; border-radius: 5px;" :src="news.img" alt="NewsImage" @click="PopNews(index)" />
