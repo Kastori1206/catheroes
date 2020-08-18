@@ -83,23 +83,101 @@
                 <div v-for="(post, index) in posts" :key="index + '_posts'">
                   <div class="md-layout" style="max-width:500px; margin: 0 auto">
                     <md-card>
-                      <md-card-header style="margin: 0">
+                      <md-card-header style="margin:0">
                         <md-avatar style="margin-left: 10px;">
-                          <img :src="memberinfo.image" style="margin-bottom: 0px;" />
+                          <img :src="post.member.image" style="margin-bottom: 0px;" />
                         </md-avatar>
+                        <!-- start closeBtn -->
+                        <md-button
+                          class="md-simple md-just-icon md-round modal-default-button"
+                          v-if="post.member.nickname==memberinfo.nickname"
+                          @click="callDeleteConfirmModal(post, index)"
+                        >
+                          <md-icon>clear</md-icon>
+                        </md-button>
+                        <!-- end closeBtn -->
+                        <!-- start deleteConfirm modal -->
+                        <modal
+                          :id="'modal_'+index"
+                          v-if="deleteConfirmModal"
+                          @close="deleteConfirmModalHide"
+                          :data="postModalData"
+                        >
+                          <template slot="header">
+                            <h4 class="modal-title">포스트 삭제</h4>
+                            <md-button
+                              class="md-simple md-just-icon md-round modal-default-button"
+                              @click="deleteConfirmModalHide"
+                            >
+                              <md-icon>clear</md-icon>
+                            </md-button>
+                          </template>
 
-                        <div class="md-title">{{ post.title }}</div>
-                        <div class="md-subhead">{{ memberinfo.nickname }}</div>
+                          <template slot="body">
+                            <p>정말 삭제하시겠습니까?</p>
+                          </template>
+
+                          <template slot="footer">
+                            <md-button
+                              style="margin: 0 auto"
+                              class="md-danger md-simple"
+                              @click="deletePost(postModalData.articleid, postModalData.index)"
+                            >삭제</md-button>
+                          </template>
+                        </modal>
+                        <!-- end deleteConfirm modal -->
+                        <div class="md-title">{{post.title}}</div>
+                        <div class="md-subhead">{{post.member.nickname}}</div>
                       </md-card-header>
 
                       <md-card-media>
-                        <img :src=post.image />
+                        <!-- <img src="@/assets/img/examples/mariya-georgieva.jpg" /> -->
+                        <img :src="post.image" />
                       </md-card-media>
 
-                      <md-card-content>{{ post.content }}</md-card-content>
+                      <md-card-content>{{post.content}}</md-card-content>
+                      <!-- 댓글 더 보기 -->
+                      <md-button
+                        v-if="!post.isclick"
+                        @click="commentTest(index);"
+                        style="margin-left:5px; height:4vh; background-color:#4CAF50 !important; font-size:9px;"
+                        class="md-icon-button md-layout-item md-size-20"
+                      >댓글보기</md-button>
+                      <md-button
+                        v-if="post.isclick"
+                        @click="commentTest(index);"
+                        style="margin-left:5px; height:4vh; background-color:#4CAF50 !important; font-size:9px;"
+                        class="md-icon-button md-layout-item md-size-20"
+                      >댓글닫기</md-button>
+                      <div v-if="post.isclick">
+                        <div
+                          v-for="(comment, index2) in comments[index]"
+                          :key="index2 + '_comments'"
+                        >
+                          <md-card-content style="margin-left:5px; padding:0; display:inline-block">
+                            <strong>{{comment.writer}}</strong>
+                            {{comment.comment}}
+                          </md-card-content>
+                          <md-button 
+                            v-if="comment.writer==memberinfo.nickname" 
+                            @click="deleteComment(comment.commentid, index, index2)"
+                            class="md-simple md-just-icon"
+                            style="margin: 0; margin-right:10px; height:20px; width:20px; min-width:20px; float:right"
+                          ><md-icon>clear</md-icon></md-button>
+                        </div>
+                        <div>
+                          <textarea class="md-layout-item md-size-80"  style="margin-left:5px;" v-model="comment" placeholder="댓글을 입력해주세요."></textarea>
+                          <md-button
+                            @click="saveComment(post.articleid, comment, memberinfo.nickname, index)"
+                            style="margin: 7px 0; margin-right:10px; background-color:#4CAF50 !important; float:right"
+                            class="md-icon-button"
+                          >등록</md-button>
+                        </div>
+                      </div>
                     </md-card>
                   </div>
                 </div>
+                <infinite-loading @infinite="UserPost"></infinite-loading>
                 <!-- -->
               </template>
               <template slot="tab-pane-3">
@@ -230,25 +308,33 @@ import { LoginCard } from "@/components";
 import { Modal } from "@/components";
 import { Tabs } from "@/components";
 import axios from "axios";
+import InfiniteLoading from "vue-infinite-loading";
 
 export default {
   components: {
     Pagination,
     LoginCard,
     Modal,
-    Tabs
+    Tabs,
+    InfiniteLoading
   },
   bodyClass: "profile-page",
   data() {
     return {
+      postModalData: null,
+      limit: -1,
       file: null,
       // imgpreview: null,
       classicModal: false,
       deleteConfirm: null,
+      deleteConfirmModal: false,
       userUpdateModal: false,
       userDeleteModal: false,
+      isclick: false,
       follows: [],
       posts: [],
+      comments: [],
+      comment: [],
       tabPane1: [
         { image: require("@/assets/img/examples/studio-1.jpg") },
         { image: require("@/assets/img/examples/studio-2.jpg") },
@@ -442,7 +528,7 @@ export default {
           this.memberinfo.image =
           process.env.VUE_APP_IMAGE_SERVER + res.data.image;     
           this.UserFollow();
-          this.UserPost();
+          this.UserPost($state);
         })
         .catch(error => {
           console.log(error);
@@ -465,24 +551,56 @@ export default {
           console.log(error);
         });
     },
-    //유저 포스트 정보
-    UserPost() {   
+    //유저가 쓴 게시글 조회
+    UserPost($state) {   
       // console.log("포스트")
       axios
         .get(
           process.env.VUE_APP_SPRING_API_SERVER_URL + "article/member/"+this.memberinfo.mid
         )
         .then(res => {
-          // console.log(res.data);
-          for (var i = 0; i < res.data.length; i++) {
-            // console.log(res.data[i]);
-            res.data[i].image = process.env.VUE_APP_IMAGE_SERVER + res.data[i].image;
-            this.posts.push(res.data[i]);
+          if (this.limit < res.data.length) {
+            // console.log(res.data);
+            // console.log(res.data.length);
+            for (
+              var i = this.limit;
+              i < this.limit + 1 && i < res.data.length;
+              i++
+            ) {
+              // 댓글불러오기
+              axios
+                .get(
+                  process.env.VUE_APP_SPRING_API_SERVER_URL +
+                    "article/comment/" +
+                    res.data[i].articleid
+                )
+                .then(res2 => {
+                  console.log("댓글 불러오기");
+                  console.log(res2.data);
+                  this.comments.push(res2.data);
+                })
+                .catch(error => {
+                  console.log(error);
+                });
+              // console.log("이제 res.data[i]에 isclick변수를 넣을거야");
+              res.data[i].isclick = false;
+              // console.log(res);
+              res.data[i].member.image =
+                process.env.VUE_APP_IMAGE_SERVER + res.data[i].member.image;
+              res.data[i].image =
+                process.env.VUE_APP_IMAGE_SERVER + res.data[i].image;
+              this.posts.push(res.data[i]);
+              $state.loaded();
+            }
+          } else {
+            $state.complete();
           }
         })
         .catch(error => {
           console.log(error);
         });
+      // console.log(this.comments);
+      this.limit += 1;
     },
     fn_compare_pwd() {
       // alert('123');
@@ -515,7 +633,68 @@ export default {
       // console.log("이동")
       // console.log(data);
       this.$router.push("/detail/" + data.catid);
-    }
+    },
+    commentTest(index) {
+      this.posts[index].isclick
+        ? (this.posts[index].isclick = false)
+        : (this.posts[index].isclick = true);
+    },
+    callDeleteConfirmModal (post, index) {
+      this.postModalData = post;
+      this.postModalData.index = index;
+      this.deleteConfirmModal = true;
+    },
+    //삭제 창 닫기
+    deleteConfirmModalHide() {
+      this.deleteConfirmModal = false;
+    },
+    // 댓글달기
+    saveComment(articleid, comment, writer, index) {
+      axios
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "article/comment", {
+          articleid,
+          comment,
+          writer
+        })
+        .then(res => {
+          alert("댓글 등록이 완료되었습니다.");
+          var commentid = res.data.commentid;
+          this.comments[index].push({ commentid, articleid, comment, writer });
+        })
+        .catch(err => {
+          console.log(err);
+        })
+        .finally(() => {
+          this.comment = "";
+        });
+    },
+    //댓글 삭제
+    deleteComment(commentid, index, index2) {
+      axios
+        .delete(process.env.VUE_APP_SPRING_API_SERVER_URL + "comment/" + commentid)
+        .then(res =>{
+          this.comments[index].splice(index2, 1);
+        })
+        .catch(err => {
+
+        })
+    },
+    // 포스트 삭제
+    deletePost(articleid, index) {
+      // console.log(articleid)
+      axios
+        .delete(
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "article/" + articleid
+        )
+        .then(res => {
+          this.posts.splice(index, 1);
+          this.deleteConfirmModalHide();
+        })
+        .catch(err => {
+          this.posts.splice(index, 1);
+          this.deleteConfirmModalHide();
+        });
+    },
   },
   computed: {
     headerStyle() {
