@@ -170,6 +170,12 @@
                     <p>DONATE</p>
                   </router-link>
                 </md-list-item>
+
+                <md-list-item>
+                  <router-link to="/faq">
+                    <p>FAQ</p>
+                  </router-link>
+                </md-list-item>
               </md-list>
             </div>
           </div>

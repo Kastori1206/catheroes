@@ -11,6 +11,7 @@ import Search from "./views/Search.vue";
 import Donate from "./views/Donate.vue";
 import MainNavbar from "./layout/MainNavbar.vue";
 import MainFooter from "./layout/MainFooter.vue";
+import FAQ from "./views/FAQ.vue"
 
 Vue.use(Router);
 
@@ -143,6 +144,15 @@ export default new Router({
           alert("로그인을 해주세요.")
           next("/");
         }
+      },
+    },
+    {
+      path: "/faq",
+      name: "faq",
+      components: { default: FAQ, header: MainNavbar, footer: MainFooter },
+      props: {
+        header: { colorOnScroll: 1 },
+        footer: { backgroundColor: "black" },
       },
     },
   ],
