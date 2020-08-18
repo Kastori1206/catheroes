@@ -144,7 +144,7 @@ export default {
   props: {
     header: {
       type: String,
-      default: require("@/assets/img/cat-2536662_1920.jpg")
+      default: require("@/assets/img/cat-4000000_1920.jpg")
     },
   },
   data() {
