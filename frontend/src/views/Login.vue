@@ -7,7 +7,7 @@
             class="md-layout-item md-size-33 md-small-size-66 md-xsmall-size-100 md-medium-size-40 mx-auto"
           >
             <login-card header-color="green">
-              <h4 slot="title" class="card-title">Login</h4>
+              <h4 slot="title" class="card-title">로그인</h4>
               <md-button
                 @click="loginFormWithKakao"
                 slot="buttons"
@@ -34,7 +34,7 @@
                 class="md-simple md-success md-lg"
               >Login</md-button>
               <md-button @click="gotoJoin" slot="footer" class="md-simple md-success md-lg">회원가입</md-button>
-              <md-button slot="footer" class="md-simple md-success md-lg">아이디/비밀번호 찾기</md-button>
+              <md-button @click="gotoFind" slot="footer" class="md-simple md-success md-lg">비밀번호 찾기</md-button>
             </login-card>
           </div>
         </div>
@@ -116,6 +116,9 @@ export default {
     },
     gotoJoin() {
       this.$router.push("/join");
+    },
+    gotoFind() {
+      this.$router.push("/findpassword");
     }
   }
 };

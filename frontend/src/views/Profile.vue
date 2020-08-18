@@ -9,7 +9,7 @@
               <div class="profile">
                 <div class="avatar">
                   <img
-                    :src="memberinfo.image"
+                    :src="memberinfo.image+'?'+currentTime"
                     alt="Circle Image"
                     class="img-raised rounded-circle img-flmid"
                     @click="classicModal = true"
@@ -18,16 +18,10 @@
                 <!-- 프로필 이미지 수정 모달창 -->
                 <modal v-if="classicModal" @close="classicModalHide">
                   <template slot="header">
-                    <h4 class="modal-title">이미지 수정</h4>
-                    <!-- <md-button class="md-simple md-just-icon md-round modal-default-button" @click="classicModalHide">
-                              <md-icon>clear</md-icon>
-                    </md-button>-->
+                    <h4 class="modal-title">이미지 수정</h4>                   
                   </template>
 
-                  <template slot="body">
-                    <!-- <md-field v-if="imgpreview">
-                      <img :src="imgpreview" />
-                    </md-field>-->
+                  <template slot="body">                    
                     <md-field>
                       <label>Only images</label>
                       <md-file @change="onChangeImages" accept="image/*" />
@@ -48,7 +42,7 @@
           </div>
           <div class="profile-tabs">
             <tabs
-              :tab-name="['Follow', 'Post', 'Settings']"
+              :tab-name="['팔로우', '내가 쓴 게시글', '정보수정']"
               :tab-icon="['favorite', 'palette', 'camera']"
               plain
               nav-pills-icons
@@ -360,7 +354,7 @@ export default {
       passwordConfirm: "",
       passwordType: "password",
       passwordConfirmType: "password",
-
+      currentTime : "",
       memberinfo: {
         email: null,
         nickname: null,
@@ -381,6 +375,12 @@ export default {
     // }
   },
   methods: {
+    //현재시간 구하기
+    showClock(){
+      var currentDate = new Date();
+      this.currentTime= currentDate.getHours()+""+currentDate.getMinutes()+""+currentDate.getSeconds()
+      
+    },
     // 프로필 이미지 바꾸는 곳
     changeImage(e) {
       if (!this.file) {
@@ -389,6 +389,7 @@ export default {
         const request = new FormData();
         request.append("image", this.file);
         request.append("mid", this.memberinfo.mid);
+        const token = this.$cookies.get("auth-token");
 
         axios
           .post(
@@ -396,13 +397,15 @@ export default {
             request,
             {
               headers: {
-                "Content-Type": "multipart/form-data"
+                "Content-Type": "multipart/form-data",
+                Authorization: `${token}`
               }
             }
           )
           .then(res => {
             // console.log(res.data)
             this.memberinfo.image = process.env.VUE_APP_IMAGE_SERVER + res.data;
+            this.showClock();
             this.classicModalHide();
           })
           .catch(err => {
@@ -411,11 +414,8 @@ export default {
       }
     },
     onChangeImages(e) {
-      // console.log(e.target.files);
       this.file = e.target.files[0];
 
-      // this.imgpreview = URL.createObjectURL(file);
-      // console.log(this.imgpreview);
     },
     classicModalHide() {
       this.classicModal = false;
@@ -437,7 +437,6 @@ export default {
           process.env.VUE_APP_SPRING_API_SERVER_URL + "member/" + this.memberinfo.mid)
         .then(res => {
           alert("회원탈퇴가 완료되었습니다.");
-          // console.log(res);
           this.$cookies.remove("auth-token");
           this.$router.push("/");
         })
@@ -468,7 +467,6 @@ export default {
       err &&
         !this.passwordConfirm &&
         ((msg = "비밀번호확인을 입력해주세요."), (err = false));
-      // err && (this.password != this.passwordConfirm) && ((msg = '비밀번호를 다시 확인해주세요'), (err = false), this.$refs.password.focus());
       err &&
         !(document.getElementById("pwd_compare").innerHTML == "일치") &&
         ((msg = "비밀번호를 다시 확인해주세요."), (err = false));
@@ -508,9 +506,7 @@ export default {
     },
     //유저 정보 확인
     retrievememberinfo() {
-      // console.log("유저정보받아오라고했다");
       const token = this.$cookies.get("auth-token");
-      // console.log(token)
       axios
         .post(
           process.env.VUE_APP_SPRING_API_SERVER_URL + "member/info",
@@ -705,6 +701,7 @@ export default {
   },
   created() {
     this.retrievememberinfo();  
+    this.showClock();
   }, 
 };
 </script>
