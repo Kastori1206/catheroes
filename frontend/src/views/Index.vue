@@ -7,8 +7,13 @@
             <!-- <img :src="leaf4" alt="leaf4" class="leaf4" v-show="leafShow" />
             <img :src="leaf3" alt="leaf3" class="leaf3" v-show="leafShow" />
             <img :src="leaf2" alt="leaf2" class="leaf2" v-show="leafShow" />
+<<<<<<< HEAD
+            <img :src="leaf1" alt="leaf1" class="leaf1" v-show="leafShow" />-->
+            <div class="brand">
+=======
             <img :src="leaf1" alt="leaf1" class="leaf1" v-show="leafShow" /> -->
             <div class="brand" >
+>>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
               <h1 style="font-family: 'Single Day', cursive;">길냥이</h1>
               <h1 style="font-family: 'Single Day', cursive;">히어로즈</h1>
             </div>
@@ -35,7 +40,7 @@ import NavPills from "./components/NavPillsSection";
 import Notifications from "./components/NotificationsSection";
 import TypographyImages from "./components/TypographyImagesSection";
 import JavascriptComponents from "./components/JavascriptComponentsSection";
-import Map from "./components/Map.vue"
+import Map from "./components/Map.vue";
 import { LoginCard } from "@/components";
 
 export default {
@@ -103,9 +108,8 @@ export default {
         this.leafShow = true;
       }
     },
-    centerDong(dong){
-      // console.log("@@@2")
-      this.$emit('submit-dong', dong)
+    centerDong(dong) {
+      this.$emit("submit-dong", dong);
     }
   },
   computed: {
@@ -131,8 +135,6 @@ export default {
 </script>
 
 <style lang="scss">
-
-
 .section-download {
   .md-button + .md-button {
     margin-left: 5px;

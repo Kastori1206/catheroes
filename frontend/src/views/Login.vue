@@ -49,6 +49,7 @@
   </div>
 </template>
 
+
 <script>
 import { LoginCard } from "@/components";
 import axios from "axios";
@@ -95,7 +96,6 @@ export default {
 
       if (!err) alert(msg);
       else {
-        console.log("로그인요청보냈다고했다");
         this.$emit("submit-login-data", this.loginData);
       }
     },
@@ -111,8 +111,6 @@ export default {
     loginFormWithKakao() {
       Kakao.Auth.loginForm({
         success: res => {
-          console.log(JSON.stringify(res));
-          console.log(this);
           this.$emit("kakao-login", res);
         },
         fail: function(err) {
@@ -129,5 +127,6 @@ export default {
   }
 };
 </script>
+
 
 <style lang="css"></style>

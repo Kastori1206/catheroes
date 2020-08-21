@@ -29,6 +29,59 @@
         style="height: 60vh; margin: auto;"
       ></vue-daum-map>
       <div class="description text-center" style="display:inline">
+<<<<<<< HEAD
+        <h4>🏠주소 입력 ...</h4>
+        <!-- <h4 style="margin-top: 17px">&#x1F43E; 시</h4> -->
+        <div class="md-layout-item" style="width:180px; margin:0 auto;">
+          <md-field>
+            <md-select name="sido" id="sido" placeholder="시" v-model="sido">
+              <md-option value="서울특별시">서울특별시</md-option>
+              <md-option value="부산광역시">부산광역시</md-option>
+              <md-option value="대구광역시">대구광역시</md-option>
+              <md-option value="인천광역시">인천광역시</md-option>
+              <md-option value="광주광역시">광주광역시</md-option>
+              <md-option value="대전광역시">대전광역시</md-option>
+              <md-option value="울산광역시">울산광역시</md-option>
+              <md-option value="세종특별자치사">세종특별자치사</md-option>
+              <md-option value="경기도">경기도</md-option>
+              <md-option value="강원도">강원도</md-option>
+              <md-option value="충청북도">충청북도</md-option>
+              <md-option value="충청남도">충청남도</md-option>
+              <md-option value="전라북도">전라북도</md-option>
+              <md-option value="전라남도">전라남도</md-option>
+              <md-option value="경상북도">경상북도</md-option>
+              <md-option value="경상남도">경상남도</md-option>
+              <md-option value="제주특별자치도">제주특별자치도</md-option>
+            </md-select>
+          </md-field>
+        </div>
+        <!-- <h4 style="margin-top: 17px">&#x1F43E; 구</h4> -->
+        <div class="md-layout-item" style="width:180px; margin:0 auto;">
+          <md-field>
+            <md-select name="gugun" id="gugun" placeholder="구" v-model="gugun" @click="setsido()">
+              <md-option
+                v-for="(gugun, index) in guguns"
+                :key="'gugun_'+index"
+                :value="gugun"
+              >{{gugun}}</md-option>
+            </md-select>
+          </md-field>
+        </div>
+        <!-- <h4 style="margin-top: 17px">&#x1F43E; 동</h4> -->
+        <div class="md-layout-item" style="width:180px; margin:0 auto;">
+          <md-field>
+            <md-select name="dong" id="dong" placeholder="동" v-model="dong" @click="setgugun()">
+              <md-option v-for="(dong, index) in dongs" :key="'dong_'+index" :value="dong">{{dong}}</md-option>
+            </md-select>
+          </md-field>
+        </div>
+        <md-button
+          v-if="isUpdated"
+          style="width:60px; margin:0 auto;"
+          class="md-success md-block"
+          @click="setCenterByDong"
+        >검색</md-button>
+=======
       <!-- <h4 style="margin-top: 17px">&#x1F43E; 시</h4> -->
       <div class="md-layout-item" style="width:180px; margin:0 auto;">
         <md-field>
@@ -79,6 +132,7 @@
         class="md-success md-block"
         @click="setCenterByDong"
       >검색</md-button>
+>>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
       </div>
     </div>
   </div>
@@ -156,7 +210,10 @@ export default {
 
       kakao.maps.event.addListener(map, "tilesloaded", () => {
         this.searchAddrFromCoords(map.getCenter(), this.displayCenterInfo);
+<<<<<<< HEAD
+=======
         // console.log(this.centerDong);
+>>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
         this.loadMarker(this.centerDong);
       });
       //////////////////////////////////
@@ -170,13 +227,19 @@ export default {
       this.mapObject = map;
     },
     loadMarker(dong) {
+<<<<<<< HEAD
+=======
       // console.log('고양이정보받아오라고했다')
+>>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
       this.closeMarker();
 
       axios
         .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "cat/" + dong)
         .then(res => {
+<<<<<<< HEAD
+=======
           console.log(res.data);
+>>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
           var index = 0;
           res.data.forEach(e => {
             var imageSrc =
@@ -216,11 +279,17 @@ export default {
         });
     },
     closeOverlay() {
+<<<<<<< HEAD
+      this.myoverlay.forEach(element => {
+        element.setMap(null);
+      });
+=======
       // console.dir(this.myoverlay);
       this.myoverlay.forEach(element => {
         element.setMap(null);
       });
       // this.myoverlay.setMap(null);
+>>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
     },
     createOverlay(data) {
       var content =
@@ -269,9 +338,7 @@ export default {
       });
       // this.myoverlay.setMap(null);
     },
-    onMapEvent(event, params) {
-      // console.log(`Daum Map Event(${event})`, params);
-    },
+    onMapEvent(event, params) {},
     ////////
     searchAddrFromCoords(coords, callback) {
       // 좌표로 행정동 주소 정보를 요청합니다
@@ -292,12 +359,20 @@ export default {
         for (var i = 0; i < result.length; i++) {
           // 행정동의 region_type 값은 'H' 이므로
           if (result[i].region_type === "H") {
-            // console.log(result[i].address_name);
             this.centerDong = result[i].address_name;
-            // infoDiv.innerHTML = result[i].address_name;
             break;
           }
         }
+<<<<<<< HEAD
+        this.$emit("submit-dong", this.centerDong);
+      }
+    },
+    setCenterByDong() {
+      var geocoder = new kakao.maps.services.Geocoder();
+
+      var callback = (result, status) => {
+        if (status === kakao.maps.services.Status.OK) {
+=======
         // console.log("@@@1")
         this.$emit("submit-dong", this.centerDong);
       }
@@ -315,6 +390,7 @@ export default {
       var callback = (result, status) => {
         if (status === kakao.maps.services.Status.OK) {
 
+>>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
           const lat = result[0].y;
           const lng = result[0].x;
           this.center.lat = lat;
@@ -322,13 +398,20 @@ export default {
         }
       };
 
+<<<<<<< HEAD
+      const addr = this.gugun + " " + this.dong;
+=======
       const addr = this.gugun + " " +  this.dong;
+>>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
 
       geocoder.addressSearch(addr, callback);
     },
     setsido() {
+<<<<<<< HEAD
+=======
       // console.log("시도셋팅")
       // console.log(this.sido);
+>>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
       const request = new FormData();
       request.append("sidoname", this.sido);
 
@@ -337,7 +420,10 @@ export default {
         .then(res => {
           this.guguns = [];
           for (var i = 0; i < res.data.length; i++) {
+<<<<<<< HEAD
+=======
             // console.log(res.data[i].gugun);
+>>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
             this.guguns.push(res.data[i].gugun);
           }
         })
@@ -346,8 +432,11 @@ export default {
         });
     },
     setgugun() {
+<<<<<<< HEAD
+=======
       // console.log("시도셋팅")
       // console.log(this.sido);
+>>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
       const request = new FormData();
       request.append("sidoname", this.sido);
       request.append("gugun", this.gugun);
@@ -355,10 +444,15 @@ export default {
       axios
         .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "dong", request)
         .then(res => {
+<<<<<<< HEAD
+          this.dongs = [];
+          for (var i = 0; i < res.data.length; i++) {
+=======
           // console.log(res)
           this.dongs = [];
           for (var i = 0; i < res.data.length; i++) {
             // console.log(res.data[i]);
+>>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
             this.dongs.push(res.data[i].dong);
             this.isUpdated = true;
           }

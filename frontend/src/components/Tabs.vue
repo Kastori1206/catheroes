@@ -7,7 +7,7 @@
       { 'md-card-plain': plain }
     ]"
   >
-    <md-card-header slot="header-title"> </md-card-header>
+    <md-card-header slot="header-title"></md-card-header>
 
     <md-card-content>
       <md-list class="nav-tabs">
@@ -33,9 +33,7 @@
             :key="item"
             v-if="isActivePanel(tabName[index])"
           >
-            <slot :name="getTabContent(index + 1)">
-              This is the default text!
-            </slot>
+            <slot :name="getTabContent(index + 1)">This is the default text!</slot>
           </div>
         </div>
       </transition>

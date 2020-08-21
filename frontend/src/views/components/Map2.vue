@@ -2,7 +2,7 @@
   <div style="text-align: center;">
     <h4>{{centerDong}}</h4>
     <div class="custom_typecontrol radius_border">
-        <span id="btnRoadmap" class="selected_btn" @click="this.setCenter">내 위치</span>
+      <span id="btnRoadmap" class="selected_btn" @click="this.setCenter">내 위치</span>
     </div>
     <div>
       <vue-daum-map
@@ -30,7 +30,7 @@
       ></vue-daum-map>
     </div>
     <div class="md-layout-item md-size-35" style="margin: 0 auto; margin-top:10px">
-    <md-button class="md-success md-block" v-if="iscreate" @click="senddata">위치정보입력!</md-button>
+      <md-button class="md-success md-block" v-if="iscreate" @click="senddata">위치정보입력!</md-button>
     </div>
   </div>
 </template>
@@ -62,14 +62,11 @@ export default {
 
   methods: {
     senddata() {
-      // console.log(this.mymarker);
-      // console.log(this.centerDong);
       this.$emit("classicModal", false);
       this.$emit("send-data", this.mymarker);
       this.$emit("send-dong", this.centerDong);
     },
     onLoad(map) {
-
       if (navigator.geolocation) {
         // GeoLocation을 이용해서 접속 위치를 얻어옵니다
         navigator.geolocation.getCurrentPosition(position => {
@@ -83,7 +80,6 @@ export default {
       var bounds = map.getBounds();
       // 영역정보를 문자열로 얻어옵니다. ((남,서), (북,동)) 형식입니다
       var boundsStr = bounds.toString();
-      console.log("Daum Map Loaded", boundsStr);
       this.mapObject = map;
 
       /////좌표값에서 법정동 가져오기/////
@@ -124,9 +120,7 @@ export default {
 
       marker.setMap(this.mymap);
     },
-    onMapEvent(event, params) {
-      // console.log(`Daum Map Event(${event})`, params);
-    },
+    onMapEvent(event, params) {},
     searchAddrFromCoords(coords, callback) {
       // 좌표로 행정동 주소 정보를 요청합니다
       this.geocoder.coord2RegionCode(
@@ -146,15 +140,13 @@ export default {
         for (var i = 0; i < result.length; i++) {
           // 행정동의 region_type 값은 'H' 이므로
           if (result[i].region_type === "H") {
-            console.log(result[i].address_name);
             this.centerDong = result[i].address_name;
-            // infoDiv.innerHTML = result[i].address_name;
             break;
           }
         }
       }
     },
-    setCenter(){
+    setCenter() {
       if (navigator.geolocation) {
         // GeoLocation을 이용해서 접속 위치를 얻어옵니다
         navigator.geolocation.getCurrentPosition(position => {
@@ -261,7 +253,31 @@ export default {
   color: #5085bb;
 }
 
-.custom_typecontrol {position:absolute;top:50px;right:-45px;overflow:hidden;width:130px;height:30px;margin:0;padding:0;z-index:10;font-size:12px;font-family:'Malgun Gothic', '맑은 고딕', sans-serif;}
-.custom_typecontrol span {display:block;width:65px;height:30px;float:left;text-align:center;line-height:30px;cursor:pointer;}
-.custom_typecontrol .selected_btn {color:#fff;background:#425470;background:linear-gradient(#425470, #5b6d8a);}
+.custom_typecontrol {
+  position: absolute;
+  top: 50px;
+  right: -45px;
+  overflow: hidden;
+  width: 130px;
+  height: 30px;
+  margin: 0;
+  padding: 0;
+  z-index: 10;
+  font-size: 12px;
+  font-family: "Malgun Gothic", "맑은 고딕", sans-serif;
+}
+.custom_typecontrol span {
+  display: block;
+  width: 65px;
+  height: 30px;
+  float: left;
+  text-align: center;
+  line-height: 30px;
+  cursor: pointer;
+}
+.custom_typecontrol .selected_btn {
+  color: #fff;
+  background: #425470;
+  background: linear-gradient(#425470, #5b6d8a);
+}
 </style>

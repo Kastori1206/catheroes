@@ -20,10 +20,25 @@
                 <div class="md-card-new" style="max-width:900px">
                   <md-card-header>
                     <md-card-media style="margin-right:10px; margin-bottom:5px">
+<<<<<<< HEAD
+                      <img
+                        style="border: 1px solid #808080; border-radius: 5px;"
+                        :src="news.img"
+                        alt="NewsImage"
+                        @click="PopNews(index)"
+                      />
+                    </md-card-media>
+                    <md-card-header-text>
+                      <div class="md-title" @click="PopNews(index)">
+                        &#x1F63A;
+                        <strong>{{news.title}} &#x1F63A;</strong>
+                      </div>
+=======
                       <img style="border: 1px solid #808080; border-radius: 5px;" :src="news.img" alt="NewsImage" @click="PopNews(index)" />
                     </md-card-media>
                     <md-card-header-text>
                       <div class="md-title" @click="PopNews(index)">&#x1F63A; <strong>{{news.title}} &#x1F63A;</strong></div>
+>>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
                       <div class="md-subhead" @click="PopNews(index)">{{news.content}}</div>
                     </md-card-header-text>
                   </md-card-header>
@@ -70,7 +85,6 @@ export default {
       axios
         .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "news")
         .then(res => {
-          console.log(res.data);
           this.items = res.data;
         })
         .catch(error => {

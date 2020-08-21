@@ -15,8 +15,8 @@ import org.springframework.data.repository.query.Param;
 public interface ArticleDao extends JpaRepository<Article, String> {
     Optional<Article> findArticleByArticleid(long articleid);
     
-    List<Article> findByMemberMid(long mid);
-    List<Article> findByCatCatid(long catid);
+    List<Article> findByMemberMidOrderByArticleidDesc(long mid);
+    List<Article> findByCatCatidOrderByArticleidDesc(long catid);
     @Transactional
     @Query(value=" SELECT max(articleid) "
     		   + " FROM article ", nativeQuery = true)
