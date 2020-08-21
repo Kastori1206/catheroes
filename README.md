@@ -44,7 +44,7 @@
 
 ### :clipboard: 데모영상
 
-[![데모영상](./document/img/thumbnail.png)](https://youtu.be/z1T9MDCg0s0?t=0s)
+[![데모영상](./document/img/thumbnail.PNG)](https://youtu.be/z1T9MDCg0s0?t=0s)
 
 ### :clipboard: 기능 소개
 
