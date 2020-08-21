@@ -49,7 +49,7 @@
 ### :clipboard: 기능 소개
 
 #### 알람기능                                                              
-<img src ="./document/gif/알람.gif" width="250" height="350">
+![알림]<img src ="./document/gif/알람.gif" width="250" height="350">
 
 #### 뉴스 크롤링
 <img src ="https://lab.ssafy.com/s03-webmobile1-sub3/s03p13d206/blob/master/document/gif/뉴스.gif" width="250" height="350">
