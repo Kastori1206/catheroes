@@ -22,10 +22,10 @@
 > 주변 길고양이를 사진으로 검색해서 찾아 정보 공유를 하자!!!
 
 캣히어로즈는 길고양이와 돌보는 사람들의 공존을 지향하는 커뮤니티 웹사이트입니다.
-
+<br>
 우리동네 주변의 길고양이들은 많은 사람들의 귀여움을 받고 있지만, 일부 시민들에게 피해를 주고있는 것 또한 사실입니다.
 캣히어로즈는 길고양이들이 적절한 관리를 받음으로써 이러한 문제를 완화시킬 수 있다고 믿습니다. 
-
+<br>
 캣히어로즈는 이미지 패턴분석 기능을 제공합니다.
 사용자가 길고양이 사진을 업로드하면 품종을 분석하여 기등록된 길고양이 중 같은 품종의 길고양이 리스트를 보여줍니다. 
 해당 길고양이가 아직 등록되지 않았다면, 새로운 길고양이를 지도에 추가할 수 있습니다.
@@ -49,22 +49,22 @@
 ### :clipboard: 기능 소개
 
 #### 알람기능                                                              
-<img src ="document/gif/알람.gif" width="250" height="350">
+<img src ="https://lab.ssafy.com/s03-webmobile1-sub3/s03p13d206/document/gif/알람.gif" width="250" height="350">
 
 #### 뉴스 크롤링
-<img src ="document/gif/뉴스.gif" width="250" height="350">
+<img src ="https://lab.ssafy.com/s03-webmobile1-sub3/s03p13d206/document/gif/뉴스.gif" width="250" height="350">
 
 #### 이메일 인증
-<img src ="document/gif/이메일인증.gif" width="250" height="350">
+<img src ="https://lab.ssafy.com/s03-webmobile1-sub3/s03p13d206/document/gif/이메일인증.gif" width="250" height="350">
 
 #### 인피니티스크롤
-<img src ="document/gif/인피니트 스크롤.gif" width="250" height="350">
+<img src ="https://lab.ssafy.com/s03-webmobile1-sub3/s03p13d206/document/gif/인피니트 스크롤.gif" width="250" height="350">
 
 #### 후원
-<img src ="document/gif/후원.gif" width="250" height="350">
+<img src ="https://lab.ssafy.com/s03-webmobile1-sub3/s03p13d206/document/gif/후원.gif" width="250" height="350">
 
 #### SSL
-<img src ="document/gif/ssl.gif" width="250" height="350">
+<img src ="https://lab.ssafy.com/s03-webmobile1-sub3/s03p13d206/document/gif/ssl.gif" width="250" height="350">
 
 ### Built With
 
