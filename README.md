@@ -48,9 +48,9 @@
 
 ### :clipboard: 기능 소개
 
-![알림기능]("document/gif/알람.gif")![뉴스크롤링]("document/gif/뉴스.gif")
-![이메일 인증]("document/gif/이메일인증.gif")![인피니티스크롤]("document/gif/인피니트 스크롤.gif")
-![후원]("document/gif/후원.gif")![SSL]("document/gif/ssl.gif")
+![알림기능](document/gif/알람.gif)![뉴스크롤링](document/gif/뉴스.gif)
+![이메일 인증](document/gif/이메일인증.gif)![인피니티스크롤](document/gif/인피니트 스크롤.gif)
+![후원](document/gif/후원.gif)![SSL](document/gif/ssl.gif)
 
 ### Built With
 
