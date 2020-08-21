@@ -12,7 +12,6 @@
     <br />
 </p>
 
-
 <br>
 
 <!-- ABOUT THE PROJECT -->
@@ -24,10 +23,10 @@
 캣히어로즈는 길고양이와 돌보는 사람들의 공존을 지향하는 커뮤니티 웹사이트입니다.
 <br>
 우리동네 주변의 길고양이들은 많은 사람들의 귀여움을 받고 있지만, 일부 시민들에게 피해를 주고있는 것 또한 사실입니다.
-캣히어로즈는 길고양이들이 적절한 관리를 받음으로써 이러한 문제를 완화시킬 수 있다고 믿습니다. 
+캣히어로즈는 길고양이들이 적절한 관리를 받음으로써 이러한 문제를 완화시킬 수 있다고 믿습니다.
 <br>
 캣히어로즈는 이미지 패턴분석 기능을 제공합니다.
-사용자가 길고양이 사진을 업로드하면 품종을 분석하여 기등록된 길고양이 중 같은 품종의 길고양이 리스트를 보여줍니다. 
+사용자가 길고양이 사진을 업로드하면 품종을 분석하여 기등록된 길고양이 중 같은 품종의 길고양이 리스트를 보여줍니다.
 해당 길고양이가 아직 등록되지 않았다면, 새로운 길고양이를 지도에 추가할 수 있습니다.
 게시글 작성, 팔로우기능 및 알람기능을 사용하여 애묘인들과 실시간으로 커뮤니케이션이 가능합니다.
 아임포트로 도움이 필요한 길고양이에 대해 모금기능을 활성화하여 실제 계좌이체가 가능하도록 구현하였습니다.
@@ -42,15 +41,26 @@
 - [프로젝트 계획서](https://lab.ssafy.com/s03-webmobile1-sub3/s03p13d206/document/공통PJT_구미2반_D206_계획서.docx)
 - [캣히어로즈 발표자료](https://lab.ssafy.com/s03-webmobile1-sub3/s03p13d206/document/공통PJT_구미2반_D206_PPT.pptx)
 
-
 ### :clipboard : 데모영상
-[![Watch the video](document/img/main.jpg)](https://youtu.be/z1T9MDCg0s0)
+
+![Sample Video](./document/시연동영상.mp4)
 
 ### :clipboard: 기능 소개
 
+<h3>알림기능 　　　　　　　　　　　　　　　　　뉴스크롤링</h3>
+<br>
+
 ![알림기능](document/gif/알람.gif)![뉴스크롤링](document/gif/뉴스.gif)<br>
+
+<h3>이메일 인증　　　　　　　　　　　　　　인피니티스크롤</h3>
+<br>
+
 ![이메일 인증](document/gif/이메일인증.gif)
 ![인피니티스크롤](document/gif/인피니티.gif)<br>
+
+<h3>후원기능　　　　　　　　　　　　　　SSL</h3>
+<br>
+
 ![후원](document/gif/후원.gif)
 ![SSL](document/gif/ssl.gif)<br>
 
@@ -156,18 +166,15 @@ ETC
 
 ### [Samsung Software Academy for Youth](https://www.ssafy.com/) 1th Gumi, 공통프로젝트 D206
 
-
-  - `김영민` - kastori1990@gmail.com<br>
-  - `김현국` - khg6152450@naver.com<br>
-  - `이원희` - haruu0419@gmail.com<br>
-  - `최수병` - chb0328@gmail.com <br>
-
+- `김영민` - kastori1990@gmail.com<br>
+- `김현국` - khg6152450@naver.com<br>
+- `이원희` - haruu0419@gmail.com<br>
+- `최수병` - chb0328@gmail.com <br>
 
 Project Link: [https://lab.ssafy.com/s03-webmobile1-sub3/s03p13d206](https://lab.ssafy.com/s03-webmobile1-sub3/s03p13d206)
 
 <br>
 
 <!-- ACKNOWLEDGEMENTS -->
-
 
 <br>
