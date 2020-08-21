@@ -35,6 +35,10 @@
                 </div>
               </div>
             </div>
+              <div style="text-align:center;">
+                <div>찾으시는 고양이가 아직 등록되지 않았나요?</div>
+                <md-button class="md-success" @click="create">고양이 등록!</md-button>
+              </div>
           </div>
         </div>
       </div>
@@ -70,6 +74,9 @@ export default {
   methods: {
     toDetail(catid) {
       this.$router.push(`/detail/${catid}`);
+    },
+    create() {
+      this.$router.push(`/create`);
     }
   },
   created() {}

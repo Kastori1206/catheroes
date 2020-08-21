@@ -38,7 +38,6 @@ import io.swagger.annotations.ApiResponses;
 		@ApiResponse(code = 404, message = "Not Found", response = BasicResponse.class),
 		@ApiResponse(code = 500, message = "Failure", response = BasicResponse.class) })
 
-@CrossOrigin(origins = { "http://localhost:3000" })
 @RequestMapping("/api/v1")
 @RestController
 public class ArticleController {
@@ -121,7 +120,7 @@ public class ArticleController {
 
 	@GetMapping("/article/newArticle")
 	@ApiOperation(value = "새로운 게시글 알림")
-	public ResponseEntity<List<Article>> getNewArticle(@RequestParam long mid, @RequestParam long count) {
-		return ResponseEntity.ok().body(articleService.findNewArticle(mid, count));
+	public ResponseEntity<List<Article>> getNewArticle(@RequestParam long mid) {
+		return ResponseEntity.ok().body(articleService.findNewArticle(mid));
 	}
 }

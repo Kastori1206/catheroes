@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.firewall.DefaultHttpFirewall;
+import org.springframework.security.web.firewall.HttpFirewall;
 
 @Configuration
 @EnableWebSecurity
@@ -18,6 +20,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.csrf().disable() // csrf방지
 				.formLogin().disable() // 기본 로그인 페이지 없애기
 				.headers().frameOptions().disable();
+	}
+	@Bean
+	public HttpFirewall defaultHttpFirewall() {
+	    return new DefaultHttpFirewall();
 	}
 
 	@Bean

@@ -1,5 +1,19 @@
 <template>
   <div class="wrapper">
+    <modal v-if="loadingModal">
+      <template slot="body" style="padding-top:0">
+        <md-progress-spinner
+          class="md-success"
+          style="margin: 0 auto"
+          id="loading"
+          :md-diameter="100"
+          :md-stroke="10"
+          md-mode="indeterminate"
+        ></md-progress-spinner>
+        <p>길냥이 이미지를 분석하고 있어요.</p>
+      </template>
+    </modal>
+
     <div class="section page-header header-filter" :style="headerStyle">
       <div class="container">
         <div class="md-layout">
@@ -8,8 +22,11 @@
             class="md-layout-item md-size-66 md-small-size-100 md-xsmall-size-100 md-medium-size-66 mx-auto"
           >
             <login-card header-color="green">
-              <h4 slot="title" class="card-title">길냥이 정보 입력</h4>
-              <p slot="description" class="description">무슨말을해야하나</p>
+              <h2
+                slot="title"
+                class="card-title"
+                style="font-family: 'Do Hyeon', sans-serif;"
+              >길냥이 정보 입력</h2>
 
               <md-field class="md-form-group" slot="inputs">
                 <md-icon style="z-index:-1;">
@@ -18,7 +35,10 @@
                 <label>고양이 이름</label>
                 <md-input v-model="nickname" id="nickname" ref="nickname"></md-input>
               </md-field>
-
+              <md-field slot="inputs">
+                <label for>이미지입력</label>
+                <md-file accept="image/*" @change="onChangeImages" />
+              </md-field>
               <md-field class="md-form-group" slot="inputs">
                 <md-icon style="z-index:-1;">
                   <i class="fas fa-paw"></i>
@@ -36,11 +56,6 @@
                 <span class="md-helper-text">예상 종류를 입력해주세요</span>
               </md-field>
 
-              <md-field slot="inputs">
-                <label for>이미지입력</label>
-                <md-file accept="image/*" @change="onChangeImages"  />
-              </md-field>
-
               <md-field slot="inputs" v-if="imgpreview">
                 <img :src="imgpreview" />
               </md-field>
@@ -54,24 +69,30 @@
                   <modal v-if="classicModal" @close="classicModalHide">
                     <template slot="header">
                       <h4 class="modal-title">{{nickname}}이 사는 곳은?</h4>
-                      <md-button class="md-simple md-just-icon md-round modal-default-button" @click="classicModalHide">
-										<md-icon>clear</md-icon>
+                      <md-button
+                        class="md-simple md-just-icon md-round modal-default-button"
+                        @click="classicModalHide"
+                      >
+                        <md-icon>clear</md-icon>
                       </md-button>
                     </template>
 
                     <template slot="body">
                       <div class="section section-map" style="padding:0px">
                         <div class="container" style="margin: auto;">
-                          <Map2 :classicModal="classicModal" :iscreate="iscreate" @send-data="getdata" @send-dong="getdong"></Map2>
+                          <Map2
+                            :classicModal="classicModal"
+                            :iscreate="iscreate"
+                            @send-data="getdata"
+                            @send-dong="getdong"
+                          ></Map2>
                         </div>
                       </div>
                     </template>
                   </modal>
                 </div>
               </div>
-              <md-button @click="checkCat" slot="footer" class="md-simple md-success md-lg">
-                길냥이 등록!
-              </md-button>
+              <md-button @click="checkCat" slot="footer" class="md-simple md-success md-lg">길냥이 등록!</md-button>
             </login-card>
           </div>
         </div>
@@ -104,7 +125,8 @@ export default {
       image: null,
       classicModal: false,
       imgpreview: null,
-      iscreate: true
+      iscreate: true,
+      loadingModal: false
     };
   },
   props: {
@@ -125,21 +147,18 @@ export default {
       this.lng = mymarker.Ga;
       this.lat = mymarker.Ha;
       this.classicModalHide();
-      //   console.log(this.lat);
-      //   console.log(this.lng);
     },
     getdong(dong) {
       this.dong = dong;
-      //   console.log(dong);
     },
     onChangeImages(e) {
-      // console.log(e.target.files);
       const file = e.target.files[0];
       this.image = file;
       this.imgpreview = URL.createObjectURL(file);
-      // console.log(this.imgpreview);
       const fd = new FormData();
       fd.append("image", this.image);
+      this.loadingModal = true;
+
       axios
         .post(process.env.VUE_APP_DJANGO_API_SERVER_URL + "keras/", fd, {
           headers: {
@@ -147,11 +166,13 @@ export default {
           }
         })
         .then(res => {
-          // console.log(res);
+          this.loadingModal = !this.loadingModal;
           this.breed = res.data;
         })
         .catch(err => {
           console.log(err);
+          this.loadingModal = !this.loadingModal;
+          alert("고양이 이미지를 넣어 주세요.");
         });
     },
     checkCat() {
@@ -177,22 +198,16 @@ export default {
       request.append("breed", this.breed);
 
       axios
-        .post(
-          process.env.VUE_APP_SPRING_API_SERVER_URL + "cat",
-          request,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data"
-            }
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "cat", request, {
+          headers: {
+            "Content-Type": "multipart/form-data"
           }
-        )
+        })
         .then(response => {
-          console.log(response);
           alert("등록이 완료되었습니다.");
           this.$router.push("/");
         })
         .catch(error => {
-          this.error = error;
           console.log(error);
         })
         .finally(() => {});
@@ -205,5 +220,4 @@ export default {
 </script>
 
 <style lang="css" scoped>
-
 </style>

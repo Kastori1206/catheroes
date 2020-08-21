@@ -1,24 +1,28 @@
 <template>
-  <div>
-    <modal v-if="snapshotModal" @close="snapshotModalHide">
-      <!-- <template slot="header">
-        <h4 class="modal-title">프로필 사진촬영 가이드</h4>
-        <md-button
-          class="md-simple md-just-icon md-round modal-default-button"
-          @click="snapshotModalHide"
-        >
-          <md-icon>clear</md-icon>
-        </md-button>
-      </template> -->
-
+  <div id="main">
+    <modal v-if="loadingModal">
       <template slot="body" style="padding-top:0">
-        <img src="@/assets/img/snapshot_guide.png">
+        <md-progress-spinner
+          class="md-success"
+          style="margin: 0 auto"
+          id="loading"
+          :md-diameter="100"
+          :md-stroke="10"
+          md-mode="indeterminate"
+        ></md-progress-spinner>
+        <p>길냥이 이미지를 분석하고 있어요.</p>
+      </template>
+    </modal>
+
+    <modal v-if="snapshotModal" @close="snapshotModalHide">
+      <template slot="body" style="padding-top:0">
+        <img src="@/assets/img/snapshot_guide.png" />
       </template>
 
       <template slot="footer">
         <md-button class="md-danger md-simple" @click="snapshotModalHide">확인했습니다.</md-button>
       </template>
-    </modal>  
+    </modal>
     <md-toolbar
       id="toolbar"
       md-elevation="0"
@@ -31,43 +35,53 @@
           <router-link to="/">
             <h3 class="md-title">길냥이히어로즈</h3>
           </router-link>
-          
         </div>
 
-        <div id="inputs" v-if="showSearchbar" style="margin-bottom: 15px;">
+        <div
+          id="inputs"
+          v-if="showSearchbar && isLoggedIn"
+          v-show="this.$route.name == 'index'"
+          style="margin-bottom: 15px;"
+        >
           <div
             id="camera"
             style="margin-top:15px; margin-left:20px; display:inline-block; float:right;"
             @click="snapshotModal = true"
           >
             <!-- <label for="searchImage"> -->
-              <i class="fas fa-camera"></i>
+            <i class="fas fa-camera"></i>
             <!-- </label> -->
             <md-input
               id="searchImage"
               ref="imageInput"
               type="file"
+              v-model="Catimage"
               style="display:none;"
               @change="onChangeImages"
             ></md-input>
           </div>
           <div style="display:inline-block; float:left" class="md-layout">
             <md-field class="md-form-group">
-              <i style="margin-top:10px;" class="fas fa-search"></i>
+              <i style="margin-top:10px;" class="fas fa-search" id="searchIcon"></i>
               <md-input
                 @keydown.enter="searchName"
                 v-model="search"
                 placeholder="Search Name..."
-                style="width: 114px"
+                id="searchBar"
+                class="searchBar"
               ></md-input>
             </md-field>
           </div>
         </div>
 
         <div class="md-toolbar-section-end">
-          <md-menu md-size="big" md-direction="top-start">
+          <md-menu md-close-on-click="true" md-size="big" md-direction="top-start">
             <div v-if="isLoggedIn">
-              <div class="md-just-icon md-alarm-toggle md-icon-button" style="background-color: transparent !important" md-menu-trigger>
+              <div
+                class="md-just-icon md-alarm-toggle md-icon-button"
+                style="background-color: transparent !important"
+                md-menu-trigger
+              >
                 <md-badge :md-content="memberinfo.news" style="margin-top: -7px;">
                   <div @click="newsfeed(memberinfo.news)">
                     <i class="fas fa-bell" style="margin-top: 10px; margin-right: 10px"></i>
@@ -77,22 +91,72 @@
             </div>
             <md-menu-content style="margin-top:76px; margin-right:30px">
               <div v-if="articleinfo">
-                <div class="author-title" style="margin-left:10px; margin-bottom:10px; font-size:1rem"><strong>&#x23F0;알림보기</strong></div>
+                <div
+                  class="author-title"
+                  style="margin-left:10px; margin-bottom:10px; font-size:1rem"
+                >
+                  <strong>&#x23F0;알림보기</strong>
+                </div>
                 <md-divider class="md-inset"></md-divider>
                 <div v-for="(article, index) in articleinfo" :key="'index_' + index">
-                  <div class="author-card">
+                  <div
+                    v-if="index < memberinfo.news"
+                    class="author-card"
+                    @click="gocat(article)"
+                    style="background-color: #ffffcc"
+                  >
                     <md-avatar class="md-large">
-                      <img :src="article.image" :alt="'Member_' + index">
+                      <img :src="article.image" :alt="'Member_' + index" />
                     </md-avatar>
 
                     <div v-if="index%3==0" class="author-card-info">
-                      <span><strong>{{article.member.nickname}}</strong>님이 <strong>{{article.cat.nickname}}</strong>와<br>놀고있어요&#x1F638;</span>
+                      <span>
+                        <strong>{{article.member.nickname}}</strong>님이
+                        <strong>{{article.cat.nickname}}</strong>와
+                        <br />놀고있어요&#x1F638;
+                      </span>
                     </div>
                     <div v-if="index%3==1" class="author-card-info">
-                      <span><strong>{{article.member.nickname}}</strong>님이 <strong>{{article.cat.nickname}}</strong>와<br>쌓은 소소한 일상&#x1F63B;</span>
+                      <span>
+                        <strong>{{article.member.nickname}}</strong>님이
+                        <strong>{{article.cat.nickname}}</strong>와
+                        <br />쌓은 소소한 일상&#x1F63B;
+                      </span>
                     </div>
                     <div v-if="index%3==2" class="author-card-info">
-                      <span><strong>{{article.member.nickname}}</strong>님이 <strong>{{article.cat.nickname}}</strong>랑<br>함께하는 중입니다!</span>
+                      <span>
+                        <strong>{{article.member.nickname}}</strong>님이
+                        <strong>{{article.cat.nickname}}</strong>랑
+                        <br />함께하는 중입니다!
+                      </span>
+                    </div>
+                  </div>
+
+                  <div v-if="index >= memberinfo.news" class="author-card" @click="gocat(article)">
+                    <md-avatar class="md-large">
+                      <img :src="article.image" :alt="'Member_' + index" />
+                    </md-avatar>
+
+                    <div v-if="index%3==0" class="author-card-info">
+                      <span>
+                        <strong>{{article.member.nickname}}</strong>님이
+                        <strong>{{article.cat.nickname}}</strong>와
+                        <br />놀고있어요&#x1F638;
+                      </span>
+                    </div>
+                    <div v-if="index%3==1" class="author-card-info">
+                      <span>
+                        <strong>{{article.member.nickname}}</strong>님이
+                        <strong>{{article.cat.nickname}}</strong>와
+                        <br />쌓은 소소한 일상&#x1F63B;
+                      </span>
+                    </div>
+                    <div v-if="index%3==2" class="author-card-info">
+                      <span>
+                        <strong>{{article.member.nickname}}</strong>님이
+                        <strong>{{article.cat.nickname}}</strong>랑
+                        <br />함께하는 중입니다!
+                      </span>
                     </div>
                   </div>
                   <md-divider class="md-inset"></md-divider>
@@ -119,7 +183,7 @@
               <mobile-menu nav-mobile-section-start="false">
                 <!-- Here you can add your items from the section-start of your toolbar -->
               </mobile-menu>
-              
+
               <md-list @click="toggleNavbarWeb
               ()">
                 <md-list-item v-if="!isLoggedIn">
@@ -146,11 +210,11 @@
                   </router-link>
                 </md-list-item>
 
-                <md-list-item>
+                <!-- <md-list-item>
                   <router-link to="/create">
                     <p>CREATE</p>
                   </router-link>
-                </md-list-item>
+                </md-list-item>-->
 
                 <md-list-item>
                   <router-link to="/news">
@@ -159,8 +223,14 @@
                 </md-list-item>
 
                 <md-list-item>
-                  <router-link to="/funding">
-                    <p>FUNDING</p>
+                  <router-link to="/donate">
+                    <p>DONATE</p>
+                  </router-link>
+                </md-list-item>
+
+                <md-list-item>
+                  <router-link to="/faq">
+                    <p>FAQ</p>
                   </router-link>
                 </md-list-item>
               </md-list>
@@ -173,7 +243,6 @@
 </template>
 
 <script>
-
 let resizeTimeout;
 function resizeThrottler(actualResizeHandler) {
   // ignore resize events as long as an actualResizeHandler execution is in the queue
@@ -220,6 +289,9 @@ export default {
   },
   data() {
     return {
+      loadingId: null,
+      loadingModal: false,
+      fill: { gradient: ["red", "green", "blue"] },
       isFirst: true,
       snapshotModal: false,
       showSearchbar: true,
@@ -229,6 +301,7 @@ export default {
       search: "",
       imageInput: "",
       center: this.dong,
+      updateCount: 0,
       memberinfo: {
         email: null,
         nickname: null,
@@ -236,19 +309,17 @@ export default {
         image: null,
         news: null
       },
-      articleinfo: [],
+      articleinfo: []
     };
   },
-  created() {
-    
-  },
+  created() {},
   methods: {
     onChangeImages(e) {
-      // console.log(e.target.files);
       const file = e.target.files[0];
       this.image = file;
       const fd = new FormData();
       fd.append("image", this.image);
+      this.loadingModal = true;
       axios
         .post(process.env.VUE_APP_DJANGO_API_SERVER_URL + "keras/", fd, {
           headers: {
@@ -256,14 +327,14 @@ export default {
           }
         })
         .then(res => {
-          // console.log(res);
+          this.loadingModal = !this.loadingModal;
           this.breed = res.data;
-          // console.log(this.breed)
-
           this.searchImage(res.data);
         })
         .catch(err => {
           console.log(err);
+          this.loadingModal = !this.loadingModal;
+          alert("고양이 이미지를 넣어 주세요.");
         });
     },
     bodyClick() {
@@ -312,7 +383,6 @@ export default {
       resizeThrottler(this.handleScroll);
     },
     logout() {
-      console.log("로그아웃요청보냈다고했다");
       this.$emit("submit-logout");
     },
     searchName() {
@@ -321,14 +391,15 @@ export default {
           `${process.env.VUE_APP_SPRING_API_SERVER_URL}cat/search?nickname=${this.search}&location=${this.centerdong}`
         )
         .then(res => {
-          console.log(res);
           this.$emit("submit-search-data", res);
           this.$router.push("/search");
+          this.search = null;
         })
-        .catch(error => {});
+        .catch(error => {
+          alert("검색이 실패하였습니다.\n다시 시도해주세요. :(");
+        });
     },
     searchImage(data) {
-      // console.log(data)
       const formData = new FormData();
       formData.append("breed", data);
       formData.append("location", this.centerdong);
@@ -339,22 +410,21 @@ export default {
           formData
         )
         .then(res => {
-          console.log(res);
           this.$emit("submit-search-data", res);
+          this.Catimage = null;
           this.$router.push("/search");
         })
-        .catch(error => {});
+        .catch(error => {
+          alert("검색이 실패하였습니다.\n다시 시도해주세요. :(");
+        });
     },
     newsCount() {
-      console.log("유저정보받아오라고했다");
       const token = this.$cookies.get("auth-token");
       axios
         .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "member/info", null, {
           headers: { Authorization: `${token}` }
         })
         .then(res => {
-          console.log("user정보 출력");
-          console.log(res.data);
           this.memberinfo.email = res.data.email;
           this.memberinfo.nickname = res.data.nickname;
           this.memberinfo.mid = res.data.mid;
@@ -367,32 +437,33 @@ export default {
     },
     // 알림정보 불러옴
     newsfeed(count) {
-      if(this.isFirst) {
+      if (true) {
         axios
-          .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "article/newArticle?mid="+this.memberinfo.mid+"&count="+count)        
+          .get(
+            process.env.VUE_APP_SPRING_API_SERVER_URL +
+              "article/newArticle?mid=" +
+              this.memberinfo.mid
+          )
           .then(res => {
-            console.log(res.data);
-            for(var i=0; i<res.data.length; i++) {
-              res.data[i].image = process.env.VUE_APP_IMAGE_SERVER + res.data[i].image;
+            for (var i = 0; i < res.data.length; i++) {
+              res.data[i].image =
+                process.env.VUE_APP_IMAGE_SERVER + res.data[i].image;
             }
             this.articleinfo = res.data;
-            this.clearAlarmCount();
           })
           .catch(err => {
-            console.log(err)
+            console.log(err);
           })
           .finally(() => {
-            this.isFirst = false;
-          })
+            // this.isFirst = false;
+          });
         // 내가 팔로우한 고양이들의 게시글을
         // count 만큼 (대신 내가 쓴거 뺴고)
         // 불러온다.
       }
-      
     },
     // 알람모달 숨기기
     snapshotModalHide() {
-      console.log("");
       this.snapshotModal = false;
       document.getElementById("searchImage").click();
     },
@@ -401,24 +472,36 @@ export default {
       const request = new FormData();
       request.append("news", 0);
       request.append("mid", this.memberinfo.mid);
-      
+
       axios
-        .put(process.env.VUE_APP_SPRING_API_SERVER_URL + "member/clear", request)
+        .put(
+          process.env.VUE_APP_SPRING_API_SERVER_URL + "member/clear",
+          request
+        )
         .then(res => {
           this.memberinfo.news = 0;
         })
         .catch(error => {
-          this.error = error;
           console.log(error);
         })
         .finally(() => {});
     },
+    gocat(data) {
+      this.clearAlarmCount();
+      this.$router.push("/detail/" + data.cat.catid).catch(error => {
+        this.$router.go("/detail/" + data.cat.catid);
+      });
+    }
   },
   mounted() {
     document.addEventListener("scroll", this.scrollListener);
+    this.newsCount();
   },
   updated() {
-    this.newsCount();
+    this.updateCount++;
+    if (this.updateCount % 10 == 1) {
+      this.newsCount();
+    }
   },
   beforeDestroy() {
     document.removeEventListener("scroll", this.scrollListener);
@@ -427,35 +510,62 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.md-menu{
-    margin-top: 14px;
+@media screen and (max-width: 352px) {
+  #searchIcon {
+    display: none;
+  }
+  .searchBar {
+    width: 0px;
+  }
+}
+
+@media screen and (min-width: 353px) and (max-width: 391px) {
+  .searchBar {
+    width: 40px;
+  }
+}
+
+@media screen and (min-width: 392px) and (max-width: 411px) {
+  .searchBar {
+    width: 80px;
+  }
+}
+
+@media screen and (min-width: 412px) and (max-width: 430px) {
+  .searchBar {
+    width: 100px;
+  }
+}
+
+.md-menu {
+  margin-top: 14px;
+}
+
+.author-card {
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+
+  .md-avatar {
+    margin-right: 16px;
   }
 
-  .author-card {
-    padding: 8px 16px;
+  .author-card-info {
     display: flex;
-    align-items: center;
+    flex-flow: column;
+    flex: 1;
+  }
 
-    .md-avatar {
-      margin-right: 16px;
-    }
+  span {
+    font-size: 16px;
+  }
 
-    .author-card-info {
-      display: flex;
-      flex-flow: column;
-      flex: 1;
-    }
+  .author-card-links {
+    display: flex;
 
-    span {
-      font-size: 16px;
-    }
-
-    .author-card-links {
-      display: flex;
-
-      a + a {
-        margin-left: 8px;
-      }
+    a + a {
+      margin-left: 8px;
     }
   }
+}
 </style> 

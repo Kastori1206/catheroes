@@ -104,7 +104,7 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Override
 	public List<Article> findArticleByMemberid(long mid) {
-		return articleDao.findByMemberMid(mid);
+		return articleDao.findByMemberMidOrderByArticleidDesc(mid);
 	}
 
 	@Override
@@ -137,12 +137,12 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Override
 	public List<Article> findArticleByCatid(long catid) {
-		return articleDao.findByCatCatid(catid);
+		return articleDao.findByCatCatidOrderByArticleidDesc(catid);
 	}
 
 	@Override
-	public List<Article> findNewArticle(long mid, long count) {
-		return articleDao.newArticle(mid, count);
+	public List<Article> findNewArticle(long mid) {
+		return articleDao.newArticle(mid);
 	}
 	
 }

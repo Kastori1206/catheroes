@@ -28,32 +28,59 @@
         @maptypeid_changed="onMapEvent('maptypeid_changed', $event)"
         style="height: 60vh; margin: auto;"
       ></vue-daum-map>
-
-      <table>
-        <colgroup>
-          <col width="60" />
-          <col />
-        </colgroup>
-        <tr>
-          <th>레벨</th>
-          <td>
-            <input type="range" min="1" max="14" v-model.number="level" />
-            {{level}}
-          </td>
-        </tr>
-        <tr>
-          <th>경도</th>
-          <td>
-            <input type="number" v-model.number="center.lat" step="0.0001" />
-          </td>
-        </tr>
-        <tr>
-          <th>위도</th>
-          <td>
-            <input type="number" v-model.number="center.lng" step="0.0001" />
-          </td>
-        </tr>
-      </table>
+      <div class="description text-center" style="display:inline">
+        <h4>🏠주소 입력 ...</h4>
+        <!-- <h4 style="margin-top: 17px">&#x1F43E; 시</h4> -->
+        <div class="md-layout-item" style="width:180px; margin:0 auto;">
+          <md-field>
+            <md-select name="sido" id="sido" placeholder="시" v-model="sido">
+              <md-option value="서울특별시">서울특별시</md-option>
+              <md-option value="부산광역시">부산광역시</md-option>
+              <md-option value="대구광역시">대구광역시</md-option>
+              <md-option value="인천광역시">인천광역시</md-option>
+              <md-option value="광주광역시">광주광역시</md-option>
+              <md-option value="대전광역시">대전광역시</md-option>
+              <md-option value="울산광역시">울산광역시</md-option>
+              <md-option value="세종특별자치사">세종특별자치사</md-option>
+              <md-option value="경기도">경기도</md-option>
+              <md-option value="강원도">강원도</md-option>
+              <md-option value="충청북도">충청북도</md-option>
+              <md-option value="충청남도">충청남도</md-option>
+              <md-option value="전라북도">전라북도</md-option>
+              <md-option value="전라남도">전라남도</md-option>
+              <md-option value="경상북도">경상북도</md-option>
+              <md-option value="경상남도">경상남도</md-option>
+              <md-option value="제주특별자치도">제주특별자치도</md-option>
+            </md-select>
+          </md-field>
+        </div>
+        <!-- <h4 style="margin-top: 17px">&#x1F43E; 구</h4> -->
+        <div class="md-layout-item" style="width:180px; margin:0 auto;">
+          <md-field>
+            <md-select name="gugun" id="gugun" placeholder="구" v-model="gugun" @click="setsido()">
+              <md-option
+                v-for="(gugun, index) in guguns"
+                :key="'gugun_'+index"
+                :value="gugun"
+              >{{gugun}}</md-option>
+            </md-select>
+          </md-field>
+        </div>
+        <!-- <h4 style="margin-top: 17px">&#x1F43E; 동</h4> -->
+        <div class="md-layout-item" style="width:180px; margin:0 auto;">
+          <md-field>
+            <md-select name="dong" id="dong" placeholder="동" v-model="dong" @click="setgugun()">
+              <md-option v-for="(dong, index) in dongs" :key="'dong_'+index" :value="dong">{{dong}}</md-option>
+            </md-select>
+          </md-field>
+        </div>
+        <md-button
+          v-if="isUpdated"
+          style="width:60px; margin:0 auto;"
+          class="md-success md-block"
+          @click="setCenterByDong"
+        >검색</md-button>
+      </div>
     </div>
   </div>
 </template>
@@ -83,6 +110,12 @@ export default {
     mymarker: [],
     geocoder: null,
     centerDong: null,
+    sido: null,
+    gugun: null,
+    dong: null,
+    guguns: [],
+    dongs: [],
+    isUpdated: false,
     Catinfo: {
       nickname: null,
       age: null,
@@ -98,7 +131,7 @@ export default {
   }),
   props: {
     iscreate: Boolean
-  },  
+  },
   methods: {
     senddata() {
       this.$emit("send-data", this.center);
@@ -119,12 +152,11 @@ export default {
 
       // 주소-좌표 변환 객체를 생성합니다
       this.geocoder = new kakao.maps.services.Geocoder();
-      
+
       this.searchAddrFromCoords(map.getCenter(), this.displayCenterInfo);
 
       kakao.maps.event.addListener(map, "tilesloaded", () => {
-        this.searchAddrFromCoords(map.getCenter(),this. displayCenterInfo);
-        // console.log(this.centerDong);
+        this.searchAddrFromCoords(map.getCenter(), this.displayCenterInfo);
         this.loadMarker(this.centerDong);
       });
       //////////////////////////////////
@@ -136,21 +168,19 @@ export default {
       var boundsStr = bounds.toString();
 
       this.mapObject = map;
-
-      
     },
     loadMarker(dong) {
-      // console.log('고양이정보받아오라고했다')
-      this.closeMarker();     
+      this.closeMarker();
 
       axios
-        .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "cat/"+ dong)
+        .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "cat/" + dong)
         .then(res => {
-          console.log(res.data)
           var index = 0;
-          res.data.forEach(e => {     
+          res.data.forEach(e => {
             var imageSrc =
-                "https://catheroes.s3.ap-northeast-2.amazonaws.com/static/marker/"+res.data[index++].breed+".png", // 마커이미지의 주소입니다
+                "https://catheroes.s3.ap-northeast-2.amazonaws.com/static/marker/" +
+                res.data[index++].breed +
+                ".png", // 마커이미지의 주소입니다
               imageSize = new kakao.maps.Size(50, 50), // 마커이미지의 크기입니다
               imageOption = { offset: new kakao.maps.Point(27, 69) }; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
 
@@ -174,6 +204,7 @@ export default {
             marker.setMap(this.mymap);
 
             kakao.maps.event.addListener(marker, "click", () => {
+              this.closeOverlay();
               this.createOverlay(e);
             });
           });
@@ -182,16 +213,24 @@ export default {
           console.log(error);
         });
     },
+    closeOverlay() {
+      this.myoverlay.forEach(element => {
+        element.setMap(null);
+      });
+    },
     createOverlay(data) {
       var content =
         '<div class="wrap">' +
         '    <div class="info2">' +
         '        <div class="title2">' +
         "길냥이 정보" +
+        '<div id="close" class="close" onclick="closeOverlay" title="닫기"></div>' +
         "        </div>" +
         '        <div class="body2">' +
         '            <div class="img">' +
-        '                <img src="https://catheroes.s3.ap-northeast-2.amazonaws.com/' + data.image + '" width="73" height="70">' +
+        '                <img src="https://catheroes.s3.ap-northeast-2.amazonaws.com/' +
+        data.image +
+        '" width="73" height="70">' +
         "           </div>" +
         '            <div class="desc">' +
         '                <div class="ellipsis">' +
@@ -212,16 +251,12 @@ export default {
         map: this.mymap,
         position: new kakao.maps.LatLng(data.lat, data.lng)
       });
-      // this.myoverlay.setMap(null);
-      // console.dir(this.myoverlay);
-      this.myoverlay.push(overlay);
-    },
-    closeOverlay() {
-      // console.dir(this.myoverlay);
-      this.myoverlay.forEach(element => {
-        element.setMap(null);
+      var close = document.getElementById("close");
+      close.addEventListener("click", () => {
+        this.closeOverlay();
       });
-      // this.myoverlay.setMap(null);
+
+      this.myoverlay.push(overlay);
     },
     closeMarker() {
       // console.dir(this.myoverlay);
@@ -230,13 +265,15 @@ export default {
       });
       // this.myoverlay.setMap(null);
     },
-    onMapEvent(event, params) {
-      // console.log(`Daum Map Event(${event})`, params);
-    },
+    onMapEvent(event, params) {},
     ////////
     searchAddrFromCoords(coords, callback) {
       // 좌표로 행정동 주소 정보를 요청합니다
-      this.geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), callback);
+      this.geocoder.coord2RegionCode(
+        coords.getLng(),
+        coords.getLat(),
+        callback
+      );
     },
     searchDetailAddrFromCoords(coords, callback) {
       // 좌표로 법정동 상세 주소 정보를 요청합니다
@@ -249,18 +286,68 @@ export default {
         for (var i = 0; i < result.length; i++) {
           // 행정동의 region_type 값은 'H' 이므로
           if (result[i].region_type === "H") {
-            // console.log(result[i].address_name);
             this.centerDong = result[i].address_name;
-            // infoDiv.innerHTML = result[i].address_name;
             break;
           }
         }
-        // console.log("@@@1")
-        this.$emit('submit-dong', this.centerDong)
+        this.$emit("submit-dong", this.centerDong);
       }
+    },
+    setCenterByDong() {
+      var geocoder = new kakao.maps.services.Geocoder();
+
+      var callback = (result, status) => {
+        if (status === kakao.maps.services.Status.OK) {
+          const lat = result[0].y;
+          const lng = result[0].x;
+          this.center.lat = lat;
+          this.center.lng = lng;
+        }
+      };
+
+      const addr = this.gugun + " " + this.dong;
+
+      geocoder.addressSearch(addr, callback);
+    },
+    setsido() {
+      const request = new FormData();
+      request.append("sidoname", this.sido);
+
+      axios
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "gugun", request)
+        .then(res => {
+          this.guguns = [];
+          for (var i = 0; i < res.data.length; i++) {
+            this.guguns.push(res.data[i].gugun);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    setgugun() {
+      const request = new FormData();
+      request.append("sidoname", this.sido);
+      request.append("gugun", this.gugun);
+
+      axios
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "dong", request)
+        .then(res => {
+          this.dongs = [];
+          for (var i = 0; i < res.data.length; i++) {
+            this.dongs.push(res.data[i].dong);
+            this.isUpdated = true;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
-    //////////
-  }
+  },
+  updated() {
+    // this.setsido();
+  },
+  mounted() {}
 };
 </script>
 

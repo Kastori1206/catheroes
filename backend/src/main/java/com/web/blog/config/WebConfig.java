@@ -19,8 +19,7 @@ public class WebConfig implements WebMvcConfigurer {
 //			"/webjars/**", 
 //			"/swagger/**",
 //			"/auth/**",
-			"/**",
-			"/member/email"
+			"/**"
 			};
 
 	@Autowired

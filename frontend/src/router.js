@@ -5,12 +5,15 @@ import Login from "./views/Login.vue";
 import Profile from "./views/Profile.vue";
 import Detail from "./views/Detail.vue";
 import Join from "./views/Join.vue";
+import FindPassword from "./views/FindPassword.vue";
 import News from "./views/News.vue";
 import Create from "./views/Create.vue";
 import Search from "./views/Search.vue";
-import Funding from "./views/Funding.vue";
+import Donate from "./views/Donate.vue";
+import FAQ from "./views/FAQ.vue"
 import MainNavbar from "./layout/MainNavbar.vue";
 import MainFooter from "./layout/MainFooter.vue";
+
 
 Vue.use(Router);
 
@@ -35,10 +38,9 @@ export default new Router({
       },
       beforeEnter(to, from, next) {
         if (Vue.$cookies.isKey("auth-token")) {
-          console.log("로그인되어있다고했다");
           next();
         } else {
-          console.log("로그인안되어있다고 했다");
+          alert("로그인을 해주세요.")
           next("/");
         }
       },
@@ -59,7 +61,14 @@ export default new Router({
         header: { colorOnScroll: 1 },
       },
     },
-
+    {
+      path: "/findpassword",
+      name: "findpassword",
+      components: { default: FindPassword, header: MainNavbar, footer: MainFooter },
+      props: {
+        header: { colorOnScroll: 1 },
+      },
+    },
     {
       path: "/profile",
       name: "profile",
@@ -70,10 +79,9 @@ export default new Router({
       },
       beforeEnter(to, from, next) {
         if (Vue.$cookies.isKey("auth-token")) {
-          console.log("로그인되어있다고했다");
           next();
         } else {
-          console.log("로그인안되어있다고 했다");
+          alert("로그인을 해주세요.")
           next("/");
         }
       },
@@ -88,10 +96,9 @@ export default new Router({
       },
       beforeEnter(to, from, next) {
         if (Vue.$cookies.isKey("auth-token")) {
-          console.log("로그인되어있다고했다");
           next();
         } else {
-          console.log("로그인안되어있다고 했다");
+          alert("로그인을 해주세요.")
           next("/");
         }
       },
@@ -105,10 +112,9 @@ export default new Router({
       },
       beforeEnter(to, from, next) {
         if (Vue.$cookies.isKey("auth-token")) {
-          console.log("로그인되어있다고했다");
           next();
         } else {
-          console.log("로그인안되어있다고 했다");
+          alert("로그인을 해주세요.")
           next("/");
         }
       },
@@ -123,23 +129,32 @@ export default new Router({
       },
     },
     {
-      path: "/funding",
-      name: "funding",
-      components: { default: Funding, header: MainNavbar, footer: MainFooter },
+      path: "/donate",
+      name: "donate",
+      components: { default: Donate, header: MainNavbar, footer: MainFooter },
       props: {
         header: { colorOnScroll: 1 },
         footer: { backgroundColor: "black" },
       },
       beforeEnter(to, from, next) {
         if (Vue.$cookies.isKey("auth-token")) {
-          console.log("로그인되어있다고했다");
           next();
         } else {
-          console.log("로그인안되어있다고 했다");
+          alert("로그인을 해주세요.")
           next("/");
         }
       },
     },
+    {
+      path: "/faq",
+      name: "faq",
+      components: { default: FAQ, header: MainNavbar, footer: MainFooter },
+      props: {
+        header: { colorOnScroll: 1 },
+        footer: { backgroundColor: "black" },
+      },
+    },
+
   ],
   scrollBehavior: (to) => {
     if (to.hash) {
@@ -148,4 +163,5 @@ export default new Router({
       return { x: 0, y: 0 };
     }
   },
+  
 });
