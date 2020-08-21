@@ -10,8 +10,8 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.web.blog</groupId>
-	<artifactId>webBlog</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>CatHeroes</artifactId>
+	<version>v1.0</version>
 	<name>webBlog</name>
 	<description>Web blog project for Spring Boot</description>
 
@@ -19,7 +19,7 @@
 		<java.version>1.8</java.version>
 	</properties>
 
-	<dependencies>
+	<dependencies>		
 		<!-- news crawling -->
 		<dependency>
 			<groupId>org.jsoup</groupId>
@@ -47,14 +47,14 @@
 			<version>20180813</version>
 		</dependency>
 		<!-- Spring Security -->
-		<!-- <dependency> 
-			<groupId>org.springframework.boot</groupId> 
-			<artifactId>spring-boot-starter-security</artifactId> 
-		</dependency> -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
 		<!-- OAuth2 Client -->
 		<dependency>
-		    <groupId>org.springframework.security</groupId>
-		    <artifactId>spring-security-oauth2-client</artifactId>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-client</artifactId>
 		</dependency>
 		<!-- lombok -->
 		<dependency>
@@ -73,7 +73,10 @@
 			<artifactId>jjwt</artifactId>
 			<version>0.7.0</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -85,6 +88,16 @@
 					<artifactId>junit-vintage-engine</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4</version>
 		</dependency>
 
 		<!-- 디비 셋팅 주석 -->
@@ -108,24 +121,28 @@
 			<artifactId>scribejava-apis</artifactId>
 			<version>5.6.0</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>com.github.scribejava</groupId>
 			<artifactId>scribejava-core</artifactId>
 			<version>5.6.0</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.springframework.social</groupId>
 			<artifactId>spring-social-google</artifactId>
 			<version>1.0.0.RELEASE</version>
 		</dependency>
-		   <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 -->
-      <dependency>
-         <groupId>com.amazonaws</groupId>
-         <artifactId>aws-java-sdk</artifactId>
-         <version>1.11.163</version>
-      </dependency>
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk</artifactId>
+			<version>1.11.163</version>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

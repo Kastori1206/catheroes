@@ -1,79 +1,103 @@
 <template>
   <div class="wrapper">
+    <modal v-if="loadingModal">
+      <template slot="body" style="padding-top:0">
+        <md-progress-spinner
+          class="md-success"
+          style="margin: 0 auto"
+          id="loading"
+          :md-diameter="100"
+          :md-stroke="10"
+          md-mode="indeterminate"
+        ></md-progress-spinner>
+        <p>길냥이 이미지를 분석하고 있어요.</p>
+      </template>
+    </modal>
+
     <div class="section page-header header-filter" :style="headerStyle">
       <div class="container">
         <div class="md-layout">
           <!-- 입력 폼 사이즈 조정하는 곳 -->
-			<div class="md-layout-item md-size-66 md-small-size-100 md-xsmall-size-100 md-medium-size-66 mx-auto">
-				<login-card header-color="green">
-            		<h4 slot="title" class="card-title">길냥이 정보 입력</h4>
-            		<p slot="description" class="description">무슨말을해야하나</p>
+          <div
+            class="md-layout-item md-size-66 md-small-size-100 md-xsmall-size-100 md-medium-size-66 mx-auto"
+          >
+            <login-card header-color="green">
+<<<<<<< HEAD
+              <h2
+                slot="title"
+                class="card-title"
+                style="font-family: 'Do Hyeon', sans-serif;"
+              >길냥이 정보 입력</h2>
+=======
+              <h2 slot="title" class="card-title" style="font-family: 'Do Hyeon', sans-serif;">길냥이 정보 입력</h2>
+>>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
 
-        			<md-field class="md-form-group" slot="inputs">
-						<!-- 아이콘 확인하는 페이지 -->
-						<!-- https://material.io/resources/icons/?style=baseline -->
-						<md-icon>adb</md-icon>
-						<label>고양이 이름</label>
-						<md-input v-model="nickname"
-								  id="nickname"
-								  ref="nickname"
-								  ></md-input>
-					</md-field>
+              <md-field class="md-form-group" slot="inputs">
+                <md-icon style="z-index:-1;">
+                  <i class="fas fa-cat"></i>
+                </md-icon>
+                <label>고양이 이름</label>
+                <md-input v-model="nickname" id="nickname" ref="nickname"></md-input>
+              </md-field>
+              <md-field slot="inputs">
+                <label for>이미지입력</label>
+                <md-file accept="image/*" @change="onChangeImages" />
+              </md-field>
+              <md-field class="md-form-group" slot="inputs">
+                <md-icon style="z-index:-1;">
+                  <i class="fas fa-paw"></i>
+                </md-icon>
+                <label>길냥이 종류</label>
+                <md-select v-model="breed" name="breed" id="breed" style="margin: 0px 0px 0px 12px">
+                  <md-option value="삼색이">삼색이</md-option>
+                  <md-option value="고등어태비">고등어태비</md-option>
+                  <md-option value="치즈태비">치즈태비</md-option>
+                  <md-option value="검은고양이">검은고양이</md-option>
+                  <md-option value="흰고양이">흰고양이</md-option>
+                  <md-option value="턱시도">턱시도</md-option>
+                  <md-option value="잘모르겠습니다">잘모르겠습니다</md-option>
+                </md-select>
+                <span class="md-helper-text">예상 종류를 입력해주세요</span>
+              </md-field>
 
-					<md-field slot="inputs">
-						<md-icon>remove</md-icon>
-						<label>길냥이 종류</label>
-						<md-input v-model="breed"
-								  id="breed"
-								  ref="breed"
-								  ></md-input>
-						<span class="md-helper-text">예상 종류를 입력해주세요</span>
-					</md-field>
+              <md-field slot="inputs" v-if="imgpreview">
+                <img :src="imgpreview" />
+              </md-field>
 
-					<md-field slot="inputs">
-						<md-input ref="imageInput" type="file" hidden @change="onChangeImages"></md-input>
-					</md-field>
+              <div class="md-layout" slot="inputs">
+                <div class="md-layout-item md-size-33">
+                  <md-button class="md-success md-block" @click="classicModal = true">
+                    <md-icon>library_books</md-icon>위치선택
+                  </md-button>
+                  <!-- 모달창 -->
+                  <modal v-if="classicModal" @close="classicModalHide">
+                    <template slot="header">
+                      <h4 class="modal-title">{{nickname}}이 사는 곳은?</h4>
+                      <md-button
+                        class="md-simple md-just-icon md-round modal-default-button"
+                        @click="classicModalHide"
+                      >
+                        <md-icon>clear</md-icon>
+                      </md-button>
+                    </template>
 
-					<md-field slot="inputs" v-if="imgpreview">
-						<img :src="imgpreview">
-					</md-field>
-					
-					<div class="md-layout" slot="inputs">
-						<div class="md-layout-item md-size-33">
-							<md-button class="md-success md-block" @click="classicModal = true">
-								<md-icon>library_books</md-icon> 위치선택
-							</md-button>
-							<!-- 모달창 -->
-							<modal v-if="classicModal" @close="classicModalHide">
-								<template slot="header">
-									<h4 class="modal-title">Modal Title</h4>
-									<md-button class="md-simple md-just-icon md-round modal-default-button" @click="classicModalHide">
-										<md-icon>clear</md-icon>
-									</md-button>
-								</template>
-								
-								<template slot="body">
-									<div class="section section-map">
-										<div class="container" style="margin: auto;">
-											<Map2 :iscreate="iscreate" @send-data="getdata"></Map2>
-										</div>
-									</div>
-								</template>
-
-								<template slot="footer">
-									<md-button class="md-simple">Nice Button</md-button>
-									<md-button class="md-danger md-simple" @click="classicModalHide">
-										Close
-										</md-button>
-								</template>
-							</modal>
-						</div>
-					</div>
-					<md-button @click="checkCat" slot="footer" class="md-simple md-success md-lg">
-						<!-- Get Started -->
-						길냥이 등록!
-					</md-button>
-				</login-card>
+                    <template slot="body">
+                      <div class="section section-map" style="padding:0px">
+                        <div class="container" style="margin: auto;">
+                          <Map2
+                            :classicModal="classicModal"
+                            :iscreate="iscreate"
+                            @send-data="getdata"
+                            @send-dong="getdong"
+                          ></Map2>
+                        </div>
+                      </div>
+                    </template>
+                  </modal>
+                </div>
+              </div>
+              <md-button @click="checkCat" slot="footer" class="md-simple md-success md-lg">길냥이 등록!</md-button>
+            </login-card>
           </div>
         </div>
       </div>
@@ -83,29 +107,30 @@
 
 <script>
 import { LoginCard } from "@/components";
-import axios from 'axios'
+import axios from "axios";
 import { Modal } from "@/components";
-import Map2 from "./components/Map2.vue"
+import Map2 from "./components/Map2.vue";
 
 export default {
   components: {
-		LoginCard,
-		Modal,
-		Map2,
+    LoginCard,
+    Modal,
+    Map2
   },
   bodyClass: "login-page",
   data() {
     return {
-			// 데이터
-      
-			nickname: null,
-			breed: null,
-			lat: null,
-			lng: null,
-			image: null,			
-			classicModal: false,
-			imgpreview: null,
-			iscreate: true,
+      // 데이터
+      dong: null,
+      nickname: null,
+      breed: null,
+      lat: null,
+      lng: null,
+      image: null,
+      classicModal: false,
+      imgpreview: null,
+      iscreate: true,
+      loadingModal: false
     };
   },
   props: {
@@ -122,94 +147,81 @@ export default {
     }
   },
   methods: {
-	getdata(mymarker) {
-		this.lng = mymarker.Ga
-		this.lat = mymarker.Ha
-		console.log(this.lat);
-		console.log(this.lng);
-	},
-	onChangeImages(e) {
-		console.log(e.target.files)
-		const file = e.target.files[0];
-		this.image = file;
-		this.imgpreview = URL.createObjectURL(file);
-		console.log(this.imgpreview);
+    getdata(mymarker) {
+      this.lng = mymarker.Ga;
+      this.lat = mymarker.Ha;
+      this.classicModalHide();
+    },
+    getdong(dong) {
+      this.dong = dong;
+    },
+    onChangeImages(e) {
+      const file = e.target.files[0];
+      this.image = file;
+      this.imgpreview = URL.createObjectURL(file);
+      const fd = new FormData();
+      fd.append("image", this.image);
+      this.loadingModal = true;
+
+      axios
+        .post(process.env.VUE_APP_DJANGO_API_SERVER_URL + "keras/", fd, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+        .then(res => {
+          this.loadingModal = !this.loadingModal;
+          this.breed = res.data;
+        })
+        .catch(err => {
+          console.log(err);
+          this.loadingModal = !this.loadingModal;
+          alert("고양이 이미지를 넣어 주세요.");
+        });
     },
     checkCat() {
-        let err = true;
-        let msg = '';
-        err && !this.nickname && ((msg = '이름을 입력해주세요.'), (err = false));
-        err && !this.breed && ((msg = '품종을 입력해주세요.'), (err = false));        
-		// err && !this.image && ((msg = '비밀번호를 입력해주세요.'), (err = false));
-		// err && !this. && ((msg = '비밀번호를 입력해주세요.'), (err = false));
+      let err = true;
+      let msg = "";
+      err && !this.nickname && ((msg = "이름을 입력해주세요."), (err = false));
+      err && !this.breed && ((msg = "품종을 입력해주세요."), (err = false));
+      err && !this.lat && ((msg = "위치정보를 입력해주세요."), (err = false));
+      // err && !this.image && ((msg = '비밀번호를 입력해주세요.'), (err = false));
+      // err && !this. && ((msg = '비밀번호를 입력해주세요.'), (err = false));
 
-
-
-        if(!err) alert(msg);
-        else this.createHandler();
-	},
-	createHandler() {
-        // alert('123');
-        // this.moveList();
-        // axios
-        //     .post('http://localhost:8080/cat/regist', {                
-        //         nickname: this.nickname,
-		// 		breed: this.breed,
-		// 		image: 'image',
-		// 		lat: this.lat,
-		// 		lng: this.lng
-        //     })
-        //     .then((response) => {
-        //         console.log(response);
-        //         if(response.data.data === 'success') {
-        //             alert('등록이 완료되었습니다.');
-        //             this.moveList();
-        //         } else {
-        //             alert('error');
-        //         }
-                
-        //     })
-        //     .catch((error) => {
-        //         this.error = error;
-        //         console.log(error);
-        //         // this.moveList();
-        //     })
-		//     .finally(() => {});
-		const request = new FormData();
-      request.append("image", this.image);
+      if (!err) alert(msg);
+      else this.createHandler();
+    },
+    // 고양이 등록
+    createHandler() {
+      const request = new FormData();
+      request.append("file", this.image);
       request.append("nickname", this.nickname);
       request.append("lat", this.lat);
       request.append("lng", this.lng);
-      request.append("imgpath", "/");
-      request.append("breed", "breed");
+      request.append("location", this.dong);
+      request.append("breed", this.breed);
 
       axios
-        .post("http://localhost:8080/cat/regist", request, {
+        .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "cat", request, {
           headers: {
             "Content-Type": "multipart/form-data"
           }
         })
         .then(response => {
-          console.log(response);
-          if (response.data.data === "success") {
-            alert("등록이 완료되었습니다.");
-            this.$router.push("/");
-          } else {
-            alert("error");
-          }
+          alert("등록이 완료되었습니다.");
+          this.$router.push("/");
         })
         .catch(error => {
-          this.error = error;
           console.log(error);
         })
         .finally(() => {});
-    
     },
-	classicModalHide() {
+    classicModalHide() {
       this.classicModal = false;
     }
   }
 };
 </script>
 
-<style lang="css"></style>
+<style lang="css" scoped>
+</style>

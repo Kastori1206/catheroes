@@ -17,15 +17,30 @@
             <div class="md-layout">
               <!-- test -->
               <div v-for="(news, index) in items" :key="index + '_items'">
-                <div class="md-card-new">
+                <div class="md-card-new" style="max-width:900px">
                   <md-card-header>
+                    <md-card-media style="margin-right:10px; margin-bottom:5px">
+<<<<<<< HEAD
+                      <img
+                        style="border: 1px solid #808080; border-radius: 5px;"
+                        :src="news.img"
+                        alt="NewsImage"
+                        @click="PopNews(index)"
+                      />
+                    </md-card-media>
                     <md-card-header-text>
-                      <div class="md-title" @click="PopNews(index)">{{news.title}}</div>
+                      <div class="md-title" @click="PopNews(index)">
+                        &#x1F63A;
+                        <strong>{{news.title}} &#x1F63A;</strong>
+                      </div>
+=======
+                      <img style="border: 1px solid #808080; border-radius: 5px;" :src="news.img" alt="NewsImage" @click="PopNews(index)" />
+                    </md-card-media>
+                    <md-card-header-text>
+                      <div class="md-title" @click="PopNews(index)">&#x1F63A; <strong>{{news.title}} &#x1F63A;</strong></div>
+>>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
                       <div class="md-subhead" @click="PopNews(index)">{{news.content}}</div>
                     </md-card-header-text>
-                    <md-card-media>
-                      <img :src="news.img" alt="NewsImage" @click="PopNews(index)" />
-                    </md-card-media>
                   </md-card-header>
                 </div>
               </div>
@@ -39,26 +54,12 @@
 
 <script>
 import axios from "axios";
-const SERVER_URL = "http://localhost:8080";
 export default {
   name: "Media",
-  bodyClass: "landing-page",
   props: {
     header: {
       type: String,
       default: require("@/assets/img/bg7.jpg")
-    },
-    teamImg1: {
-      type: String,
-      default: require("@/assets/img/faces/avatar.jpg")
-    },
-    teamImg2: {
-      type: String,
-      default: require("@/assets/img/faces/christian.jpg")
-    },
-    teamImg3: {
-      type: String,
-      default: require("@/assets/img/faces/kendall.jpg")
     }
   },
   data() {
@@ -75,16 +76,15 @@ export default {
   },
   methods: {
     PopNews(index) {
-      var winWidth = 700;
-      var winHeight = 600;
+      var winWidth = 1024;
+      var winHeight = 768;
       var popupOption = "width=" + winWidth + ", height=" + winHeight;
       var win = window.open(this.items[index].url, "PopupWin", popupOption);
     },
     retrieveNewsInfo() {
       axios
-        .get(SERVER_URL + "/news")
+        .get(process.env.VUE_APP_SPRING_API_SERVER_URL + "news")
         .then(res => {
-          console.log(res.data);
           this.items = res.data;
         })
         .catch(error => {
@@ -109,5 +109,34 @@ export default {
 
 .md-has-textarea + .md-layout {
   margin-top: 15px;
+}
+.md-card-new {
+  background: transparent !important;
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  margin: 10px;
+  display: inline-block;
+
+  .md-card-header {
+    margin-left: 0;
+    margin-right: 0;
+    display: block;
+  }
+  .md-card-header-text {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  .md-title {
+    margin-bottom: 8px;
+  }
+  .md-card-media {
+    margin: 0;
+    border-radius: 3px;
+    float: left;
+
+    img {
+      border-radius: 3px;
+    }
+  }
 }
 </style>
