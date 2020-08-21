@@ -44,8 +44,8 @@
 
 ### :clipboard: 데모영상
 
-<iframe width="640" height="360" src="https://youtu.be/z1T9MDCg0s0"  
- frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>  
+[![데모영상](http://img.youtube.com/vi/QYNwbZHmh8g/0.jpg)](https://youtu.be/z1T9MDCg0s0?t=0s)
+
 ### :clipboard: 기능 소개
 
 <h3>알림기능 　　　　　　　　　　　　　　　　　뉴스크롤링</h3>
