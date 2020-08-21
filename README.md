@@ -47,7 +47,7 @@
 [![Watch the video](document/img/main.jpg)](https://youtu.be/z1T9MDCg0s0)
 
 ### :clipboard: 기능 소개
-![알림기능](<img src ="./document/gif/알람.gif" width="250" height="350">)
+![알림기능](./document/gif/알람.gif)
 #### 알람기능                                                              
 <img src ="./document/gif/알람.gif" width="250" height="350">
 
