@@ -44,7 +44,7 @@
 
 ### :clipboard: 데모영상
 
-[![데모영상](http://img.youtube.com/vi/QYNwbZHmh8g/0.jpg)](https://youtu.be/z1T9MDCg0s0?t=0s)
+[![데모영상](./document/img/thumbnail.png)](https://youtu.be/z1T9MDCg0s0?t=0s)
 
 ### :clipboard: 기능 소개
 
@@ -129,7 +129,7 @@ mvn spring-boot:run
 
 Languege
 
-- [JavaScript]
+- JavaScript
 - [Java](https://java.com/ko/download/)
 - [python](https://www.python.org/)
 
@@ -145,7 +145,7 @@ Library
 - [Spring security](https://spring.io/projects/spring-security/)
 - [Spring Data JPA](https://spring.io/projects/spring-data-jpa)
 - [keras](https://keras.io/)
-- [Yolo](https://pjreddie.com/yolo/)w
+- [Yolo](https://pjreddie.com/yolo/)
 
 API
 
@@ -178,4 +178,15 @@ Project Link: [https://lab.ssafy.com/s03-webmobile1-sub3/s03p13d206](https://lab
 
 <!-- ACKNOWLEDGEMENTS -->
 
-<br>
+## 참고문서
+
+- [케라스 이미지 학습](https://github.com/lsjsj92/keras_basic/blob/master/7.%20predict_multi_img_with_CNN.ipynb)
+- [객체 분석](https://bong-sik.tistory.com/16)
+- [스프링 부트 배포](https://steady-hello.tistory.com/49?category=821268)
+- [스프링 부트 SSL](https://knasmueller.net/lets-encrypt-ssl-certificates-for-dockerized-spring-boot-in-2020)
+- [텐서플로우 GPU에러](https://lv99.tistory.com/51)
+- [우분투 MariaDB설치](https://yunyoung1819.tistory.com/95)
+- [MariaDB 외부접속](https://kithub.tistory.com/entry/mariaDB-%EB%A7%88%EB%A6%AC%EC%95%84-DB-%EC%99%B8%EB%B6%80%EC%A0%91%EC%86%8D%EC%9D%B4-%EC%95%88%EB%90%A0%EB%95%8C)
+- [STS LomBok 적용](https://yunyoung1819.tistory.com/95)
+- [VSCODE jdk11에러 해결](https://www.notion.so/VSCODE-jdk11-83fbee3432d34c6ca253c32b94e2cc85)
+  <br>
