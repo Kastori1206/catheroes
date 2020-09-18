@@ -22,15 +22,7 @@
             class="md-layout-item md-size-66 md-small-size-100 md-xsmall-size-100 md-medium-size-66 mx-auto"
           >
             <login-card header-color="green">
-<<<<<<< HEAD
-              <h2
-                slot="title"
-                class="card-title"
-                style="font-family: 'Do Hyeon', sans-serif;"
-              >길냥이 정보 입력</h2>
-=======
               <h2 slot="title" class="card-title" style="font-family: 'Do Hyeon', sans-serif;">길냥이 정보 입력</h2>
->>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
 
               <md-field class="md-form-group" slot="inputs">
                 <md-icon style="z-index:-1;">

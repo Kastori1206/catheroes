@@ -88,11 +88,6 @@
                     </template>
                   </modal>
 
-<<<<<<< HEAD
-=======
-                  
-
->>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
                   <h4>&#128008; 성별</h4>
                   <div
                     class="button"
@@ -120,11 +115,7 @@
                       <input type="radio" id="three" value="암컷(중성화 O)" v-model="catinfo.neutered" />
                       <label for="three">암컷(중성화 O)</label>
                       <br />
-<<<<<<< HEAD
                       <input type="radio" id="four" value="수컷(중성화 X)" v-model="catinfo.neutered" />
-=======
-                       <input type="radio" id="four" value="수컷(중성화 X)" v-model="catinfo.neutered" />
->>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
                       <label for="four">수컷(중성화 X)</label>
                       <br />
                       <input type="radio" id="five" value="암컷(중성화 X)" v-model="catinfo.neutered" />
@@ -137,11 +128,6 @@
                     </template>
                   </modal>
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
                   <h4>&#x1F43E; 사는곳</h4>
                   <div class="button" id="location">{{this.catinfo.location}}</div>
                   <h4>&#x1F48A; 오늘 {{this.catinfo.nickname}}의 건강상태</h4>
@@ -327,7 +313,6 @@
                             <strong>{{comment.writer}}</strong>
                             {{comment.comment}}
                           </md-card-content>
-<<<<<<< HEAD
                           <md-button
                             v-if="comment.writer==memberinfo.nickname"
                             @click="deleteComment(comment.commentid, index, index2)"
@@ -344,17 +329,6 @@
                             v-model="comment"
                             placeholder="댓글을 입력해주세요."
                           ></textarea>
-=======
-                          <md-button 
-                            v-if="comment.writer==memberinfo.nickname" 
-                            @click="deleteComment(comment.commentid, index, index2)"
-                            class="md-simple md-just-icon"
-                            style="margin: 0; margin-right:10px; height:20px; width:20px; min-width:20px; float:right"
-                          ><md-icon>clear</md-icon></md-button>
-                        </div>
-                        <div>
-                          <textarea class="md-layout-item md-size-80"  style="margin-left:5px;" v-model="comment" placeholder="댓글을 입력해주세요."></textarea>
->>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
                           <md-button
                             @click="saveComment(post.articleid, comment, memberinfo.nickname, index)"
                             style="margin: 7px 0; margin-right:10px; background-color:#4CAF50 !important; float:right"
@@ -567,11 +541,6 @@ export default {
       request.append("conditions", this.catinfo.conditions);
       request.append("food", this.catinfo.food);
       request.append("neutered", this.catinfo.neutered);
-<<<<<<< HEAD
-=======
-      // request.append("neutered", this.catinfo.neutered);
-      console.log(this.catinfo);
->>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
       axios
         .patch(process.env.VUE_APP_SPRING_API_SERVER_URL + "cat", request)
         .then(res => {
@@ -704,7 +673,6 @@ export default {
     //댓글 삭제
     deleteComment(commentid, index, index2) {
       axios
-<<<<<<< HEAD
         .delete(
           process.env.VUE_APP_SPRING_API_SERVER_URL + "comment/" + commentid
         )
@@ -712,15 +680,6 @@ export default {
           this.comments[index].splice(index2, 1);
         })
         .catch(err => {});
-=======
-        .delete(process.env.VUE_APP_SPRING_API_SERVER_URL + "comment/" + commentid)
-        .then(res =>{
-          this.comments[index].splice(index2, 1);
-        })
-        .catch(err => {
-
-        })
->>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
     },
 
     //유저정보 찾기
@@ -776,12 +735,7 @@ export default {
             res.data[i].member.image =
               process.env.VUE_APP_IMAGE_SERVER + res.data[i].member.image;
             this.items.push(res.data[i]);
-<<<<<<< HEAD
           }
-=======
-            ////
-          }          
->>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
           Array.from(new Set(this.items));
         })
         .catch(error => {
@@ -888,23 +842,13 @@ export default {
           process.env.VUE_APP_SPRING_API_SERVER_URL + "member/newsfeed",
           formData
         )
-<<<<<<< HEAD
         .then(res => {})
-=======
-        .then(res => {
-          console.log(res);
-        })
->>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
         .catch(error => {
           console.log(error);
         });
     },
     // 포스트 삭제 모달창 호출
-<<<<<<< HEAD
     callDeleteConfirmModal(post, index) {
-=======
-    callDeleteConfirmModal (post, index) {
->>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
       this.postModalData = post;
       this.postModalData.index = index;
       this.deleteConfirmModal = true;

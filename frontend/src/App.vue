@@ -35,10 +35,6 @@ export default {
       this.centerdong = dong;
     },
     login(loginData) {
-<<<<<<< HEAD
-=======
-      // console.log("로그인요청받았다요청받았다요청받았다요청받았다");
->>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
       const formData = new FormData();
       formData.append("email", loginData.email);
       formData.append("password", loginData.password);
@@ -62,22 +58,11 @@ export default {
     logout() {
       Kakao.Auth.logout(function(data) {
         alert("로그아웃 되었습니다.");
-<<<<<<< HEAD
       });
-=======
-        console.log(Kakao.Auth.getAccessToken());
-      });
-      // console.log("로그아웃요청받았다");
->>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
       this.$cookies.remove("auth-token");
       this.isLoggedIn = false;
     },
     kakaoLogin(res) {
-<<<<<<< HEAD
-=======
-      // console.log("앱에서 보내는거");
-      // console.log(res);
->>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
       axios
         .post(process.env.VUE_APP_SPRING_API_SERVER_URL + "auth/kakao/Login", {
           access_token: res.access_token,
@@ -88,10 +73,6 @@ export default {
           token_type: res.token_type
         })
         .then(res1 => {
-<<<<<<< HEAD
-=======
-          // console.log(res1);
->>>>>>> c2e4a83b5814720ba46994196e2e4c6b3ba1d83d
           this.$cookies.set("auth-token", res1.data); //토큰 날라오는거 설정해줘야함!!
           this.isLoggedIn = true;
           this.$router.push("/");
